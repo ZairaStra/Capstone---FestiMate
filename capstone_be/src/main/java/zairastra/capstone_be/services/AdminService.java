@@ -2,6 +2,10 @@ package zairastra.capstone_be.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import zairastra.capstone_be.entities.Admin;
@@ -55,8 +59,10 @@ public class AdminService {
         return new UserRegistrationResponseDTO(savedAdmin.getId());
     }
 
-    public List<Admin> findAllAdmins() {
-        return adminRepository.findAll();
+    public Page<Admin> findAllAdmins(int page, int size, String sortBy) {
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return adminRepository.findAll(pageable);
     }
 
     public Admin findAdminById(Long id) {
