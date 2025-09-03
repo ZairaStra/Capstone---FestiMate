@@ -1,5 +1,6 @@
 package zairastra.capstone_be.payloads;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
 public record PublicUserUpdateDTO(@NotEmpty(message = "Username is required")
@@ -10,6 +11,10 @@ public record PublicUserUpdateDTO(@NotEmpty(message = "Username is required")
 
                                   @NotEmpty(message = "Surname is required")
                                   String surname,
+
+                                  @Email(message = "Insert a valid Email")
+                                  @NotEmpty(message = "Email is required")
+                                  String email,
 
                                   @NotEmpty(message = "City is required")
                                   String city,

@@ -27,10 +27,12 @@ public class PublicUserService {
     private PasswordEncoder bCrypt;
 
     public UserRegistrationResponseDTO createPublicUser(PublicUserRegistrationDTO payload) {
-        publicUserRepository.findByEmailIgnoreCase(payload.email()).ifPresent(user -> {
+
+        publicUserRepository.findByEmailIgnoreCase(payload.email()).ifPresent(publicUser -> {
             throw new BadRequestException("A user with email " + payload.email() + " already exists in our system");
         });
-        publicUserRepository.findByUsernameIgnoreCase(payload.username()).ifPresent(user -> {
+
+        publicUserRepository.findByUsernameIgnoreCase(payload.username()).ifPresent(publicUser -> {
             throw new BadRequestException("A user with username " + payload.username() + " already exists in our system");
         });
 
@@ -39,7 +41,7 @@ public class PublicUserService {
                 payload.name(),
                 payload.surname(),
                 payload.email(),
-                bCrypt.encode((payload.password())),
+                bCrypt.encode(payload.password()),
                 payload.profileImg(),
                 payload.city(),
                 payload.country()
@@ -47,10 +49,10 @@ public class PublicUserService {
 
         newPublicUser.setRegistrationDate(LocalDate.now());
 
-        PublicUser savedUser = publicUserRepository.save(newPublicUser);
+        PublicUser savedPublicUser = publicUserRepository.save(newPublicUser);
         log.info("The public user " + payload.name() + " " + payload.surname() + " has been saved");
 
-        return new UserRegistrationResponseDTO(savedUser.getId());
+        return new UserRegistrationResponseDTO(savedPublicUser.getId());
     }
 
     public List<PublicUser> findAllPublicUsers() {
@@ -74,33 +76,44 @@ public class PublicUserService {
 
     public PublicUser updatePublicUser(Long id, PublicUserUpdateDTO payload) {
 
+        publicUserRepository.findByUsernameIgnoreCase(payload.username())
+                .filter(existingPublicUser -> !existingPublicUser.getId().equals(id))
+                .ifPresent(existingPublicUser -> {
+                    throw new BadRequestException("A public user with username " + payload.username() + " already exists in our system");
+                });
+
+        publicUserRepository.findByEmailIgnoreCase(payload.email())
+                .filter(existingPublicUser -> !existingPublicUser.getId().equals(id))
+                .ifPresent(existingPublicUser -> {
+                    throw new BadRequestException("A public user with email " + payload.email() + " already exists in our system");
+                });
+
         PublicUser publicUser = findPublicUserById(id);
         publicUser.setUsername(payload.username());
         publicUser.setName(payload.name());
         publicUser.setSurname(payload.surname());
+        publicUser.setEmail(payload.email());
+        publicUser.setProfileImg(payload.profileImg());
         publicUser.setCity(payload.city());
         publicUser.setCountry(payload.country());
-        publicUser.setProfileImg(payload.profileImg());
 
         return publicUserRepository.save(publicUser);
     }
 
     public void deletePublicUserById(Long id) {
-        PublicUser user = findPublicUserById(id);
-        publicUserRepository.delete(user);
+        PublicUser publicUser = findPublicUserById(id);
+        publicUserRepository.delete(publicUser);
     }
 
     public PublicUser addFestivalToWishlist(Long userId, Festival festival) {
-        PublicUser user = findPublicUserById(userId);
-        user.getWishlist().add(festival);
-        return publicUserRepository.save(user);
+        PublicUser publicUser = findPublicUserById(userId);
+        publicUser.getWishlist().add(festival);
+        return publicUserRepository.save(publicUser);
     }
 
     public PublicUser removeFestivalFromWishlist(Long userId, Festival festival) {
-        PublicUser user = findPublicUserById(userId);
-        user.getWishlist().remove(festival);
-        return publicUserRepository.save(user);
+        PublicUser publicUser = findPublicUserById(userId);
+        publicUser.getWishlist().remove(festival);
+        return publicUserRepository.save(publicUser);
     }
-
-
 }

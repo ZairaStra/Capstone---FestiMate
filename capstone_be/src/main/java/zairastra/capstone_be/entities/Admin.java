@@ -45,7 +45,6 @@ public class Admin extends User {
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.department = department;
-        this.hireDate = LocalDate.now();
     }
 
     @Override

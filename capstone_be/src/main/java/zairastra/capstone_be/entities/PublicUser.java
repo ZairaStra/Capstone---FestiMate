@@ -44,7 +44,6 @@ public class PublicUser extends User {
 
     public PublicUser(String username, String name, String surname, String email, String password, String profileImg, String city, String country) {
         super(username, name, surname, email, password, profileImg);
-        this.registrationDate = LocalDate.now();
         this.city = city;
         this.country = country;
         this.wishlist = new HashSet<>();

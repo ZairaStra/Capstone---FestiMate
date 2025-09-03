@@ -2,6 +2,7 @@ package zairastra.capstone_be.payloads;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import zairastra.capstone_be.entities.enums.Department;
 import zairastra.capstone_be.entities.enums.Role;
@@ -24,11 +25,14 @@ public record AdminRegistrationDTO(
         @Size(min = 8, message = "Password must be at least 8 characters")
         String password,
 
-        @NotEmpty(message = "Role is required")
+        @NotNull(message = "Role is required")
         Role role,
 
-        @NotEmpty(message = "Department is required")
+        @NotNull(message = "Department is required")
         Department department,
+        
+        @NotEmpty(message = "Phone number is required")
+        String phoneNumber,
 
         String profileImg
 ) {
