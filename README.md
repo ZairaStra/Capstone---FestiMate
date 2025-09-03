@@ -132,7 +132,7 @@ The backend is built with Java + Spring Boot, following REST principles and laye
 
 - Camping
 
-  - Each Festival has one Camping
+  - Each Festival can have a maximum of one Camping
     Camping includes:
   - AccommodationType: defines unit type, capacity, price per night, availability
   - CampingUnit: single spot or unit with `spotCode`, `status`
