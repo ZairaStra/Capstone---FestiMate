@@ -39,6 +39,21 @@ public class AdminService {
             throw new BadRequestException("An admin with username " + payload.username() + " already exists in our system");
         });
 
+        Department assignedDepartment = null;
+
+        if (payload.role() == Role.SYSTEM_ADMIN) {
+            assignedDepartment = Department.HR;
+        } else if (payload.role() == Role.ARTIST_MANAGER) {
+            assignedDepartment = Department.ARTIST_MANAGEMENT;
+        } else if (payload.role() == Role.FESTIVAL_MANAGER) {
+            assignedDepartment = Department.FESTIVAL_MANAGEMENT;
+        } else if (payload.role() == Role.RESERVATION_MANAGER) {
+            assignedDepartment = Department.RESERVATION_MANAGEMENT;
+        } else if (payload.role() == Role.USER_MANAGER) {
+            assignedDepartment = Department.USERS_MANAGEMENT;
+        }
+
+
         Admin newAdmin = new Admin(
                 payload.username(),
                 payload.name(),
@@ -48,7 +63,7 @@ public class AdminService {
                 payload.profileImg(),
                 payload.phoneNumber(),
                 payload.role(),
-                payload.department()
+                assignedDepartment
         );
 
         newAdmin.setHireDate(LocalDate.now());

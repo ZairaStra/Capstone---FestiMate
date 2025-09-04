@@ -1,11 +1,97 @@
 package zairastra.capstone_be.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import zairastra.capstone_be.entities.Admin;
+import zairastra.capstone_be.entities.enums.Department;
+import zairastra.capstone_be.entities.enums.Role;
+import zairastra.capstone_be.payloads.AdminRegistrationDTO;
+import zairastra.capstone_be.payloads.AdminUpdateDTO;
+import zairastra.capstone_be.payloads.UserRegistrationResponseDTO;
+import zairastra.capstone_be.services.AdminService;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/admins")
 public class AdminController {
 
-    
+    @Autowired
+    private AdminService adminService;
+
+    @PostMapping("/register")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserRegistrationResponseDTO createAdmin(@RequestBody AdminRegistrationDTO payload) {
+        return adminService.createAdmin(payload);
+    }
+
+
+    @GetMapping
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<Admin> findAllAdmins(@RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "10") int size,
+                                     @RequestParam(defaultValue = "id") String sortBy) {
+        return adminService.findAllAdmins(page, size, sortBy);
+    }
+
+    @GetMapping("/{adminId}")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public Admin findAdminById(@PathVariable Long adminId) {
+        return adminService.findAdminById(adminId);
+    }
+
+    @GetMapping("/by-username/{username}")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public Admin findAdminByUsername(@PathVariable String username) {
+        return adminService.findAdminByUsername(username);
+    }
+
+    @GetMapping("/by-email/{email}")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public Admin findAdminByEmail(@PathVariable String email) {
+        return adminService.findAdminByEmail(email);
+    }
+
+    @GetMapping("/by-role/{role}")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Admin> findAdminsByRole(@PathVariable Role role) {
+        return adminService.findAdminsByRole(role);
+    }
+
+    @GetMapping("/by-department/{department}")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Admin> findAdminsByDepartment(@PathVariable Department department) {
+        return adminService.findAdminsByDepartment(department);
+    }
+
+    @GetMapping("/by-role-and-department")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Admin> findAdminsByRoleAndDepartment(@RequestParam Role role, @RequestParam Department department) {
+        return adminService.findAdminsByRoleAndDepartment(role, department);
+    }
+
+    @PutMapping("/{adminId}")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public Admin updateAdmin(@PathVariable Long adminId, @RequestBody AdminUpdateDTO payload) {
+        return adminService.updateAdmin(adminId, payload);
+    }
+
+    @DeleteMapping("/{adminId}")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAdminById(@PathVariable Long adminId) {
+        adminService.deleteAdminById(adminId);
+    }
 }

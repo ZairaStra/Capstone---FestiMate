@@ -19,8 +19,7 @@ public class AuthorizationController {
 
     @Autowired
     public AuthorizationService authorizationsService;
-
-    //LOGIN
+    
     @PostMapping("/login")
     public LoginResponseDTO login(@RequestBody LoginDTO payload) {
         String extractedToken = authorizationsService.checkEmailBeforeLogin(payload);
