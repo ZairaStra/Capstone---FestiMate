@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import zairastra.capstone_be.entities.Admin;
 import zairastra.capstone_be.entities.enums.Department;
-import zairastra.capstone_be.entities.enums.Role;
 import zairastra.capstone_be.payloads.AdminRegistrationDTO;
 import zairastra.capstone_be.payloads.AdminUpdateDTO;
 import zairastra.capstone_be.payloads.UserRegistrationResponseDTO;
@@ -60,25 +59,11 @@ public class AdminController {
         return adminService.findAdminByEmail(email);
     }
 
-    @GetMapping("/by-role/{role}")
-    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Admin> findAdminsByRole(@PathVariable Role role) {
-        return adminService.findAdminsByRole(role);
-    }
-
     @GetMapping("/by-department/{department}")
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public List<Admin> findAdminsByDepartment(@PathVariable Department department) {
         return adminService.findAdminsByDepartment(department);
-    }
-
-    @GetMapping("/by-role-and-department")
-    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Admin> findAdminsByRoleAndDepartment(@RequestParam Role role, @RequestParam Department department) {
-        return adminService.findAdminsByRoleAndDepartment(role, department);
     }
 
     @PutMapping("/{adminId}")

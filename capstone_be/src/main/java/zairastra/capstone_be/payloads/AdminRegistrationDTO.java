@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import zairastra.capstone_be.entities.enums.Department;
 import zairastra.capstone_be.entities.enums.Role;
 
 public record AdminRegistrationDTO(
@@ -28,9 +27,6 @@ public record AdminRegistrationDTO(
         @NotNull(message = "Role is required")
         Role role,
 
-        @NotNull(message = "Department is required")
-        Department department,
-        
         @NotEmpty(message = "Phone number is required")
         String phoneNumber,
 

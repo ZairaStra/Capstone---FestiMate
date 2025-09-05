@@ -95,16 +95,8 @@ public class AdminService {
                 .orElseThrow(() -> new NotFoundException("Admin with email " + email + " not found"));
     }
 
-    public List<Admin> findAdminsByRole(Role role) {
-        return adminRepository.findByRole(role);
-    }
-
     public List<Admin> findAdminsByDepartment(Department department) {
         return adminRepository.findByDepartment(department);
-    }
-
-    public List<Admin> findAdminsByRoleAndDepartment(Role role, Department department) {
-        return adminRepository.findByRoleAndDepartment(role, department);
     }
 
     public Admin updateAdmin(Long id, AdminUpdateDTO payload) {
@@ -121,6 +113,20 @@ public class AdminService {
                     throw new BadRequestException("An admin with email " + payload.email() + " already exists in our system");
                 });
 
+        Department assignedDepartment = null;
+
+        if (payload.role() == Role.SYSTEM_ADMIN) {
+            assignedDepartment = Department.HR;
+        } else if (payload.role() == Role.ARTIST_MANAGER) {
+            assignedDepartment = Department.ARTIST_MANAGEMENT;
+        } else if (payload.role() == Role.FESTIVAL_MANAGER) {
+            assignedDepartment = Department.FESTIVAL_MANAGEMENT;
+        } else if (payload.role() == Role.RESERVATION_MANAGER) {
+            assignedDepartment = Department.RESERVATION_MANAGEMENT;
+        } else if (payload.role() == Role.USER_MANAGER) {
+            assignedDepartment = Department.USERS_MANAGEMENT;
+        }
+
         Admin admin = findAdminById(id);
         admin.setUsername(payload.username());
         admin.setName(payload.name());
@@ -129,7 +135,7 @@ public class AdminService {
         admin.setProfileImg(payload.profileImg());
         admin.setPhoneNumber(payload.phoneNumber());
         admin.setRole(payload.role());
-        admin.setDepartment(payload.department());
+        admin.setDepartment(assignedDepartment);
 
         return adminRepository.save(admin);
     }
