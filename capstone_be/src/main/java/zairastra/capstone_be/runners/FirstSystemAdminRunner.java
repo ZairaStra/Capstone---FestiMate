@@ -3,13 +3,9 @@ package zairastra.capstone_be.runners;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import zairastra.capstone_be.entities.Admin;
-import zairastra.capstone_be.entities.enums.Department;
 import zairastra.capstone_be.entities.enums.Role;
 import zairastra.capstone_be.payloads.AdminRegistrationDTO;
 import zairastra.capstone_be.services.AdminService;
-
-import java.util.Optional;
 
 @Component
 public class FirstSystemAdminRunner implements CommandLineRunner {
@@ -20,21 +16,20 @@ public class FirstSystemAdminRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        Optional<Admin> firstAdmin = adminService.findAdminsByRole(Role.SYSTEM_ADMIN).stream().findFirst();
+        AdminRegistrationDTO payload = new AdminRegistrationDTO(
+                "boss",
+                "Robin",
+                "Scherbatsky",
+                "boss.scherbatsky@festimate.com",
+                "password1",
+                Role.SYSTEM_ADMIN,
+                "58462938103",
+                "https://ui-avatars.com/api/?name=Robin+Scherbatsky"
+        );
 
-        if (firstAdmin.isEmpty()) {
-            AdminRegistrationDTO payload = new AdminRegistrationDTO(
-                    "boss",
-                    "Barney",
-                    "Stinson",
-                    "boss.stinson@festimate.com",
-                    "password",
-                    Role.SYSTEM_ADMIN,
-                    Department.HR,
-                    "48462938103",
-                    "https://ui-avatars.com/api/?name=Barney+Stinson"
-            );
+        boolean exists = adminService.adminExistsByUsernameOrEmail(payload.username(), payload.email());
 
+        if (!exists) {
             adminService.createAdmin(payload);
             System.out.println("The Admin Boss has been successfully created");
         } else {
@@ -42,3 +37,4 @@ public class FirstSystemAdminRunner implements CommandLineRunner {
         }
     }
 }
+

@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import zairastra.capstone_be.entities.Admin;
 import zairastra.capstone_be.entities.User;
 import zairastra.capstone_be.exceptions.UnauthorizedException;
 import zairastra.capstone_be.services.UserService;
@@ -27,9 +28,10 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
     private UserService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-        //AUTHENTICATION
+        // AUTHENTICATION
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer "))
             throw new UnauthorizedException("Insert a valid token");
@@ -37,13 +39,24 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
         String extractedToken = authHeader.replace("Bearer ", "");
         jwtTools.verifyToken(extractedToken);
 
-        //AUTHORIZATION
+        // AUTHORIZATION
         String userId = jwtTools.extractId(extractedToken);
         User authorizedUser = this.userService.findUserById(Long.parseLong(userId));
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(authorizedUser, null, authorizedUser.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Imposta correttamente l'Authentication a seconda che sia Admin o User generico
+        if (authorizedUser instanceof Admin admin) {
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    admin, null, admin.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("Authorities (Admin): " + admin.getAuthorities());
+        } else {
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    authorizedUser, null, authorizedUser.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("Authorities (User): " + authorizedUser.getAuthorities());
+        }
 
+        // Continua il filtro
         filterChain.doFilter(request, response);
     }
 
@@ -54,7 +67,7 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
         String method = request.getMethod();
 
         return matcher.match("/", path) ||
-                (matcher.match("/auth/login", path)) || // login
+                (matcher.match("/auth/login", path)) ||
                 (matcher.match("/auth/register", path) && method.equalsIgnoreCase("POST")) ||
                 (matcher.match("/festivals", path) && method.equalsIgnoreCase("GET")) ||
                 (matcher.match("/festivals/*", path) && method.equalsIgnoreCase("GET")) ||

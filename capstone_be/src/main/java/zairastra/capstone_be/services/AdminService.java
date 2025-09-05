@@ -95,6 +95,10 @@ public class AdminService {
                 .orElseThrow(() -> new NotFoundException("Admin with email " + email + " not found"));
     }
 
+    public List<Admin> findAdminsByRole(Role role) {
+        return adminRepository.findByRole(role);
+    }
+
     public List<Admin> findAdminsByDepartment(Department department) {
         return adminRepository.findByDepartment(department);
     }
@@ -143,5 +147,9 @@ public class AdminService {
     public void deleteAdminById(Long id) {
         Admin admin = findAdminById(id);
         adminRepository.delete(admin);
+    }
+
+    public boolean adminExistsByUsernameOrEmail(String username, String email) {
+        return adminRepository.existsByUsername(username) || adminRepository.existsByEmail(email);
     }
 }
