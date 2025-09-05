@@ -53,19 +53,12 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         String method = request.getMethod();
 
-        return          //homepage accessibile
-                matcher.match("/", path) ||
-                        //login accessibile
-                        matcher.match("/auth/login", path) ||
-                        //creazione accessibile (ricordati di filtrare l'admin per ruolo SySTEM_ADMIN)
-                        (matcher.match("/auth/register", path) && method.equalsIgnoreCase("POST")) ||
-                        //tutte le ricerche sull'elenco di festival sono accessibili
-                        (matcher.match("/festivals", path) && method.equalsIgnoreCase("GET")) ||
-                        //tutte le ricerca sui dettagli del festival sono accessibili
-                        (matcher.match("/festivals/*", path) && method.equalsIgnoreCase("GET")) ||
-                        //tutte le ricerche sull'elenco di artisti sono accessibili
-                        (matcher.match("/artists", path) && method.equalsIgnoreCase("GET")) ||
-                        //tutte le ricerca sui dettagli degli artisti sono accessibili
-                        (matcher.match("/artists/*", path) && method.equalsIgnoreCase("GET"));
+        return matcher.match("/", path) ||
+                (matcher.match("/auth/login", path)) || // login
+                (matcher.match("/auth/register", path) && method.equalsIgnoreCase("POST")) ||
+                (matcher.match("/festivals", path) && method.equalsIgnoreCase("GET")) ||
+                (matcher.match("/festivals/*", path) && method.equalsIgnoreCase("GET")) ||
+                (matcher.match("/artists", path) && method.equalsIgnoreCase("GET")) ||
+                (matcher.match("/artists/*", path) && method.equalsIgnoreCase("GET"));
     }
 }
