@@ -48,14 +48,17 @@ public abstract class User implements UserDetails {
     @Column(name = "profile_img")
     private String profileImg;
 
-    public User(String username, String name, String surname, String email, String password, String profileImg) {
+    public User(String username, String name, String surname, String email, String password) {
         this.username = username;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.password = password;
+    }
+
+    public void setProfileImg(String profileImg) {
         this.profileImg = (profileImg == null || profileImg.isBlank())
-                ? "https://ui-avatars.com/api/?name=" + name + "+" + surname
+                ? "https://ui-avatars.com/api/?name=" + this.name + "+" + this.surname
                 : profileImg;
     }
 

@@ -66,6 +66,8 @@ public class AdminService {
                 assignedDepartment
         );
 
+        newAdmin.setProfileImg(payload.profileImg());
+
         newAdmin.setHireDate(LocalDate.now());
 
         Admin savedAdmin = adminRepository.save(newAdmin);

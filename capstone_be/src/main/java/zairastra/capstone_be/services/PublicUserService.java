@@ -50,6 +50,8 @@ public class PublicUserService {
                 payload.country()
         );
 
+        newPublicUser.setProfileImg(payload.profileImg());
+
         newPublicUser.setRegistrationDate(LocalDate.now());
 
         PublicUser savedPublicUser = publicUserRepository.save(newPublicUser);

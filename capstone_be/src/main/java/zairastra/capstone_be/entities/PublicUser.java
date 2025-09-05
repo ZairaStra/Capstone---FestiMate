@@ -43,7 +43,7 @@ public class PublicUser extends User {
     private Set<Festival> wishlist = new HashSet<>();
 
     public PublicUser(String username, String name, String surname, String email, String password, String profileImg, String city, String country) {
-        super(username, name, surname, email, password, profileImg);
+        super(username, name, surname, email, password);
         this.city = city;
         this.country = country;
         this.wishlist = new HashSet<>();

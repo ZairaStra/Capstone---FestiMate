@@ -9,6 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -16,15 +17,30 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JWTCheckerFilter jwtCheckerFilter) throws Exception {
         httpSecurity.formLogin(formLogin -> formLogin.disable());
         httpSecurity.csrf(csrf -> csrf.disable());
         httpSecurity.sessionManagement((sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS)));
         httpSecurity.authorizeHttpRequests((authorized -> authorized
-                .requestMatchers("/", "/festivals/**", "/artists/**", "/auth/**").permitAll()
-                .requestMatchers("/admins/**").hasRole("SYSTEM_ADMIN")
-                .anyRequest().authenticated()));
+                        //MIA PRIMA VERSIONE
+//                        .requestMatchers("/", "/festivals/**", "/artists/**", "/auth/**", "/public-users/register").permitAll()
+//                        .requestMatchers("/admins/**").hasRole("SYSTEM_ADMIN")
+//                        .anyRequest().authenticated()
+                        //TUTTO LIBERO
+//                        .anyRequest().permitAll()))
+                        //SOLO ALCUNI LIBERI
+//                        .requestMatchers("/auth/**").permitAll()
+//                        .requestMatchers("/public-users/register").permitAll()
+//                        .anyRequest().authenticated()))
+                        //MI SONO PERSA
+//                        .requestMatchers("/", "/festivals/**", "/artists/**", "/auth/**", "/public-users/register").permitAll()
+//                        .requestMatchers("/admins/**").hasRole("SYSTEM_ADMIN")
+//                        .anyRequest().authenticated()))
 
+                        .requestMatchers("/", "/festivals/**", "/artists/**", "/auth/**", "/public-users/register").permitAll()
+                        .requestMatchers("/admins/**").hasRole("SYSTEM_ADMIN")
+                        .anyRequest().authenticated()))
+                .addFilterBefore(jwtCheckerFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 
