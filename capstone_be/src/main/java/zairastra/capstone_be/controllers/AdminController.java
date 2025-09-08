@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import zairastra.capstone_be.entities.Admin;
 import zairastra.capstone_be.entities.enums.Department;
+import zairastra.capstone_be.exceptions.ValidationException;
 import zairastra.capstone_be.payloads.AdminRegistrationDTO;
 import zairastra.capstone_be.payloads.AdminUpdateDTO;
 import zairastra.capstone_be.payloads.UserRegistrationResponseDTO;
@@ -24,8 +27,18 @@ public class AdminController {
     @PostMapping("/register")
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserRegistrationResponseDTO createAdmin(@RequestBody AdminRegistrationDTO payload) {
-        return adminService.createAdmin(payload);
+    public UserRegistrationResponseDTO createAdmin(@RequestBody AdminRegistrationDTO payload, BindingResult validationResult) {
+
+        if (validationResult.hasErrors()) {
+            List<String> errors = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getDefaultMessage())
+                    .toList();
+            throw new ValidationException(errors);
+        }
+
+        Admin newAdmin = adminService.createAdmin(payload);
+
+        return new UserRegistrationResponseDTO(newAdmin.getId());
     }
 
 
@@ -45,13 +58,6 @@ public class AdminController {
         return adminService.findAdminById(adminId);
     }
 
-    @GetMapping("/by-username/{username}")
-    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
-    @ResponseStatus(HttpStatus.OK)
-    public Admin findAdminByUsername(@PathVariable String username) {
-        return adminService.findAdminByUsername(username);
-    }
-
     @GetMapping("/by-email/{email}")
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @ResponseStatus(HttpStatus.OK)
@@ -69,7 +75,15 @@ public class AdminController {
     @PutMapping("/{adminId}")
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @ResponseStatus(HttpStatus.OK)
-    public Admin updateAdmin(@PathVariable Long adminId, @RequestBody AdminUpdateDTO payload) {
+    public Admin updateAdmin(@PathVariable Long adminId, @RequestBody @Validated AdminUpdateDTO payload, BindingResult validationResult) {
+
+        if (validationResult.hasErrors()) {
+            List<String> errors = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getDefaultMessage())
+                    .toList();
+            throw new ValidationException(errors);
+        }
+
         return adminService.updateAdmin(adminId, payload);
     }
 

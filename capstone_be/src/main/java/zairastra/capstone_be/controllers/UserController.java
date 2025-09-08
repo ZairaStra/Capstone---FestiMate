@@ -5,10 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import zairastra.capstone_be.entities.User;
+import zairastra.capstone_be.exceptions.ValidationException;
 import zairastra.capstone_be.payloads.UserPswUpdateDTO;
+import zairastra.capstone_be.payloads.UserResponseDTO;
 import zairastra.capstone_be.services.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -46,15 +52,37 @@ public class UserController {
         return userService.findUserByEmail(email);
     }
 
+    @GetMapping("/containing-username/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    public List<User> findUsersByUsername(@PathVariable String username) {
+        return userService.findUsersByUsername(username);
+    }
+
+    @GetMapping("/containing-email/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
+    public List<User> findUsersByEmail(@PathVariable String email) {
+        return userService.findUsersByEmail(email);
+    }
+
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public User getMyProfile(@AuthenticationPrincipal User authorizedUser) {
-        return authorizedUser;
+    public UserResponseDTO getMyProfile(@AuthenticationPrincipal User authorizedUser) {
+        return userService.getMyProfile(authorizedUser);
     }
 
     @PatchMapping("/me/password")
     @ResponseStatus(HttpStatus.OK)
-    public void updatePassword(@AuthenticationPrincipal User authenticatedUser, @RequestBody UserPswUpdateDTO payload) {
+    public void updatePassword(@AuthenticationPrincipal User authenticatedUser, @RequestBody @Validated UserPswUpdateDTO payload, BindingResult validationResult) {
+
+        if (validationResult.hasErrors()) {
+            List<String> errors = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getDefaultMessage())
+                    .toList();
+            throw new ValidationException(errors);
+        }
+
         Long userId = authenticatedUser.getId();
         userService.updatePassword(userId, payload);
     }

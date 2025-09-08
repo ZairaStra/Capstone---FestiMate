@@ -12,7 +12,10 @@ import zairastra.capstone_be.entities.User;
 import zairastra.capstone_be.exceptions.BadRequestException;
 import zairastra.capstone_be.exceptions.NotFoundException;
 import zairastra.capstone_be.payloads.UserPswUpdateDTO;
+import zairastra.capstone_be.payloads.UserResponseDTO;
 import zairastra.capstone_be.repositories.UserRepository;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -40,6 +43,24 @@ public class UserService {
 
     public User findUserByEmail(String email) {
         return userRepository.findByEmailIgnoreCase(email).orElseThrow(() -> new NotFoundException("User with email " + email + " not found"));
+    }
+
+    public List<User> findUsersByUsername(String username) {
+        return userRepository.findByUsernameContainingIgnoreCase(username);
+    }
+
+    public List<User> findUsersByEmail(String email) {
+        return userRepository.findByEmailContainingIgnoreCase(email);
+    }
+
+    public UserResponseDTO getMyProfile(User user) {
+        return new UserResponseDTO(
+                user.getUsername(),
+                user.getName(),
+                user.getSurname(),
+                user.getEmail(),
+                user.getProfileImg()
+        );
     }
 
     public void updatePassword(Long userId, UserPswUpdateDTO payload) {

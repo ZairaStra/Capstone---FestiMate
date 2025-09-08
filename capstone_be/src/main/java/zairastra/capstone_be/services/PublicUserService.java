@@ -14,7 +14,6 @@ import zairastra.capstone_be.exceptions.BadRequestException;
 import zairastra.capstone_be.exceptions.NotFoundException;
 import zairastra.capstone_be.payloads.PublicUserRegistrationDTO;
 import zairastra.capstone_be.payloads.PublicUserUpdateDTO;
-import zairastra.capstone_be.payloads.UserRegistrationResponseDTO;
 import zairastra.capstone_be.repositories.PublicUserRepository;
 
 import java.time.LocalDate;
@@ -29,7 +28,7 @@ public class PublicUserService {
     @Autowired
     private PasswordEncoder bCrypt;
 
-    public UserRegistrationResponseDTO createPublicUser(PublicUserRegistrationDTO payload) {
+    public PublicUser createPublicUser(PublicUserRegistrationDTO payload) {
 
         publicUserRepository.findByEmailIgnoreCase(payload.email()).ifPresent(publicUser -> {
             throw new BadRequestException("A user with email " + payload.email() + " already exists in our system");
@@ -57,7 +56,7 @@ public class PublicUserService {
         PublicUser savedPublicUser = publicUserRepository.save(newPublicUser);
         log.info("The public user " + payload.name() + " " + payload.surname() + " has been saved");
 
-        return new UserRegistrationResponseDTO(savedPublicUser.getId());
+        return savedPublicUser;
     }
 
     public Page<PublicUser> findAllPublicUsers(int page, int size, String sortBy) {
@@ -69,11 +68,6 @@ public class PublicUserService {
     public PublicUser findPublicUserById(Long id) {
         return publicUserRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("PublicUser with id " + id + " not found"));
-    }
-
-    public PublicUser findPublicUserByUsername(String username) {
-        return publicUserRepository.findByUsernameIgnoreCase(username)
-                .orElseThrow(() -> new NotFoundException("PublicUser with username " + username + " not found"));
     }
 
     public PublicUser findPublicUserByEmail(String email) {
@@ -104,12 +98,19 @@ public class PublicUserService {
         publicUser.setCity(payload.city());
         publicUser.setCountry(payload.country());
 
-        return publicUserRepository.save(publicUser);
+        PublicUser updatedPublicUser = publicUserRepository.save(publicUser);
+
+        log.info("Public User " + publicUser.getUsername() + " has been updated");
+
+        return updatedPublicUser;
     }
 
     public void deletePublicUserById(Long id) {
         PublicUser publicUser = findPublicUserById(id);
+
         publicUserRepository.delete(publicUser);
+
+        log.info("Public User " + publicUser.getUsername() + " has been deleted");
     }
 
     public PublicUser addFestivalToWishlist(Long userId, Festival festival) {

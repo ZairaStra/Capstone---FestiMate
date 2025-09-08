@@ -7,6 +7,7 @@ public record UserPswUpdateDTO(
         @NotEmpty(message = "Old password is required")
         String oldPassword,
         @NotEmpty(message = "New password is required")
-        @Size(min = 8, message = "Password must be at least 8 characters") String newPassword
+        @Size(min = 8, message = "Password must be at least 8 characters")
+        String newPassword
 ) {
 }

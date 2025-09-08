@@ -15,7 +15,6 @@ import zairastra.capstone_be.exceptions.BadRequestException;
 import zairastra.capstone_be.exceptions.NotFoundException;
 import zairastra.capstone_be.payloads.AdminRegistrationDTO;
 import zairastra.capstone_be.payloads.AdminUpdateDTO;
-import zairastra.capstone_be.payloads.UserRegistrationResponseDTO;
 import zairastra.capstone_be.repositories.AdminRepository;
 
 import java.time.LocalDate;
@@ -31,7 +30,7 @@ public class AdminService {
     @Autowired
     private PasswordEncoder bCrypt;
 
-    public UserRegistrationResponseDTO createAdmin(AdminRegistrationDTO payload) {
+    public Admin createAdmin(AdminRegistrationDTO payload) {
         adminRepository.findByEmailIgnoreCase(payload.email()).ifPresent(admin -> {
             throw new BadRequestException("An admin with email " + payload.email() + " already exists in our system");
         });
@@ -73,7 +72,7 @@ public class AdminService {
         Admin savedAdmin = adminRepository.save(newAdmin);
         log.info("The admin " + payload.name() + " " + payload.surname() + " has been saved");
 
-        return new UserRegistrationResponseDTO(savedAdmin.getId());
+        return savedAdmin;
     }
 
     public Page<Admin> findAllAdmins(int page, int size, String sortBy) {
@@ -85,11 +84,6 @@ public class AdminService {
     public Admin findAdminById(Long id) {
         return adminRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Admin with id " + id + " not found"));
-    }
-
-    public Admin findAdminByUsername(String username) {
-        return adminRepository.findByUsernameIgnoreCase(username)
-                .orElseThrow(() -> new NotFoundException("Admin with username " + username + " not found"));
     }
 
     public Admin findAdminByEmail(String email) {
@@ -143,12 +137,18 @@ public class AdminService {
         admin.setRole(payload.role());
         admin.setDepartment(assignedDepartment);
 
-        return adminRepository.save(admin);
+        Admin updatedAdmin = adminRepository.save(admin);
+
+        log.info("Admin " + admin.getId() + " has been updated");
+
+        return updatedAdmin;
     }
 
     public void deleteAdminById(Long id) {
         Admin admin = findAdminById(id);
         adminRepository.delete(admin);
+
+        log.info("Admin " + admin.getId() + " has been deleted");
     }
 
     public boolean adminExistsByUsernameOrEmail(String username, String email) {
