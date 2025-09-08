@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import zairastra.capstone_be.entities.User;
 import zairastra.capstone_be.exceptions.BadRequestException;
 import zairastra.capstone_be.exceptions.NotFoundException;
+import zairastra.capstone_be.payloads.UserProfileImgUpdate;
 import zairastra.capstone_be.payloads.UserPswUpdateDTO;
 import zairastra.capstone_be.payloads.UserResponseDTO;
 import zairastra.capstone_be.repositories.UserRepository;
@@ -74,6 +75,19 @@ public class UserService {
         userRepository.save(user);
 
         log.info("Password updated for user " + user.getUsername());
+    }
+
+    public UserProfileImgUpdate updateProfileImg(Long userId, UserProfileImgUpdate payload) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        user.setProfileImg(payload.profileImg());
+
+        userRepository.save(user);
+
+        log.info("Profile image updated for user " + user.getUsername());
+
+        return payload;
+
     }
 
 }
