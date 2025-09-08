@@ -28,6 +28,9 @@ public class PublicUserService {
     @Autowired
     private PasswordEncoder bCrypt;
 
+    @Autowired
+    private UserService userService;
+
     public PublicUser createPublicUser(PublicUserRegistrationDTO payload) {
 
         publicUserRepository.findByEmailIgnoreCase(payload.email()).ifPresent(publicUser -> {
@@ -55,6 +58,8 @@ public class PublicUserService {
 
         PublicUser savedPublicUser = publicUserRepository.save(newPublicUser);
         log.info("The public user " + payload.name() + " " + payload.surname() + " has been saved");
+
+        userService.sendRegistrationEmail(savedPublicUser);
 
         return savedPublicUser;
     }

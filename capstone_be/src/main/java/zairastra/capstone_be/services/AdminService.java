@@ -30,6 +30,9 @@ public class AdminService {
     @Autowired
     private PasswordEncoder bCrypt;
 
+    @Autowired
+    private UserService userService;
+
     public Admin createAdmin(AdminRegistrationDTO payload) {
         adminRepository.findByEmailIgnoreCase(payload.email()).ifPresent(admin -> {
             throw new BadRequestException("An admin with email " + payload.email() + " already exists in our system");
@@ -68,6 +71,8 @@ public class AdminService {
 
         Admin savedAdmin = adminRepository.save(newAdmin);
         log.info("The admin " + payload.name() + " " + payload.surname() + " has been saved");
+
+        userService.sendRegistrationEmail(savedAdmin);
 
         return savedAdmin;
     }

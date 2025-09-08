@@ -14,6 +14,7 @@ import zairastra.capstone_be.exceptions.ValidationException;
 import zairastra.capstone_be.payloads.UserPswUpdateDTO;
 import zairastra.capstone_be.payloads.UserResponseDTO;
 import zairastra.capstone_be.services.UserService;
+import zairastra.capstone_be.tools.MailgunSender;
 
 import java.util.List;
 
@@ -22,6 +23,9 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MailgunSender mailgunSender;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -95,5 +99,4 @@ public class UserController {
         Long userId = authenticatedUser.getId();
         return userService.updateProfileImg(userId, image);
     }
-
 }

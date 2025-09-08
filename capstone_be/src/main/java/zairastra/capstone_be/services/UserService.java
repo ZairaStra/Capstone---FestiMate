@@ -17,6 +17,7 @@ import zairastra.capstone_be.exceptions.NotFoundException;
 import zairastra.capstone_be.payloads.UserPswUpdateDTO;
 import zairastra.capstone_be.payloads.UserResponseDTO;
 import zairastra.capstone_be.repositories.UserRepository;
+import zairastra.capstone_be.tools.MailgunSender;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,6 +35,17 @@ public class UserService {
 
     @Autowired
     private Cloudinary imgUploader;
+
+    @Autowired
+    private MailgunSender mailgunSender;
+
+
+    public void sendRegistrationEmail(User user) {
+        if (user == null) {
+            throw new NotFoundException("User not found");
+        }
+        mailgunSender.sendRegistrationEmail(user);
+    }
 
     public Page<User> findAllUsers(int page, int size, String sortBy) {
         if (size > 50) size = 50;
@@ -83,18 +95,6 @@ public class UserService {
 
         log.info("Password updated for user " + user.getUsername());
     }
-
-//    public UserProfileImgUpdate updateProfileImg(Long userId, UserProfileImgUpdate payload) {
-//        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
-//
-//        user.setProfileImg(payload.profileImg());
-//
-//        userRepository.save(user);
-//
-//        log.info("Profile image updated for user " + user.getUsername());
-//
-//        return payload;
-//    }
 
     public User updateProfileImg(Long userId, MultipartFile file) {
         try {
