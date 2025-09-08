@@ -53,21 +53,21 @@ public class PublicUserController {
     @GetMapping("/{public-userId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('USER_MANAGER')")
-    public User findPublicUserById(@PathVariable Long publicUserId) {
+    public User findPublicUserById(@PathVariable("public-userId") Long publicUserId) {
         return publicUserService.findPublicUserById(publicUserId);
     }
 
     @GetMapping("/by-email/{email}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('USER_MANAGER')")
-    public User findPublicUserByEmail(@PathVariable String email) {
+    public User findPublicUserByEmail(@PathVariable("public-userId") String email) {
         return publicUserService.findPublicUserByEmail(email);
     }
 
     @PutMapping("/{publicUserId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('USER_MANAGER')")
-    public PublicUser updatePublicUser(@PathVariable Long publicUserId, @RequestBody @Validated PublicUserUpdateDTO payload, BindingResult validationResult) {
+    public PublicUser updatePublicUser(@PathVariable("public-userId") Long publicUserId, @RequestBody @Validated PublicUserUpdateDTO payload, BindingResult validationResult) {
 
         if (validationResult.hasErrors()) {
             List<String> errors = validationResult.getFieldErrors().stream()
@@ -82,7 +82,7 @@ public class PublicUserController {
     @DeleteMapping("/{publicUserId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('USER_MANAGER')")
-    public void deletePublicUserById(@PathVariable Long publicUserId) {
+    public void deletePublicUserById(@PathVariable("public-userId") Long publicUserId) {
         publicUserService.deletePublicUserById(publicUserId);
     }
 
