@@ -1,5 +1,7 @@
 package zairastra.capstone_be.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,15 +10,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import zairastra.capstone_be.entities.User;
 import zairastra.capstone_be.exceptions.BadRequestException;
 import zairastra.capstone_be.exceptions.NotFoundException;
-import zairastra.capstone_be.payloads.UserProfileImgUpdate;
 import zairastra.capstone_be.payloads.UserPswUpdateDTO;
 import zairastra.capstone_be.payloads.UserResponseDTO;
 import zairastra.capstone_be.repositories.UserRepository;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -27,6 +31,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder bCrypt;
+
+    @Autowired
+    private Cloudinary imgUploader;
 
     public Page<User> findAllUsers(int page, int size, String sortBy) {
         if (size > 50) size = 50;
@@ -77,17 +84,28 @@ public class UserService {
         log.info("Password updated for user " + user.getUsername());
     }
 
-    public UserProfileImgUpdate updateProfileImg(Long userId, UserProfileImgUpdate payload) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+//    public UserProfileImgUpdate updateProfileImg(Long userId, UserProfileImgUpdate payload) {
+//        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+//
+//        user.setProfileImg(payload.profileImg());
+//
+//        userRepository.save(user);
+//
+//        log.info("Profile image updated for user " + user.getUsername());
+//
+//        return payload;
+//    }
 
-        user.setProfileImg(payload.profileImg());
-
-        userRepository.save(user);
-
-        log.info("Profile image updated for user " + user.getUsername());
-
-        return payload;
-
+    public User updateProfileImg(Long userId, MultipartFile file) {
+        try {
+            User user = findUserById(userId);
+            Map result = imgUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            String imgURL = (String) result.get("url");
+            user.setProfileImg(imgURL);
+            return userRepository.save(user);
+        } catch (IOException e) {
+            throw new BadRequestException("Problems while saving image");
+        }
     }
 
 }

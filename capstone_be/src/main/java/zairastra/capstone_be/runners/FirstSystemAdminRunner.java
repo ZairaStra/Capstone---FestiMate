@@ -23,8 +23,7 @@ public class FirstSystemAdminRunner implements CommandLineRunner {
                 "boss.scherbatsky@festimate.com",
                 "password1",
                 Role.SYSTEM_ADMIN,
-                "58462938103",
-                "https://ui-avatars.com/api/?name=Robin+Scherbatsky"
+                "58462938103"
         );
 
         boolean exists = adminService.adminExistsByUsernameOrEmail(payload.username(), payload.email());

@@ -8,9 +8,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import zairastra.capstone_be.entities.User;
 import zairastra.capstone_be.exceptions.ValidationException;
-import zairastra.capstone_be.payloads.UserProfileImgUpdate;
 import zairastra.capstone_be.payloads.UserPswUpdateDTO;
 import zairastra.capstone_be.payloads.UserResponseDTO;
 import zairastra.capstone_be.services.UserService;
@@ -90,17 +90,10 @@ public class UserController {
 
     @PatchMapping("/me/profileImg")
     @ResponseStatus(HttpStatus.OK)
-    public UserProfileImgUpdate updateProfileImg(@AuthenticationPrincipal User authenticatedUser, @RequestBody @Validated UserProfileImgUpdate payload, BindingResult validationResult) {
-
-        if (validationResult.hasErrors()) {
-            List<String> errors = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getDefaultMessage())
-                    .toList();
-            throw new ValidationException(errors);
-        }
+    public User updateProfileImg(@AuthenticationPrincipal User authenticatedUser, @RequestParam("image") MultipartFile image) {
 
         Long userId = authenticatedUser.getId();
-        return userService.updateProfileImg(userId, payload);
+        return userService.updateProfileImg(userId, image);
     }
 
 }

@@ -59,13 +59,10 @@ public class AdminService {
                 payload.surname(),
                 payload.email(),
                 bCrypt.encode(payload.password()),
-                payload.profileImg(),
                 payload.phoneNumber(),
                 payload.role(),
                 assignedDepartment
         );
-
-        newAdmin.setProfileImg(payload.profileImg());
 
         newAdmin.setHireDate(LocalDate.now());
 

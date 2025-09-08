@@ -40,7 +40,7 @@ public class Admin extends User {
     private LocalDate hireDate;
 
 
-    public Admin(String username, String name, String surname, String email, String password, String profileImg, String phoneNumber, Role role, Department department) {
+    public Admin(String username, String name, String surname, String email, String password, String phoneNumber, Role role, Department department) {
         super(username, name, surname, email, password);
         this.phoneNumber = phoneNumber;
         this.role = role;

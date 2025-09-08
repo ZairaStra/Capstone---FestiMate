@@ -28,8 +28,5 @@ public record AdminRegistrationDTO(
         Role role,
 
         @NotEmpty(message = "Phone number is required")
-        String phoneNumber,
-
-        String profileImg
-) {
+        String phoneNumber) {
 }

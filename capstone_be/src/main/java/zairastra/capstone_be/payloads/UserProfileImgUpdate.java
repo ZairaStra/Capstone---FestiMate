@@ -1,9 +1,10 @@
 package zairastra.capstone_be.payloads;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.web.multipart.MultipartFile;
 
 public record UserProfileImgUpdate(
-        @NotEmpty(message = "New profile image is required")
-        String profileImg
+        @NotNull(message = "New profile image is required")
+        MultipartFile profileImg
 ) {
 }
