@@ -57,20 +57,24 @@ public class UserController {
         return userService.findUserByEmail(email);
     }
 
-    //TODO: passare a Page
     @GetMapping("/containing-username/{username}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
-    public List<User> findUsersByUsername(@PathVariable String username) {
-        return userService.findUsersByUsername(username);
+    public Page<User> findUsersByUsername(@PathVariable String username,
+                                          @RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size,
+                                          @RequestParam(defaultValue = "id") String sortBy) {
+        return userService.findUsersByUsername(username, page, size, sortBy);
     }
 
-    //TODO: passare a Page
     @GetMapping("/containing-email/{email}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
-    public List<User> findUsersByEmail(@PathVariable String email) {
-        return userService.findUsersByEmail(email);
+    public Page<User> findUsersByEmail(@PathVariable String email,
+                                       @RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "10") int size,
+                                       @RequestParam(defaultValue = "id") String sortBy) {
+        return userService.findUsersByEmail(email, page, size, sortBy);
     }
 
     @GetMapping("/me")

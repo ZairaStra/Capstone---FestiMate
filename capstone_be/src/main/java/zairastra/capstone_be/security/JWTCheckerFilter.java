@@ -20,46 +20,6 @@ import zairastra.capstone_be.tools.JWTTools;
 import java.io.IOException;
 import java.util.Collection;
 
-//@Component
-//public class JWTCheckerFilter extends OncePerRequestFilter {
-//    @Autowired
-//    private JWTTools jwtTools;
-//
-//    @Autowired
-//    private UserService userService;
-//
-//    @Override
-//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        String authHeader = request.getHeader("Authorization");
-//
-//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//            throw new UnauthorizedException("Invalid Token");
-//        }
-//
-//        String accessToken = authHeader.replace("Bearer ", "");
-//        jwtTools.verifyToken(accessToken);
-//
-//        Long userId = Long.parseLong(jwtTools.extractId(accessToken));
-//
-//        User authorizedUser = userService.findUserById(userId);
-//
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(
-//                authorizedUser,
-//                null,
-//                authorizedUser.getAuthorities()
-//        );
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        filterChain.doFilter(request, response);
-//    }
-//
-//    @Override
-//    protected boolean shouldNotFilter(HttpServletRequest request) {
-//        return new AntPathMatcher().match("/auth/**", request.getServletPath());
-//    }
-//}
-
 @Component
 public class JWTCheckerFilter extends OncePerRequestFilter {
 
@@ -79,22 +39,6 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
 //            return;
             throw new UnauthorizedException("Invalid Token");
         }
-
-//        String extractedToken = authHeader.replace("Bearer ", "").trim();
-//        jwtTools.verifyToken(extractedToken);
-//
-//        Long userId = Long.parseLong(jwtTools.extractId(extractedToken));
-//        User authorizedUser = userService.findUserById(userId);
-//
-//        Collection<? extends GrantedAuthority> authorities = authorizedUser.getAuthorities();
-//
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(
-//                authorizedUser, null, authorities
-//        );
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        System.out.println("DIMMI CHE RUOLO HAI: User " + authorizedUser.getUsername() + " authorities: " + authorities);
 
 
         String extractedToken = authHeader.replace("Bearer ", "").trim();

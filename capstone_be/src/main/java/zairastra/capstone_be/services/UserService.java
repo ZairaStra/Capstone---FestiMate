@@ -20,7 +20,6 @@ import zairastra.capstone_be.repositories.UserRepository;
 import zairastra.capstone_be.tools.MailgunSender;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -65,12 +64,26 @@ public class UserService {
         return userRepository.findByEmailIgnoreCase(email).orElseThrow(() -> new NotFoundException("User with email " + email + " not found"));
     }
 
-    public List<User> findUsersByUsername(String username) {
-        return userRepository.findByUsernameContainingIgnoreCase(username);
+    public Page<User> findUsersByUsername(String username, int page, int size, String sortBy) {
+
+        if (username == null || username.isBlank()) {
+            throw new BadRequestException("Search string must not be empty");
+        }
+
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return userRepository.findByUsernameContainingIgnoreCase(username, pageable);
     }
 
-    public List<User> findUsersByEmail(String email) {
-        return userRepository.findByEmailContainingIgnoreCase(email);
+    public Page<User> findUsersByEmail(String email, int page, int size, String sortBy) {
+
+        if (email == null || email.isBlank()) {
+            throw new BadRequestException("Search string must not be empty");
+        }
+
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return userRepository.findByEmailContainingIgnoreCase(email, pageable);
     }
 
     public UserResponseDTO getMyProfile(User user) {

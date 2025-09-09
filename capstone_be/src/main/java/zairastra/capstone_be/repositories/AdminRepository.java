@@ -1,5 +1,7 @@
 package zairastra.capstone_be.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import zairastra.capstone_be.entities.Admin;
@@ -18,8 +20,8 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
 
     List<Admin> findByRole(Role role);
 
-    List<Admin> findByDepartment(Department department);
-    
+    Page<Admin> findByDepartment(Department department, Pageable pageable);
+
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);

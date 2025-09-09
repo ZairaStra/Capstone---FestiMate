@@ -1,10 +1,11 @@
 package zairastra.capstone_be.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import zairastra.capstone_be.entities.User;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
-    List<User> findByUsernameContainingIgnoreCase(String username);
+    Page<User> findByUsernameContainingIgnoreCase(String username, Pageable pageable);
 
-    List<User> findByEmailContainingIgnoreCase(String email);
+    Page<User> findByEmailContainingIgnoreCase(String email, Pageable pageable);
 }

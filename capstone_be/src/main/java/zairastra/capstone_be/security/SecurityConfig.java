@@ -22,21 +22,6 @@ public class SecurityConfig {
         httpSecurity.csrf(csrf -> csrf.disable());
         httpSecurity.sessionManagement((sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS)));
         httpSecurity.authorizeHttpRequests((authorized -> authorized
-                        //MIA PRIMA VERSIONE
-//                        .requestMatchers("/", "/festivals/**", "/artists/**", "/auth/**", "/public-users/register").permitAll()
-//                        .requestMatchers("/admins/**").hasRole("SYSTEM_ADMIN")
-//                        .anyRequest().authenticated()
-                        //TUTTO LIBERO
-//                        .anyRequest().permitAll()))
-                        //SOLO ALCUNI LIBERI
-//                        .requestMatchers("/auth/**").permitAll()
-//                        .requestMatchers("/public-users/register").permitAll()
-//                        .anyRequest().authenticated()))
-                        //MI SONO PERSA
-//                        .requestMatchers("/", "/festivals/**", "/artists/**", "/auth/**", "/public-users/register").permitAll()
-//                        .requestMatchers("/admins/**").hasRole("SYSTEM_ADMIN")
-//                        .anyRequest().authenticated()))
-
                         .requestMatchers("/", "/festivals/**", "/artists/**", "/auth/**", "/public-users/register").permitAll()
                         .requestMatchers("/admins/**").hasRole("SYSTEM_ADMIN")
                         .anyRequest().authenticated()))

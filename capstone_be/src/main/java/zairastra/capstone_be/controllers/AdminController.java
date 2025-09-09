@@ -65,12 +65,14 @@ public class AdminController {
         return adminService.findAdminByEmail(email);
     }
 
-    //TODO: passare a Page
     @GetMapping("/by-department/{department}")
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @ResponseStatus(HttpStatus.OK)
-    public List<Admin> findAdminsByDepartment(@PathVariable Department department) {
-        return adminService.findAdminsByDepartment(department);
+    public Page<Admin> findAdminsByDepartment(@PathVariable Department department,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size,
+                                              @RequestParam(defaultValue = "id") String sortBy) {
+        return adminService.findAdminsByDepartment(department, page, size, sortBy);
     }
 
     @PutMapping("/{adminId}")

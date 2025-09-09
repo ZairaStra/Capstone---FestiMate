@@ -97,8 +97,12 @@ public class AdminService {
         return adminRepository.findByRole(role);
     }
 
-    public List<Admin> findAdminsByDepartment(Department department) {
-        return adminRepository.findByDepartment(department);
+    public Page<Admin> findAdminsByDepartment(Department department, int page, int size, String sortBy) {
+
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+
+        return adminRepository.findByDepartment(department, pageable);
     }
 
     public Admin updateAdmin(Long id, AdminUpdateDTO payload) {
