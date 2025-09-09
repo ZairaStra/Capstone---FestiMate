@@ -31,10 +31,6 @@ public class Camping {
     @NotBlank(message = "Camping name is required")
     private String name;
 
-    @Column(name = "map_img")
-    @NotBlank(message = "Camping map is required")
-    private String mapImg;
-
     @NotNull(message = "Capacity is required")
     @Min(value = 1, message = "Capacity must be greater than 0")
     private Integer capacity;
@@ -48,10 +44,9 @@ public class Camping {
     private LocalDate closingDate;
 
 
-    public Camping(Festival festival, String name, String mapImg, int capacity, LocalDate openingDate, LocalDate closingDate) {
+    public Camping(Festival festival, String name, int capacity, LocalDate openingDate, LocalDate closingDate) {
         this.festival = festival;
         this.name = name;
-        this.mapImg = mapImg;
         this.capacity = capacity;
         this.openingDate = openingDate;
         this.closingDate = closingDate;

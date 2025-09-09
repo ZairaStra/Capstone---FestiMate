@@ -52,6 +52,10 @@ public class Festival {
     @Column(name = "daily_price")
     private Double dailyPrice;
 
+    @Lob
+    @Column(name = "camping_map")
+    private String campingMap;
+    
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private Admin eventPlanner;
