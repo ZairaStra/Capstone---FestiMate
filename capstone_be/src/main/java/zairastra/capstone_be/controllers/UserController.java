@@ -57,7 +57,7 @@ public class UserController {
         return userService.findUserByEmail(email);
     }
 
-    @GetMapping("/containing-username/{username}")
+    @GetMapping("/starting-username/{username}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     public Page<User> findUsersByUsername(@PathVariable String username,

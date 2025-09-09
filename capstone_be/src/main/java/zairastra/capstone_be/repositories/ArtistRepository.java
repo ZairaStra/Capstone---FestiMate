@@ -12,7 +12,7 @@ public interface ArtistRepository extends JpaRepository<Artist, Long> {
 
     Optional<Artist> findByNameIgnoreCase(String name);
 
-    Page<Artist> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<Artist> findByNameStartingWithIgnoreCase(String name, Pageable pageable);
 
     Page<Artist> findByGenre(Genre genre, Pageable pageable);
 }

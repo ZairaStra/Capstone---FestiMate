@@ -41,7 +41,6 @@ public class ArtistController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ARTIST_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     public Page<Artist> findAllArtists(@RequestParam(defaultValue = "0") int page,
                                        @RequestParam(defaultValue = "10") int size,
@@ -50,14 +49,12 @@ public class ArtistController {
     }
 
     @GetMapping("/{artistId}")
-    @PreAuthorize("hasRole('ARTIST_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     public Artist findArtistById(@PathVariable Long artistId) {
         return artistService.findArtistById(artistId);
     }
 
-    @GetMapping("/containing-name/{name}")
-    @PreAuthorize("hasRole('ARTIST_MANAGER')")
+    @GetMapping("/starting-name/{name}")
     @ResponseStatus(HttpStatus.OK)
     public Page<Artist> findArtistByName(@PathVariable String name,
                                          @RequestParam(defaultValue = "0") int page,
@@ -67,7 +64,6 @@ public class ArtistController {
     }
 
     @GetMapping("/by-genre/{genre}")
-    @PreAuthorize("hasRole('ARTIST_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     public Page<Artist> findArtistByGenre(@PathVariable Genre genre,
                                           @RequestParam(defaultValue = "0") int page,

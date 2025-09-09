@@ -72,7 +72,7 @@ public class UserService {
 
         if (size > 50) size = 50;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
-        return userRepository.findByUsernameContainingIgnoreCase(username, pageable);
+        return userRepository.findByUsernameStartingWithIgnoreCase(username, pageable);
     }
 
     public Page<User> findUsersByEmail(String email, int page, int size, String sortBy) {

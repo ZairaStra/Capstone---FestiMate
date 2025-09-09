@@ -57,7 +57,7 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
 
             System.out.println("Utente " + authorizedUser.getUsername() + " autenticato con ruoli: " + authorities);
         } catch (Exception ex) {
-            throw new UnauthorizedException("Token non valido o scaduto: " + ex.getMessage());
+            throw new UnauthorizedException("Invalid Token: " + ex.getMessage());
         }
 
         filterChain.doFilter(request, response);
@@ -77,8 +77,8 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
                 (matcher.match("/public-users/register", path) && method.equalsIgnoreCase("POST")) ||
                 (matcher.match("/auth/register", path) && method.equalsIgnoreCase("POST")) ||
                 (matcher.match("/festivals", path) && method.equalsIgnoreCase("GET")) ||
-                (matcher.match("/festivals/*", path) && method.equalsIgnoreCase("GET")) ||
+                (matcher.match("/festivals/**", path) && method.equalsIgnoreCase("GET")) ||
                 (matcher.match("/artists", path) && method.equalsIgnoreCase("GET")) ||
-                (matcher.match("/artists/*", path) && method.equalsIgnoreCase("GET"));
+                (matcher.match("/artists/**", path) && method.equalsIgnoreCase("GET"));
     }
 }

@@ -59,7 +59,7 @@ public class ArtistService {
         }
         if (size > 50) size = 50;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
-        return artistRepository.findByNameContainingIgnoreCase(name, pageable);
+        return artistRepository.findByNameStartingWithIgnoreCase(name, pageable);
     }
 
     public Page<Artist> findArtistsByGenre(Genre genre, int page, int size, String sortBy) {
