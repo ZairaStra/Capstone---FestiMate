@@ -57,6 +57,7 @@ public class UserController {
         return userService.findUserByEmail(email);
     }
 
+    //TODO: passare a Page
     @GetMapping("/containing-username/{username}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
@@ -64,6 +65,7 @@ public class UserController {
         return userService.findUsersByUsername(username);
     }
 
+    //TODO: passare a Page
     @GetMapping("/containing-email/{email}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")

@@ -15,8 +15,6 @@ import zairastra.capstone_be.payloads.ArtistRegistrationDTO;
 import zairastra.capstone_be.payloads.ArtistUpdateDTO;
 import zairastra.capstone_be.repositories.ArtistRepository;
 
-import java.util.List;
-
 @Service
 @Slf4j
 public class ArtistService {
@@ -55,8 +53,19 @@ public class ArtistService {
                 .orElseThrow(() -> new NotFoundException("Artist with id " + id + " not found"));
     }
 
-    public List<Artist> findArtistsByGenre(Genre genre) {
-        return artistRepository.findByGenre(genre);
+    public Page<Artist> findArtistsByName(String name, int page, int size, String sortBy) {
+        if (name == null || name.isBlank()) {
+            throw new BadRequestException("Search string must not be empty");
+        }
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return artistRepository.findByNameContainingIgnoreCase(name, pageable);
+    }
+
+    public Page<Artist> findArtistsByGenre(Genre genre, int page, int size, String sortBy) {
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return artistRepository.findByGenre(genre, pageable);
     }
 
     public Artist updateArtist(Long id, ArtistUpdateDTO payload) {

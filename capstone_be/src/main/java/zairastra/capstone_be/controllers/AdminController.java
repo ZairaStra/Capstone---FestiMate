@@ -65,6 +65,7 @@ public class AdminController {
         return adminService.findAdminByEmail(email);
     }
 
+    //TODO: passare a Page
     @GetMapping("/by-department/{department}")
     @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @ResponseStatus(HttpStatus.OK)
