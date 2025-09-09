@@ -14,6 +14,7 @@ import zairastra.capstone_be.entities.enums.Genre;
 @ToString
 @Entity
 @Table(name = "artists")
+
 public class Artist {
 
     @Id
