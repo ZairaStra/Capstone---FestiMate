@@ -20,7 +20,7 @@ import zairastra.capstone_be.entities.enums.UnitStatus;
 import zairastra.capstone_be.entities.enums.UnitType;
 import zairastra.capstone_be.exceptions.BadRequestException;
 import zairastra.capstone_be.exceptions.NotFoundException;
-import zairastra.capstone_be.payloads.FestivalCampingImgUpdateDTO;
+import zairastra.capstone_be.payloads.FestivalCampingMapUpdateDTO;
 import zairastra.capstone_be.payloads.FestivalRegistrationDTO;
 import zairastra.capstone_be.payloads.FestivalUpdateDTO;
 import zairastra.capstone_be.repositories.AccomodationTypeRepository;
@@ -332,7 +332,7 @@ public class FestivalService {
     }
 
     @Transactional
-    public void updateFestivalCampingMap(Long festivalId, FestivalCampingImgUpdateDTO payload, Map<UnitType, Double> pricesByUnitType) throws IOException {
+    public void updateFestivalCampingMap(Long festivalId, FestivalCampingMapUpdateDTO payload, Map<UnitType, Double> pricesByUnitType) throws IOException {
 
         Festival festival = festivalRepository.findById(festivalId)
                 .orElseThrow(() -> new NotFoundException("Festival not found"));
