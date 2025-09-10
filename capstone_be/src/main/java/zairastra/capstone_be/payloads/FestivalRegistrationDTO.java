@@ -4,12 +4,15 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
 public record FestivalRegistrationDTO(
         @NotBlank(message = "Festival name is required")
         String name,
+
+        String coverImg,
 
         @NotBlank(message = "City is required")
         String city,
@@ -31,6 +34,6 @@ public record FestivalRegistrationDTO(
         @DecimalMin(value = "0.1", message = "Daily price must be positive")
         Double dailyPrice,
 
-        String coverImg
+        MultipartFile campingMap
 ) {
 }
