@@ -11,6 +11,8 @@ public record FestivalRegistrationDTO(
         @NotBlank(message = "Festival name is required")
         String name,
 
+        String coverImg,
+
         @NotBlank(message = "City is required")
         String city,
 
@@ -31,6 +33,6 @@ public record FestivalRegistrationDTO(
         @DecimalMin(value = "0.1", message = "Daily price must be positive")
         Double dailyPrice,
 
-        String coverImg
+        String campingMap
 ) {
 }
