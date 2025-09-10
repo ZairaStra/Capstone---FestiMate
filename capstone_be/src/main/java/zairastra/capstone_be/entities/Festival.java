@@ -55,18 +55,20 @@ public class Festival {
     @Lob
     @Column(name = "camping_map")
     private String campingMap;
-    
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private Admin eventPlanner;
 
-    public Festival(String name, String city, String country, LocalDate startDate, LocalDate endDate, String coverImg, Admin user) {
+    public Festival(String name, String coverImg, String city, String country, LocalDate startDate, LocalDate endDate, Integer maxNumbPartecipants, Double dailyPrice, Admin user) {
         this.name = name;
+        this.coverImg = coverImg;
         this.city = city;
         this.country = country;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.coverImg = coverImg;
+        this.maxNumbPartecipants = maxNumbPartecipants;
+        this.dailyPrice = dailyPrice;
         this.eventPlanner = user;
     }
 }
