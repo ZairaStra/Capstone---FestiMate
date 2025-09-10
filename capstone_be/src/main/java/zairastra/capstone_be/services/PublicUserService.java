@@ -14,6 +14,7 @@ import zairastra.capstone_be.exceptions.BadRequestException;
 import zairastra.capstone_be.exceptions.NotFoundException;
 import zairastra.capstone_be.payloads.PublicUserRegistrationDTO;
 import zairastra.capstone_be.payloads.PublicUserUpdateDTO;
+import zairastra.capstone_be.repositories.FestivalRepository;
 import zairastra.capstone_be.repositories.PublicUserRepository;
 
 import java.time.LocalDate;
@@ -30,6 +31,9 @@ public class PublicUserService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FestivalRepository festivalRepository;
 
     public PublicUser createPublicUser(PublicUserRegistrationDTO payload) {
 
@@ -116,6 +120,16 @@ public class PublicUserService {
         publicUserRepository.delete(publicUser);
 
         log.info("Public User " + publicUser.getUsername() + " has been deleted");
+    }
+
+    public Page<Festival> getWishlist(Long userId, int page, int size) {
+        PublicUser user = publicUserRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Public user not found"));
+
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size);
+
+        return festivalRepository.findWishlistByUserId(user.getId(), pageable);
     }
 
     public PublicUser addFestivalToWishlist(Long userId, Festival festival) {
