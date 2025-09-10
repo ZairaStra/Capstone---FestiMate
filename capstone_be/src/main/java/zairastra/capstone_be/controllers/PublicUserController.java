@@ -106,6 +106,15 @@ public class PublicUserController {
         publicUserService.deletePublicUserById(authenticatedUser.getId());
     }
 
+    @GetMapping("/me/wishlist")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<Festival> getMyWishlist(@AuthenticationPrincipal PublicUser authenticatedUser,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
+        return publicUserService.getWishlist(authenticatedUser.getId(), page, size);
+    }
+
+
     @PostMapping("/me/wishlist")
     @ResponseStatus(HttpStatus.CREATED)
     public PublicUser addFestivalToWishlist(@AuthenticationPrincipal PublicUser authenticatedUser, @RequestBody Festival festival) {
