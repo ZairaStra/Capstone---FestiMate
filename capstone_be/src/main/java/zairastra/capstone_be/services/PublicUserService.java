@@ -138,8 +138,12 @@ public class PublicUserService {
         return publicUserRepository.save(publicUser);
     }
 
-    public PublicUser removeFestivalFromWishlist(Long userId, Festival festival) {
+    public PublicUser removeFestivalFromWishlist(Long userId, Long festivalId) {
         PublicUser publicUser = findPublicUserById(userId);
+
+        Festival festival = festivalRepository.findById(festivalId)
+                .orElseThrow(() -> new NotFoundException("Festival with id " + festivalId + " not found"));
+
         publicUser.getWishlist().remove(festival);
         return publicUserRepository.save(publicUser);
     }

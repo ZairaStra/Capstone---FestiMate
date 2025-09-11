@@ -52,7 +52,7 @@ public class Festival {
     @Column(name = "daily_price")
     private Double dailyPrice;
 
-    @Lob
+    //    @Lob
     @Column(name = "camping_map")
     private String campingMap;
 

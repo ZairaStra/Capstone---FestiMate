@@ -122,11 +122,11 @@ public class PublicUserController {
         return publicUserService.addFestivalToWishlist(publicUserId, festival);
     }
 
-    @DeleteMapping("/me/wishlist")
+    @DeleteMapping("/me/wishlist/{festivalId}")
     @ResponseStatus(HttpStatus.OK)
-    public PublicUser removeFestivalFromWishlist(@AuthenticationPrincipal PublicUser authenticatedUser, @RequestBody Festival festival) {
+    public PublicUser removeFestivalFromWishlist(@AuthenticationPrincipal PublicUser authenticatedUser, @PathVariable Long festivalId) {
         Long publicUserId = authenticatedUser.getId();
-        return publicUserService.removeFestivalFromWishlist(publicUserId, festival);
+        return publicUserService.removeFestivalFromWishlist(publicUserId, festivalId);
     }
 }
 
