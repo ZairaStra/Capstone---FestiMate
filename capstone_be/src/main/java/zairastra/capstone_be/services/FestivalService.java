@@ -1,5 +1,7 @@
 package zairastra.capstone_be.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -20,7 +22,6 @@ import zairastra.capstone_be.entities.enums.UnitStatus;
 import zairastra.capstone_be.entities.enums.UnitType;
 import zairastra.capstone_be.exceptions.BadRequestException;
 import zairastra.capstone_be.exceptions.NotFoundException;
-import zairastra.capstone_be.payloads.FestivalCampingMapUpdateDTO;
 import zairastra.capstone_be.payloads.FestivalRegistrationDTO;
 import zairastra.capstone_be.payloads.FestivalUpdateDTO;
 import zairastra.capstone_be.repositories.AccomodationTypeRepository;
@@ -49,6 +50,9 @@ public class FestivalService {
     @Autowired
     private AccomodationTypeRepository accomodationTypeRepository;
 
+    @Autowired
+    private Cloudinary cloudinary;
+
     public Festival createFestival(FestivalRegistrationDTO payload, Admin admin) throws IOException {
         Festival festival = new Festival(
                 payload.name(),
@@ -66,18 +70,17 @@ public class FestivalService {
             throw new BadRequestException("Festival start date must be before end date");
         }
 
-        String campingMapSvg = null;
+        String campingMapUrl = null;
         if (payload.campingMap() != null && !payload.campingMap().isEmpty()) {
-            campingMapSvg = new String(payload.campingMap().getBytes(), StandardCharsets.UTF_8);
-            festival.setCampingMap(campingMapSvg);
-        }
 
-        festivalRepository.save(festival);
+            campingMapUrl = uploadToCloudinary(payload.campingMap());
+            festival.setCampingMap(campingMapUrl);
 
-        if (campingMapSvg != null) {
+            String campingMapSvg = new String(payload.campingMap().getBytes(), StandardCharsets.UTF_8);
             createCampingAndUnits(festival, campingMapSvg, Collections.emptyMap());
         }
 
+        festivalRepository.save(festival);
         return festival;
     }
 
@@ -332,17 +335,19 @@ public class FestivalService {
     }
 
     @Transactional
-    public void updateFestivalCampingMap(Long festivalId, FestivalCampingMapUpdateDTO payload, Map<UnitType, Double> pricesByUnitType) throws IOException {
+    public void updateFestivalCampingMap(Long festivalId, MultipartFile campingMapFile, Map<UnitType, Double> pricesByUnitType) throws IOException {
 
         Festival festival = festivalRepository.findById(festivalId)
                 .orElseThrow(() -> new NotFoundException("Festival not found"));
 
-        MultipartFile file = payload.campingMap();
-        if (file == null || file.isEmpty()) throw new BadRequestException("Camping map file is empty");
+        if (campingMapFile == null || campingMapFile.isEmpty())
+            throw new BadRequestException("Camping map file is empty");
 
-        String campingMapSvg = new String(file.getBytes(), StandardCharsets.UTF_8);
-        festival.setCampingMap(campingMapSvg);
+        String campingMapUrl = uploadToCloudinary(campingMapFile);
+        festival.setCampingMap(campingMapUrl);
         festivalRepository.save(festival);
+
+        String campingMapSvg = new String(campingMapFile.getBytes(), StandardCharsets.UTF_8);
 
         Camping camping = campingRepository.findByFestival(festival)
                 .orElseThrow(() -> new NotFoundException("Camping for festival not found"));
@@ -365,4 +370,9 @@ public class FestivalService {
         log.info("Festival " + festival.getId() + " has been deleted");
     }
 
+    private String uploadToCloudinary(MultipartFile file) throws IOException {
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
+                ObjectUtils.asMap("resource_type", "auto"));
+        return (String) uploadResult.get("secure_url");
+    }
 }

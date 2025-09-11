@@ -9,12 +9,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import zairastra.capstone_be.entities.Admin;
 import zairastra.capstone_be.entities.Festival;
 import zairastra.capstone_be.entities.enums.Genre;
 import zairastra.capstone_be.entities.enums.UnitType;
 import zairastra.capstone_be.exceptions.ValidationException;
-import zairastra.capstone_be.payloads.FestivalCampingMapUpdateDTO;
 import zairastra.capstone_be.payloads.FestivalRegistrationDTO;
 import zairastra.capstone_be.payloads.FestivalRegistrationResponseDTO;
 import zairastra.capstone_be.payloads.FestivalUpdateDTO;
@@ -36,7 +36,7 @@ public class FestivalController {
     @PostMapping("/register")
     @PreAuthorize("hasRole('FESTIVAL_MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
-    public FestivalRegistrationResponseDTO createFestival(@RequestBody @Validated FestivalRegistrationDTO payload, BindingResult validationResult, @AuthenticationPrincipal Admin admin) throws IOException {
+    public FestivalRegistrationResponseDTO createFestival(@ModelAttribute @Validated FestivalRegistrationDTO payload, BindingResult validationResult, @AuthenticationPrincipal Admin admin) throws IOException {
 
         if (validationResult.hasErrors()) {
             List<String> errors = validationResult.getFieldErrors().stream()
@@ -93,9 +93,16 @@ public class FestivalController {
     @PreAuthorize("hasRole('FESTIVAL_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     public void updateFestivalCampingMap(@PathVariable Long festivalId,
-                                         @RequestPart FestivalCampingMapUpdateDTO payload,
+                                         @RequestPart MultipartFile campingMapFile,
                                          @RequestPart(required = false) Map<UnitType, Double> pricesByUnitType) throws IOException {
-        festivalService.updateFestivalCampingMap(festivalId, payload, pricesByUnitType != null ? pricesByUnitType : Collections.emptyMap());
+        festivalService.updateFestivalCampingMap(festivalId, campingMapFile, pricesByUnitType != null ? pricesByUnitType : Collections.emptyMap());
+    }
+
+    @PatchMapping("/{festivalId}/accomodation-prices")
+    @PreAuthorize("hasRole('FESTIVAL_MANAGER')")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateAccomodationTypePrices(@PathVariable Long festivalId, @RequestBody Map<UnitType, Double> pricesByUnitType) {
+        festivalService.setAccomodationTypePrices(festivalId, pricesByUnitType);
     }
 
     @DeleteMapping("/{festivalId}")
