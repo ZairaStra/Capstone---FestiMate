@@ -93,9 +93,9 @@ public class FestivalController {
     @PreAuthorize("hasRole('FESTIVAL_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     public void updateFestivalCampingMap(@PathVariable Long festivalId,
-                                         @RequestPart MultipartFile campingMapFile,
-                                         @RequestPart(required = false) Map<UnitType, Double> pricesByUnitType) throws IOException {
-        festivalService.updateFestivalCampingMap(festivalId, campingMapFile, pricesByUnitType != null ? pricesByUnitType : Collections.emptyMap());
+                                         @RequestPart("campingMap") MultipartFile campingMap,
+                                         @RequestPart(value = "pricesByUnitType", required = false) Map<UnitType, Double> pricesByUnitType) throws IOException {
+        festivalService.updateFestivalCampingMap(festivalId, campingMap, pricesByUnitType != null ? pricesByUnitType : Collections.emptyMap());
     }
 
     @PatchMapping("/{festivalId}/accomodation-prices")

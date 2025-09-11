@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface FestivalRepository extends JpaRepository<Festival, Long>, JpaSpecificationExecutor<Festival> {
 
+    boolean existsByName(String name);
+
     Optional<Festival> findByNameIgnoreCase(String name);
 
 //    Page<Festival> findByNameStartingWithIgnoreCase(String name, Pageable pageable);

@@ -53,7 +53,13 @@ public class FestivalService {
     @Autowired
     private Cloudinary cloudinary;
 
+    @Transactional
     public Festival createFestival(FestivalRegistrationDTO payload, Admin admin) throws IOException {
+
+        if (festivalRepository.existsByName(payload.name())) {
+            throw new BadRequestException("A festival with name '" + payload.name() + "' already exists");
+        }
+
         Festival festival = new Festival(
                 payload.name(),
                 payload.coverImg(),
@@ -70,6 +76,8 @@ public class FestivalService {
             throw new BadRequestException("Festival start date must be before end date");
         }
 
+        festivalRepository.save(festival);
+
         String campingMapUrl = null;
         if (payload.campingMap() != null && !payload.campingMap().isEmpty()) {
 
@@ -80,7 +88,6 @@ public class FestivalService {
             createCampingAndUnits(festival, campingMapSvg, Collections.emptyMap());
         }
 
-        festivalRepository.save(festival);
         return festival;
     }
 
@@ -105,23 +112,28 @@ public class FestivalService {
         camping.setName(festival.getName() + " Camping");
         camping.setOpeningDate(festival.getStartDate());
         camping.setClosingDate(festival.getEndDate());
+        camping.setCapacity(1);
         campingRepository.save(camping);
 
         List<String> svgElements = parseSvgElements(campingMapSvg);
         Map<UnitType, List<String>> unitsByType = new HashMap<>();
         for (String label : svgElements) {
-            String[] parts = label.split("-");
+            String[] parts = label.split("_");
             try {
-                UnitType type = UnitType.valueOf(parts[0]);
+                UnitType type = UnitType.valueOf(parts[0].toUpperCase());
                 unitsByType.computeIfAbsent(type, k -> new ArrayList<>()).add(parts[1]);
             } catch (IllegalArgumentException e) {
             }
         }
 
+        log.info("Parsed SVG labels: " + svgElements);
+        log.info("Units by type: " + unitsByType);
+
+
         for (Map.Entry<UnitType, List<String>> entry : unitsByType.entrySet()) {
             UnitType type = entry.getKey();
             List<String> spotCodes = entry.getValue();
-            double pricePerNight = pricesByUnitType.getOrDefault(type, 0.0);
+            double pricePerNight = pricesByUnitType.getOrDefault(type, 0.1);
 
             AccomodationType accomodationType = new AccomodationType();
             accomodationType.setCamping(camping);
@@ -136,14 +148,18 @@ public class FestivalService {
                 unit.setSpotCode(spotCode);
                 unit.setStatus(UnitStatus.AVAILABLE);
                 campingUnitRepository.save(unit);
+
+                log.info("Saved accomodationType: " + accomodationType.getUnitType());
+                log.info("Saved camping unit: " + unit.getSpotCode());
             }
         }
 
         updateCampingCapacity(camping);
+        campingRepository.save(camping);
     }
 
     private void updateCampingCapacity(Camping camping) {
-        int totalCapacity = 0;
+        int totalCapacity = 1;
         for (AccomodationType accType : accomodationTypeRepository.findByCamping(camping)) {
             int unitsCount = (int) campingUnitRepository.countByAccomodationType(accType);
             totalCapacity += accType.getUnitCapacity() * unitsCount;
