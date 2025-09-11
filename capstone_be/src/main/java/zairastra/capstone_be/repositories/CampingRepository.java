@@ -12,4 +12,6 @@ public interface CampingRepository extends JpaRepository<Camping, Long> {
 
     Optional<Camping> findByFestival(Festival festival);
 
+    void deleteByFestival(Festival festival);
+
 }

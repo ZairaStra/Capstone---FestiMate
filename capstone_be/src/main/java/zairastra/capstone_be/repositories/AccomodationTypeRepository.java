@@ -11,4 +11,6 @@ import java.util.List;
 public interface AccomodationTypeRepository extends JpaRepository<AccomodationType, Long> {
 
     List<AccomodationType> findByCamping(Camping camping);
+
+    void deleteByCamping(Camping camping);
 }

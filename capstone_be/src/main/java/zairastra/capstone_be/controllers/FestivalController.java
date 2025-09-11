@@ -66,13 +66,13 @@ public class FestivalController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public Page<Festival> searchFestivals(
-            @RequestParam String festivalName,
-            @RequestParam String city,
-            @RequestParam String country,
-            @RequestParam String artistName,
-            @RequestParam Genre genre,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) String festivalName,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String artistName,
+            @RequestParam(required = false) Genre genre,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
