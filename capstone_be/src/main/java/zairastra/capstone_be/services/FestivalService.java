@@ -107,13 +107,17 @@ public class FestivalService {
     }
 
     private void createCampingAndUnits(Festival festival, String campingMapSvg, Map<UnitType, Double> pricesByUnitType) {
-        Camping camping = new Camping();
-        camping.setFestival(festival);
-        camping.setName(festival.getName() + " Camping");
-        camping.setOpeningDate(festival.getStartDate());
-        camping.setClosingDate(festival.getEndDate());
-        camping.setCapacity(1);
-        campingRepository.save(camping);
+
+        Camping camping = campingRepository.findByFestival(festival)
+                .orElseGet(() -> {
+                    Camping newCamping = new Camping();
+                    newCamping.setFestival(festival);
+                    newCamping.setName(festival.getName() + " Camping");
+                    newCamping.setOpeningDate(festival.getStartDate());
+                    newCamping.setClosingDate(festival.getEndDate());
+                    newCamping.setCapacity(1);
+                    return campingRepository.save(newCamping); // salva solo se nuovo
+                });
 
         List<String> svgElements = parseSvgElements(campingMapSvg);
         Map<UnitType, List<String>> unitsByType = new HashMap<>();
@@ -129,6 +133,13 @@ public class FestivalService {
         log.info("Parsed SVG labels: " + svgElements);
         log.info("Units by type: " + unitsByType);
 
+        if (!unitsByType.isEmpty()) {
+            List<AccomodationType> accTypes = accomodationTypeRepository.findByCamping(camping);
+            for (AccomodationType accType : accTypes) {
+                campingUnitRepository.deleteByAccomodationType(accType);
+                accomodationTypeRepository.delete(accType);
+            }
+        }
 
         for (Map.Entry<UnitType, List<String>> entry : unitsByType.entrySet()) {
             UnitType type = entry.getKey();
@@ -155,8 +166,60 @@ public class FestivalService {
         }
 
         updateCampingCapacity(camping);
-        campingRepository.save(camping);
     }
+
+
+//    private void createCampingAndUnits(Festival festival, String campingMapSvg, Map<UnitType, Double> pricesByUnitType) {
+//        Camping camping = new Camping();
+//        camping.setFestival(festival);
+//        camping.setName(festival.getName() + " Camping");
+//        camping.setOpeningDate(festival.getStartDate());
+//        camping.setClosingDate(festival.getEndDate());
+//        camping.setCapacity(1);
+//        campingRepository.save(camping);
+//
+//        List<String> svgElements = parseSvgElements(campingMapSvg);
+//        Map<UnitType, List<String>> unitsByType = new HashMap<>();
+//        for (String label : svgElements) {
+//            String[] parts = label.split("_");
+//            try {
+//                UnitType type = UnitType.valueOf(parts[0].toUpperCase());
+//                unitsByType.computeIfAbsent(type, k -> new ArrayList<>()).add(parts[1]);
+//            } catch (IllegalArgumentException e) {
+//            }
+//        }
+//
+//        log.info("Parsed SVG labels: " + svgElements);
+//        log.info("Units by type: " + unitsByType);
+//
+//
+//        for (Map.Entry<UnitType, List<String>> entry : unitsByType.entrySet()) {
+//            UnitType type = entry.getKey();
+//            List<String> spotCodes = entry.getValue();
+//            double pricePerNight = pricesByUnitType.getOrDefault(type, 0.1);
+//
+//            AccomodationType accomodationType = new AccomodationType();
+//            accomodationType.setCamping(camping);
+//            accomodationType.setUnitType(type);
+//            accomodationType.setUnitCapacity(getCapacityFromUnitType(type));
+//            accomodationType.setPricePerNight(pricePerNight);
+//            accomodationTypeRepository.save(accomodationType);
+//
+//            for (String spotCode : spotCodes) {
+//                CampingUnit unit = new CampingUnit();
+//                unit.setAccomodationType(accomodationType);
+//                unit.setSpotCode(spotCode);
+//                unit.setStatus(UnitStatus.AVAILABLE);
+//                campingUnitRepository.save(unit);
+//
+//                log.info("Saved accomodationType: " + accomodationType.getUnitType());
+//                log.info("Saved camping unit: " + unit.getSpotCode());
+//            }
+//        }
+//
+//        updateCampingCapacity(camping);
+//        campingRepository.save(camping);
+//    }
 
     private void updateCampingCapacity(Camping camping) {
         int totalCapacity = 1;
@@ -351,33 +414,55 @@ public class FestivalService {
     }
 
     @Transactional
-    public void updateFestivalCampingMap(Long festivalId, MultipartFile campingMapFile, Map<UnitType, Double> pricesByUnitType) throws IOException {
+    public void updateFestivalCampingMap(Long festivalId, MultipartFile campingMap, Map<UnitType, Double> pricesByUnitType) throws IOException {
 
         Festival festival = festivalRepository.findById(festivalId)
                 .orElseThrow(() -> new NotFoundException("Festival not found"));
 
-        if (campingMapFile == null || campingMapFile.isEmpty())
+        if (campingMap == null || campingMap.isEmpty())
             throw new BadRequestException("Camping map file is empty");
 
-        String campingMapUrl = uploadToCloudinary(campingMapFile);
+        String campingMapUrl = uploadToCloudinary(campingMap);
         festival.setCampingMap(campingMapUrl);
         festivalRepository.save(festival);
 
-        String campingMapSvg = new String(campingMapFile.getBytes(), StandardCharsets.UTF_8);
+        String campingMapSvg = new String(campingMap.getBytes(), StandardCharsets.UTF_8);
 
-        Camping camping = campingRepository.findByFestival(festival)
-                .orElseThrow(() -> new NotFoundException("Camping for festival not found"));
-
-        List<AccomodationType> accTypes = accomodationTypeRepository.findByCamping(camping);
-        for (AccomodationType accType : accTypes) {
-            campingUnitRepository.deleteByAccomodationType(accType);
-            accomodationTypeRepository.delete(accType);
-        }
-
+        // Passa al createCampingAndUnits, che gestirà la creazione o il riuso del camping
         createCampingAndUnits(festival, campingMapSvg, pricesByUnitType);
 
         log.info("Camping map and prices updated for festival " + festival.getName());
     }
+
+
+//    @Transactional
+//    public void updateFestivalCampingMap(Long festivalId, MultipartFile campingMap, Map<UnitType, Double> pricesByUnitType) throws IOException {
+//
+//        Festival festival = festivalRepository.findById(festivalId)
+//                .orElseThrow(() -> new NotFoundException("Festival not found"));
+//
+//        if (campingMap == null || campingMap.isEmpty())
+//            throw new BadRequestException("Camping map file is empty");
+//
+//        String campingMapUrl = uploadToCloudinary(campingMap);
+//        festival.setCampingMap(campingMapUrl);
+//        festivalRepository.save(festival);
+//
+//        String campingMapSvg = new String(campingMap.getBytes(), StandardCharsets.UTF_8);
+//
+//        Camping camping = campingRepository.findByFestival(festival)
+//                .orElseThrow(() -> new NotFoundException("Camping for festival not found"));
+//
+//        List<AccomodationType> accTypes = accomodationTypeRepository.findByCamping(camping);
+//        for (AccomodationType accType : accTypes) {
+//            campingUnitRepository.deleteByAccomodationType(accType);
+//            accomodationTypeRepository.delete(accType);
+//        }
+//
+//        createCampingAndUnits(festival, campingMapSvg, pricesByUnitType);
+//
+//        log.info("Camping map and prices updated for festival " + festival.getName());
+//    }
 
     public void deleteFestivalById(Long id) {
         Festival festival = findFestivalById(id);
