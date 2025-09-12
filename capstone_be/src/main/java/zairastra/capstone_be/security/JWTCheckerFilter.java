@@ -81,8 +81,6 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
                 (matcher.match("/artists", path) && method.equalsIgnoreCase("GET")) ||
                 (matcher.match("/artists/**", path) && method.equalsIgnoreCase("GET")) ||
                 (matcher.match("/lineups", path) && method.equalsIgnoreCase("GET")) ||
-                (matcher.match("/lineups/**", path) && method.equalsIgnoreCase("GET")) ||
-                (matcher.match("/reservations", path) && method.equalsIgnoreCase("GET")) ||
-                (matcher.match("/reservations/**", path) && method.equalsIgnoreCase("GET"));
+                (matcher.match("/lineups/**", path) && method.equalsIgnoreCase("GET"));
     }
 }

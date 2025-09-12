@@ -24,6 +24,7 @@ public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reservation_id", nullable = false)
     private Long id;
 
     @ManyToOne(optional = false)
@@ -62,7 +63,7 @@ public class Reservation {
     private Set<CampingUnit> campingUnits = new HashSet<>();
 
 
-    public Reservation(PublicUser user, Festival festival, LocalDate startDate, LocalDate endDate, int numTickets, double totalPrice) {
+    public Reservation(PublicUser user, Festival festival, LocalDate startDate, LocalDate endDate, int numTickets, double totalPrice, Set<CampingUnit> campingUnits) {
         this.user = user;
         this.festival = festival;
         this.startDate = startDate;
@@ -70,6 +71,7 @@ public class Reservation {
         this.numTickets = numTickets;
         this.totalPrice = totalPrice;
         this.createdAt = LocalDateTime.now();
+        this.campingUnits = campingUnits != null ? campingUnits : new HashSet<>();
     }
 
 }
