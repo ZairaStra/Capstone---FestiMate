@@ -26,10 +26,9 @@ public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
-    @PostMapping("/register")
-    @PreAuthorize("hasRole('RESERVATION_MANAGER')")
+    @PostMapping("/me/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReservationRegistrationResponseDTO createReservation(@RequestBody @Validated ReservationRegistrationDTO payload, BindingResult validationResult) {
+    public ReservationRegistrationResponseDTO createReservation(@AuthenticationPrincipal PublicUser authenticatedUser, @RequestBody @Validated ReservationRegistrationDTO payload, BindingResult validationResult) {
 
         if (validationResult.hasErrors()) {
             List<String> errors = validationResult.getFieldErrors().stream()
@@ -38,7 +37,7 @@ public class ReservationController {
             throw new ValidationException(errors);
         }
 
-        Reservation savedReservation = reservationService.createReservation(payload);
+        Reservation savedReservation = reservationService.createReservation(payload, authenticatedUser);
         return new ReservationRegistrationResponseDTO(savedReservation.getId());
     }
 

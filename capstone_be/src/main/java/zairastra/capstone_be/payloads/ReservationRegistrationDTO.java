@@ -9,9 +9,6 @@ import java.util.Set;
 
 public record ReservationRegistrationDTO(
 
-        @NotNull(message = "PublicUser id is required")
-        Long userId,
-
         @NotNull(message = "Festival id is required")
         Long festivalId,
 
@@ -26,7 +23,7 @@ public record ReservationRegistrationDTO(
 
         @DecimalMin("0.1")
         Double totalPrice,
-        
+
         Set<Long> campingUnitIds
 ) {
 }

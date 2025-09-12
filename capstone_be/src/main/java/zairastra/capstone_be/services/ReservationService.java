@@ -44,10 +44,7 @@ public class ReservationService {
     private PublicUserRepository publicUserRepository;
 
     @Transactional
-    public Reservation createReservation(ReservationRegistrationDTO payload) {
-
-        PublicUser publicUser = publicUserRepository.findById(payload.userId())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+    public Reservation createReservation(ReservationRegistrationDTO payload, PublicUser authenticatedUser) {
 
         Festival festival = festivalRepository.findById(payload.festivalId())
                 .orElseThrow(() -> new NotFoundException("Festival not found"));
@@ -81,7 +78,7 @@ public class ReservationService {
         }
 
         Reservation reservation = new Reservation(
-                publicUser,
+                authenticatedUser,
                 festival,
                 payload.startDate(),
                 payload.endDate(),
