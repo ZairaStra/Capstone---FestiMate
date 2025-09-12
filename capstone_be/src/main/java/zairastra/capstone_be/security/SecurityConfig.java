@@ -22,7 +22,7 @@ public class SecurityConfig {
         httpSecurity.csrf(csrf -> csrf.disable());
         httpSecurity.sessionManagement((sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS)));
         httpSecurity.authorizeHttpRequests((authorized -> authorized
-                        .requestMatchers("/", "/festivals/**", "/artists/**", "/auth/**", "/public-users/register").permitAll()
+                        .requestMatchers("/", "/reservations/**", "/lineups/**", "/festivals/**", "/artists/**", "/auth/**", "/public-users/register").permitAll()
                         .requestMatchers("/admins/**").hasRole("SYSTEM_ADMIN")
                         .anyRequest().authenticated()))
                 .addFilterBefore(jwtCheckerFilter, UsernamePasswordAuthenticationFilter.class);

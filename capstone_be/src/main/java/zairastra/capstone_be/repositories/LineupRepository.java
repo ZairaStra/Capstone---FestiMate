@@ -10,12 +10,11 @@ import zairastra.capstone_be.entities.Lineup;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Optional;
 
 @Repository
 public interface LineupRepository extends JpaRepository<Lineup, Long> {
 
-    Optional<Lineup> findByFestival(Festival festival);
+    Page<Lineup> findByFestival(Festival festival, Pageable pageable);
 
     Page<Lineup> findByArtist(Artist artist, Pageable pageable);
 

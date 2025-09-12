@@ -54,13 +54,17 @@ public class LineupController {
         return lineupService.findLineupById(lineupId);
     }
 
-    @GetMapping("/festival/{festivalId}")
+    @GetMapping("/festivals/{festivalId}")
     @ResponseStatus(HttpStatus.OK)
-    public Lineup findByFestival(@PathVariable Long festivalId) {
-        return lineupService.findByFestival(festivalId);
+    public Page<Lineup> findByFestival(@PathVariable Long festivalId,
+                                       @RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "10") int size,
+                                       @RequestParam(defaultValue = "id") String sortBy) {
+
+        return lineupService.findByFestival(festivalId, page, size, sortBy);
     }
 
-    @GetMapping("/artist/{artistId}")
+    @GetMapping("/artists/{artistId}")
     @ResponseStatus(HttpStatus.OK)
     public Page<Lineup> findByArtist(@PathVariable Long artistId,
                                      @RequestParam(defaultValue = "0") int page,

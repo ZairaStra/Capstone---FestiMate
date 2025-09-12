@@ -1,9 +1,6 @@
 package zairastra.capstone_be.payloads;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import zairastra.capstone_be.entities.Artist;
-import zairastra.capstone_be.entities.Festival;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,10 +16,10 @@ public record LineupRegistrationDTO(
         @NotNull(message = "End time is required")
         LocalTime endTime,
 
-        @NotBlank(message = "Artist is required")
-        Artist artist,
+        @NotNull(message = "Artist id is required")
+        Long artistId,
 
-        @NotBlank(message = "Festival il required")
-        Festival festival
+        @NotNull(message = "Festival id il required")
+        Long festivalId
 ) {
 }

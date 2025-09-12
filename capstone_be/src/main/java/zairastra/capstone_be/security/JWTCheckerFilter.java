@@ -55,7 +55,7 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            System.out.println("Utente " + authorizedUser.getUsername() + " autenticato con ruoli: " + authorities);
+            System.out.println("Admin " + authorizedUser.getUsername() + " authenticated with role " + authorities);
         } catch (Exception ex) {
             throw new UnauthorizedException("Invalid Token: " + ex.getMessage());
         }
@@ -79,6 +79,10 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
                 (matcher.match("/festivals", path) && method.equalsIgnoreCase("GET")) ||
                 (matcher.match("/festivals/**", path) && method.equalsIgnoreCase("GET")) ||
                 (matcher.match("/artists", path) && method.equalsIgnoreCase("GET")) ||
-                (matcher.match("/artists/**", path) && method.equalsIgnoreCase("GET"));
+                (matcher.match("/artists/**", path) && method.equalsIgnoreCase("GET")) ||
+                (matcher.match("/lineups", path) && method.equalsIgnoreCase("GET")) ||
+                (matcher.match("/lineups/**", path) && method.equalsIgnoreCase("GET")) ||
+                (matcher.match("/reservations", path) && method.equalsIgnoreCase("GET")) ||
+                (matcher.match("/reservations/**", path) && method.equalsIgnoreCase("GET"));
     }
 }

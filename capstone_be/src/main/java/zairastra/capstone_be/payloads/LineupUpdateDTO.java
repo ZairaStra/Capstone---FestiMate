@@ -1,8 +1,5 @@
 package zairastra.capstone_be.payloads;
 
-import zairastra.capstone_be.entities.Artist;
-import zairastra.capstone_be.entities.Festival;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -14,8 +11,8 @@ public record LineupUpdateDTO(
 
         LocalTime endTime,
 
-        Artist artist,
+        Long artistId,
 
-        Festival festival
+        Long festivalId
 ) {
 }

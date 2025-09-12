@@ -36,15 +36,11 @@ public class LineupService {
 
     public Lineup createLineup(LineupRegistrationDTO payload) {
 
-        Festival festival = festivalRepository.findById(payload.festival().getId())
+        Festival festival = festivalRepository.findById(payload.festivalId())
                 .orElseThrow(() -> new NotFoundException("Festival not found"));
 
-        Artist artist = artistRepository.findById(payload.artist().getId())
+        Artist artist = artistRepository.findById(payload.artistId())
                 .orElseThrow(() -> new NotFoundException("Artist not found"));
-
-        if (lineupRepository.existsByFestival(festival)) {
-            throw new BadRequestException("The festival '" + festival.getName() + "' already has a lineup");
-        }
 
         if (lineupRepository.existsByArtistAndDateAndStartTime(
                 artist, payload.date(), payload.startTime())) {
@@ -79,13 +75,21 @@ public class LineupService {
                 .orElseThrow(() -> new NotFoundException("Lineup with id " + id + " not found"));
     }
 
-    public Lineup findByFestival(Long festivalId) {
+    public Page<Lineup> findByFestival(Long festivalId, int page, int size, String sortBy) {
+
+        if (size > 50) size = 50;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
 
         Festival festival = festivalRepository.findById(festivalId)
                 .orElseThrow(() -> new NotFoundException("Festival not found"));
 
-        return lineupRepository.findByFestival(festival)
-                .orElseThrow(() -> new NotFoundException("No lineup found for this festival"));
+        Page<Lineup> lineups = lineupRepository.findByFestival(festival, pageable);
+
+        if (lineups.isEmpty()) {
+            throw new NotFoundException("No lineup found for this festival");
+        }
+
+        return lineups;
     }
 
     public Page<Lineup> findByArtist(Long artistId, int page, int size, String sortBy) {
@@ -108,14 +112,14 @@ public class LineupService {
         if (payload.startTime() != null) lineup.setStartTime(payload.startTime());
         if (payload.endTime() != null) lineup.setEndTime(payload.endTime());
 
-        if (payload.artist() != null && !payload.artist().getId().equals(lineup.getArtist().getId())) {
-            Artist artist = artistRepository.findById(payload.artist().getId())
+        if (payload.artistId() != null && !payload.artistId().equals(lineup.getArtist().getId())) {
+            Artist artist = artistRepository.findById(payload.artistId())
                     .orElseThrow(() -> new NotFoundException("Artist not found"));
             lineup.setArtist(artist);
         }
 
-        if (payload.festival() != null && !payload.festival().getId().equals(lineup.getFestival().getId())) {
-            Festival festival = festivalRepository.findById(payload.festival().getId())
+        if (payload.festivalId() != null && !payload.festivalId().equals(lineup.getFestival().getId())) {
+            Festival festival = festivalRepository.findById(payload.festivalId())
                     .orElseThrow(() -> new NotFoundException("Festival not found"));
             lineup.setFestival(festival);
         }
