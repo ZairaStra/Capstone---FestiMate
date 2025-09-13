@@ -27,7 +27,7 @@ public class ArtistController {
     @PostMapping("/register")
     @PreAuthorize("hasRole('ARTIST_MANAGER')")
     @ResponseStatus(HttpStatus.CREATED)
-    public ArtistRegistrationResponseDTO createArtist(@RequestBody @Validated ArtistRegistrationDTO payload, BindingResult validationResult) {
+    public ArtistRegistrationResponseDTO createArtist(@ModelAttribute @Validated ArtistRegistrationDTO payload, BindingResult validationResult) {
 
         if (validationResult.hasErrors()) {
             List<String> errors = validationResult.getFieldErrors().stream()
@@ -75,7 +75,7 @@ public class ArtistController {
     @PutMapping("/{artistId}")
     @PreAuthorize("hasRole('ARTIST_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
-    public Artist updateArtist(@PathVariable Long artistId, @RequestBody ArtistUpdateDTO payload) {
+    public Artist updateArtist(@PathVariable Long artistId, @ModelAttribute ArtistUpdateDTO payload) {
         return artistService.updateArtist(artistId, payload);
     }
 

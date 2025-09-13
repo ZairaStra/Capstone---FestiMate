@@ -84,7 +84,7 @@ public class FestivalController {
     @PreAuthorize("hasRole('FESTIVAL_MANAGER')")
     @ResponseStatus(HttpStatus.OK)
     public Festival updateFestival(@PathVariable Long festivalId,
-                                   @RequestBody FestivalUpdateDTO payload) {
+                                   @ModelAttribute FestivalUpdateDTO payload) {
         return festivalService.updateFestival(festivalId, payload);
     }
 

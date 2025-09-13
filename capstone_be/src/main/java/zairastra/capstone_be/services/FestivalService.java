@@ -383,6 +383,7 @@ public class FestivalService {
         log.info("Camping map and prices updated for festival " + festival.getName());
     }
 
+    @Transactional
     public void deleteFestivalById(Long id) {
         Festival festival = findFestivalById(id);
 

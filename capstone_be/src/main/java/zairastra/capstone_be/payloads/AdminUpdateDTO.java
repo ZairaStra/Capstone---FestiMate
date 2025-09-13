@@ -2,6 +2,7 @@ package zairastra.capstone_be.payloads;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import zairastra.capstone_be.entities.enums.Role;
 
 public record AdminUpdateDTO(
@@ -18,7 +19,7 @@ public record AdminUpdateDTO(
         @NotEmpty(message = "Email is required")
         String email,
 
-        @NotEmpty(message = "Role is required")
+        @NotNull(message = "Role is required")
         Role role,
 
         @NotEmpty(message = "Phone number is required")
