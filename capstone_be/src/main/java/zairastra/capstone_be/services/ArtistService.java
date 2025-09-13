@@ -22,17 +22,24 @@ public class ArtistService {
     @Autowired
     private ArtistRepository artistRepository;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
     public Artist createArtist(ArtistRegistrationDTO payload) {
         artistRepository.findByNameIgnoreCase(payload.name()).ifPresent(artist -> {
             throw new BadRequestException("The artist " + payload.name() + " already exists in our system");
         });
 
-        String coverImg = (payload.coverImg() != null && !payload.coverImg().isBlank())
-                ? payload.coverImg()
-                : "https://default-cover-image.com/default.png";
+        String coverUrl = "https://default-cover-image.com/default.png";
+        if (payload.coverImg() != null && !payload.coverImg().isEmpty()) {
+            coverUrl = cloudinaryService.uploadFile(payload.coverImg());
+        }
 
         Artist newArtist = new Artist(
-                payload.name(), payload.genre(), coverImg, payload.link()
+                payload.name(),
+                payload.genre(),
+                coverUrl,
+                payload.link()
         );
 
         Artist savedArtist = artistRepository.save(newArtist);
@@ -82,8 +89,10 @@ public class ArtistService {
 
         if (payload.genre() != null) artist.setGenre(payload.genre());
 
-        if (payload.coverImg() != null && !payload.coverImg().isBlank()) {
-            artist.setCoverImg(payload.coverImg());
+
+        if (payload.coverImg() != null && !payload.coverImg().isEmpty()) {
+            String coverUrl = cloudinaryService.uploadFile(payload.coverImg());
+            artist.setCoverImg(coverUrl);
         }
 
         if (payload.link() != null) {
@@ -102,4 +111,5 @@ public class ArtistService {
 
         log.info("Artist " + artist.getId() + " has been deleted");
     }
+
 }

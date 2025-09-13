@@ -2,6 +2,7 @@ package zairastra.capstone_be.payloads;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -24,6 +25,6 @@ public record FestivalUpdateDTO(
         @DecimalMin(value = "0.1", message = "Daily price must be positive")
         Double dailyPrice,
 
-        String coverImg
+        MultipartFile coverImg
 ) {
 }

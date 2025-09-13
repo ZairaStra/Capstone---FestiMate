@@ -1,7 +1,5 @@
 package zairastra.capstone_be.services;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -51,7 +49,7 @@ public class FestivalService {
     private AccomodationTypeRepository accomodationTypeRepository;
 
     @Autowired
-    private Cloudinary cloudinary;
+    private CloudinaryService cloudinaryService;
 
     @Transactional
     public Festival createFestival(FestivalRegistrationDTO payload, Admin admin) throws IOException {
@@ -62,7 +60,7 @@ public class FestivalService {
 
         Festival festival = new Festival(
                 payload.name(),
-                payload.coverImg(),
+                null,
                 payload.city(),
                 payload.country(),
                 payload.startDate(),
@@ -72,16 +70,20 @@ public class FestivalService {
                 admin
         );
 
+
+        if (payload.coverImg() != null && !payload.coverImg().isEmpty()) {
+            String coverUrl = cloudinaryService.uploadFile(payload.coverImg());
+            festival.setCoverImg(coverUrl);
+        }
+
         if (payload.startDate().isAfter(payload.endDate())) {
             throw new BadRequestException("Festival start date must be before end date");
         }
 
         festivalRepository.save(festival);
 
-        String campingMapUrl = null;
         if (payload.campingMap() != null && !payload.campingMap().isEmpty()) {
-
-            campingMapUrl = uploadToCloudinary(payload.campingMap());
+            String campingMapUrl = cloudinaryService.uploadFile(payload.campingMap());
             festival.setCampingMap(campingMapUrl);
 
             String campingMapSvg = new String(payload.campingMap().getBytes(), StandardCharsets.UTF_8);
@@ -350,8 +352,9 @@ public class FestivalService {
 
         if (payload.dailyPrice() != null) festival.setDailyPrice(payload.dailyPrice());
 
-        if (payload.coverImg() != null && !payload.coverImg().isBlank()) {
-            festival.setCoverImg(payload.coverImg());
+        if (payload.coverImg() != null && !payload.coverImg().isEmpty()) {
+            String coverUrl = cloudinaryService.uploadFile(payload.coverImg());
+            festival.setCoverImg(coverUrl);
         }
 
         Festival updated = festivalRepository.save(festival);
@@ -369,7 +372,7 @@ public class FestivalService {
         if (campingMap == null || campingMap.isEmpty())
             throw new BadRequestException("Camping map file is empty");
 
-        String campingMapUrl = uploadToCloudinary(campingMap);
+        String campingMapUrl = cloudinaryService.uploadFile(campingMap);
         festival.setCampingMap(campingMapUrl);
         festivalRepository.save(festival);
 
@@ -403,9 +406,4 @@ public class FestivalService {
         log.info("Festival " + festival.getId() + " has been deleted");
     }
 
-    private String uploadToCloudinary(MultipartFile file) throws IOException {
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
-                ObjectUtils.asMap("resource_type", "auto"));
-        return (String) uploadResult.get("secure_url");
-    }
 }

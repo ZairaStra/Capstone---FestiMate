@@ -1,7 +1,5 @@
 package zairastra.capstone_be.services;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,9 +17,6 @@ import zairastra.capstone_be.payloads.UserResponseDTO;
 import zairastra.capstone_be.repositories.UserRepository;
 import zairastra.capstone_be.tools.MailgunSender;
 
-import java.io.IOException;
-import java.util.Map;
-
 @Slf4j
 @Service
 public class UserService {
@@ -33,7 +28,7 @@ public class UserService {
     private PasswordEncoder bCrypt;
 
     @Autowired
-    private Cloudinary imgUploader;
+    private CloudinaryService cloudinaryService;
 
     @Autowired
     private MailgunSender mailgunSender;
@@ -110,15 +105,12 @@ public class UserService {
     }
 
     public User updateProfileImg(Long userId, MultipartFile file) {
-        try {
-            User user = findUserById(userId);
-            Map result = imgUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-            String imgURL = (String) result.get("url");
-            user.setProfileImg(imgURL);
-            return userRepository.save(user);
-        } catch (IOException e) {
-            throw new BadRequestException("Problems while saving image");
-        }
+
+        User user = findUserById(userId);
+        String imgURL = cloudinaryService.uploadFile(file);
+        user.setProfileImg(imgURL);
+        return userRepository.save(user);
+
     }
 
 }

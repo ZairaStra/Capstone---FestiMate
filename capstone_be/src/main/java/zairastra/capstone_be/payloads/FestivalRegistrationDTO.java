@@ -12,7 +12,7 @@ public record FestivalRegistrationDTO(
         @NotBlank(message = "Festival name is required")
         String name,
 
-        String coverImg,
+        MultipartFile coverImg,
 
         @NotBlank(message = "City is required")
         String city,
