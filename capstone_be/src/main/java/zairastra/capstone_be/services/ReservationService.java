@@ -16,6 +16,7 @@ import zairastra.capstone_be.exceptions.BadRequestException;
 import zairastra.capstone_be.exceptions.NotFoundException;
 import zairastra.capstone_be.payloads.ReservationRegistrationDTO;
 import zairastra.capstone_be.repositories.*;
+import zairastra.capstone_be.tools.MailgunSender;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -42,6 +43,9 @@ public class ReservationService {
 
     @Autowired
     private PublicUserRepository publicUserRepository;
+
+    @Autowired
+    private MailgunSender mailgunSender;
 
     @Transactional
     public Reservation createReservation(ReservationRegistrationDTO payload, PublicUser authenticatedUser) {
@@ -88,6 +92,8 @@ public class ReservationService {
         );
 
         Reservation saved = reservationRepository.save(reservation);
+
+        mailgunSender.sendReservationEmail(authenticatedUser, festival, saved);
 
         for (CampingUnit unit : campingUnits) {
             unit.setStatus(UnitStatus.OCCUPIED);
@@ -207,6 +213,9 @@ public class ReservationService {
         }
 
         reservationRepository.delete(reservation);
+
+        mailgunSender.sendCancellationEmail(reservation.getUser(), reservation.getFestival(), reservation);
+
         log.info("The reservation has been deleted");
     }
 }
