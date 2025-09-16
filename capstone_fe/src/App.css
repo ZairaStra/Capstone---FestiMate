@@ -17,6 +17,7 @@ h6 {
   color: #e6e6fa;
 }
 
+/* Navbar */
 .navbar-festimate {
   position: fixed;
   top: 0;
@@ -31,23 +32,37 @@ h6 {
   z-index: 1200;
 }
 
+/* Generic links */
+.links {
+  color: #e6e6fa;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.links:hover {
+  color: #ff69b4;
+}
+
+/* Navbar brand text */
 .navbar-festimate .navbar-brand span {
   color: #ff69b4;
 }
 
-.navbar-festimate .nav-link {
+/* Icons */
+.icons {
   color: #e6e6fa;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  margin-right: 0.5rem;
 }
 
-.navbar-festimate .nav-link:hover {
+.icons:hover {
   color: #ff69b4;
 }
 
-.navbar-festimate .bi-person-circle,
-.navbar-festimate .dropdown-toggle img {
-  cursor: pointer;
-}
-
+/* Footer */
 .footer-festimate {
   position: fixed;
   bottom: 0;
@@ -58,17 +73,12 @@ h6 {
   color: #e6e6fa;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0 2rem;
   z-index: 1200;
 }
 
-.main-content {
-  margin-top: 6rem;
-  margin-bottom: 5rem;
-  padding: 2rem;
-  overflow-y: auto;
-}
-
+/* Buttons */
 .btn-festimate {
   background-color: #2f4f4f;
   border: 1rem solid #2f4f4f;
@@ -78,6 +88,7 @@ h6 {
   font-size: 1rem;
   font-family: inherit;
   padding: 0.5rem 1rem;
+  transition: all 0.2s;
 }
 
 .btn-festimate:hover {
