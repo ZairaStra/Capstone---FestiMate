@@ -4,6 +4,8 @@ import "./App.css";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import FestiMateNav from "./components/FestiMateNav";
+import FestiMateFooter from "./components/FestiMateFooter";
 
 function App() {
   const userRole = useSelector((state) => state.user.role);
@@ -14,10 +16,9 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Navbar />
-      <Sidebar />
-      <Routes>
-        <Route path="/login" element={<Login />} />
+      <FestiMateNav />
+      {/*<Routes>
+      <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<Homepage />} />
         <Route path="/festivals" element={<Festivals userRole={userRole} />} />
@@ -31,8 +32,8 @@ function App() {
         <Route path="/admin/users" element={<RoleRoute allowedRoles={["USER_MANAGER"]} element={<Users />} />} />
         <Route path="/admin/admins" element={<RoleRoute allowedRoles={["SYSTEM_ADMIN"]} element={<Admins />} />} />
         <Route path="/admin/reservations" element={<RoleRoute allowedRoles={["RESERVATION_MANAGER"]} element={<Reservations />} />} />
-      </Routes>
-      <Footer />
+      </Routes> */}
+      <FestiMateFooter />
     </BrowserRouter>
   );
 }

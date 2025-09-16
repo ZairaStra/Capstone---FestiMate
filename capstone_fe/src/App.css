@@ -1,0 +1,96 @@
+@import url("https://fonts.googleapis.com/css2?family=Asap+Condensed:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+body {
+  margin: 0;
+  font-family: "Asap Condensed", sans-serif;
+  font-size: 1rem;
+  color: #e6e6fa;
+  background: linear-gradient(150deg, #6a5acd, #20b2aa);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #e6e6fa;
+}
+
+.navbar-festimate {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6rem;
+  background-color: #2f4f4f;
+  color: #e6e6fa;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  z-index: 1200;
+}
+
+.navbar-festimate .navbar-brand span {
+  color: #ff69b4;
+}
+
+.navbar-festimate .nav-link {
+  color: #e6e6fa;
+}
+
+.navbar-festimate .nav-link:hover {
+  color: #ff69b4;
+}
+
+.navbar-festimate .bi-person-circle,
+.navbar-festimate .dropdown-toggle img {
+  cursor: pointer;
+}
+
+.footer-festimate {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5rem;
+  background-color: #2f4f4f;
+  color: #e6e6fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+
+.main-content {
+  margin-top: 6rem;
+  margin-bottom: 5rem;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.btn-festimate {
+  background-color: #2f4f4f;
+  border: 1rem solid #2f4f4f;
+  color: #e6e6fa;
+  border-radius: 4rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 0.5rem 1rem;
+}
+
+.btn-festimate:hover {
+  background-color: #e6e6fa;
+  color: #2f4f4f;
+}
+
+/* Card */
+.card-festimate {
+  background-color: #e6e6fa;
+  color: #2f4f4f;
+  border-radius: 4rem;
+  box-shadow: 0 1rem 3rem #2f4f4f;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
