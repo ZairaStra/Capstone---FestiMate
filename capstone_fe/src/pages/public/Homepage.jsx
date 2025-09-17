@@ -4,6 +4,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Placeholder from "../../assets/placeholder.jpg";
 import FestiMateSearchBar from "../../components/FestiMateSearchbar";
+import Logo from "../../assets/logo_turquoise.svg";
 
 const Homepage = () => {
   const [festivals, setFestivals] = useState([]);
@@ -30,11 +31,20 @@ const Homepage = () => {
   }, []);
 
   return (
-    <Container className="mt-5">
-      <Row className="g-2 g-md-3 g-xl-4 mt-5 justify-content-end">
-        <Col xs={12} md={8} className="text-end">
-          <h1 className="d-inline-block display-1 mt-5">Festimate</h1>
-          <h3 className="d-inline-block display-6 ms-3 mb-5"> - your festival buddy</h3>
+    <Container className="my-5 pb-5">
+      <Row className="g-2 g-md-3 g-xl-4 mt-5 justify-content-end align-items-baseline">
+        <Col xs={4} sm={4}>
+          <img src={Logo} alt="Logo" className="my-5 logo d-inline-block" />
+        </Col>
+        <Col xs={8} sm={8}>
+          <Row className="align-items-center">
+            <Col xs={12}>
+              <h1 className="d-inline-block display-1">Festimate</h1>
+            </Col>
+            <Col>
+              <h3 className="d-inline-block display-6 ms-5"> - your festival buddy</h3>
+            </Col>
+          </Row>
         </Col>
       </Row>
       <Row className="g-2 g-md-3 g-xl-4">
@@ -42,14 +52,15 @@ const Homepage = () => {
           <Carousel slide={false} interval={10000}>
             {festivals.map((festival) => (
               <Carousel.Item key={festival.id}>
-                <Link to={`/festivals/${festival.id}`}></Link>
-                <img
-                  className="d-block w-100 rounded"
-                  src={festival.coverImg || Placeholder}
-                  onError={(e) => (e.currentTarget.src = Placeholder)}
-                  style={{ maxHeight: "500px", objectFit: "cover" }}
-                  alt={festival.name}
-                />
+                <Link to={`/festivals/${festival.id}`}>
+                  <img
+                    className="d-block w-100 rounded"
+                    src={festival.coverImg || Placeholder}
+                    onError={(e) => (e.currentTarget.src = Placeholder)}
+                    style={{ maxHeight: "400px", objectFit: "cover" }}
+                    alt={festival.name}
+                  />
+                </Link>
                 <Carousel.Caption className="bg-dark bg-opacity-50 rounded p-2">
                   <h3>
                     <Link to={`/festivals/${festival.id}`} className="links">

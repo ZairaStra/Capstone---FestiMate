@@ -17,8 +17,8 @@ const FestiMateSearchBar = ({ placeholder = "Search...", searchPath }) => {
     <Form onSubmit={handleSearch} className="d-flex mb-3">
       <InputGroup>
         <Form.Control placeholder={placeholder} value={query} onChange={(e) => setQuery(e.target.value)} />
-        <Button type="submit" variant="primary" className="btn-festimate">
-          Search
+        <Button type="submit" className="btn-festimate" variant="none">
+          <i className="bi bi-search"></i>
         </Button>
       </InputGroup>
     </Form>
