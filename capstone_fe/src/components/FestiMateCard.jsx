@@ -1,6 +1,6 @@
 import { Card, Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Placeholder from "../assets/placeholder.jpg";
+import Placeholder from "../assets/placeholder.webp";
 
 const FestiMateCard = ({ id, image, title, subtitle, linkPath }) => {
   return (

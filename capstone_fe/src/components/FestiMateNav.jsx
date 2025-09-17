@@ -1,5 +1,5 @@
 import { Navbar, Container, Nav, NavDropdown, Image } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import logo from "../assets/logo_mauve.svg";
 import { useEffect, useState } from "react";
@@ -37,13 +37,13 @@ const FestiMateNav = () => {
 
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto align-items-center gap-3">
-            <Nav.Link as={Link} to="/" end className="links">
+            <Nav.Link as={NavLink} to="/" end className="links">
               Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/festivals" className="links">
+            <Nav.Link as={NavLink} to="/festivals" className="links">
               Festivals
             </Nav.Link>
-            <Nav.Link as={Link} to="/artists" className="links">
+            <Nav.Link as={NavLink} to="/artists" className="links">
               Artists
             </Nav.Link>
 

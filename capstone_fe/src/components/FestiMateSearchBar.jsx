@@ -2,14 +2,18 @@ import { useState } from "react";
 import { Form, InputGroup, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const FestiMateSearchBar = ({ placeholder = "Search...", searchPath }) => {
+const FestiMateSearchBar = ({ placeholder = "Search...", isFestival = false }) => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (query.trim()) {
-      navigate(`${searchPath}?search=${encodeURIComponent(query)}`);
+    if (!query.trim()) return;
+
+    if (isFestival) {
+      navigate(`/festivals?festivalName=${encodeURIComponent(query)}`);
+    } else {
+      navigate(`/artists?name=${encodeURIComponent(query)}`);
     }
   };
 

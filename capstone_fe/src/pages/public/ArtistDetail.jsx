@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Spinner, Alert, Container, Row, Col } from "react-bootstrap";
 import FestiMateDetailCard from "../../components/FestiMateDetailCard";
-import Placeholder from "../../assets/placeholder.jpg";
+import Placeholder from "../../assets/placeholder.webp";
 
 const ArtistDetail = () => {
   const { id } = useParams();

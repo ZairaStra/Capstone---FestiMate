@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Carousel from "react-bootstrap/Carousel";
 import { Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Placeholder from "../../assets/placeholder.jpg";
+import Placeholder from "../../assets/placeholder.webp";
 import FestiMateSearchBar from "../../components/FestiMateSearchbar";
 import Logo from "../../assets/logo_turquoise.svg";
 
@@ -85,7 +85,7 @@ const Homepage = () => {
           <p>Search for festivals and discover upcoming events!</p>
         </Col>
         <Col md={6}>
-          <FestiMateSearchBar placeholder="Search festivals..." searchPath="/festivals" />
+          <FestiMateSearchBar placeholder="Search festivals..." searchPath="/festivals/search" isFestival={true} />
         </Col>
 
         <Col md={6}>
@@ -93,7 +93,7 @@ const Homepage = () => {
           <p>Search for artists and see where they are performing next!</p>
         </Col>
         <Col md={6}>
-          <FestiMateSearchBar placeholder="Search artists..." searchPath="/artists" />
+          <FestiMateSearchBar placeholder="Search artists..." searchPath="/artists/starting-name/" isFestival={false} />
         </Col>
       </Row>
     </Container>

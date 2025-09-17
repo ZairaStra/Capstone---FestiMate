@@ -1,7 +1,7 @@
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { Col, Row } from "react-bootstrap";
-import Placeholder from "../assets/placeholder.jpg";
+import Placeholder from "../assets/placeholder.webp";
 
 const FestiMateDetailCard = ({ coverImg, text1, text2, text3, buttonText, onButtonClick }) => {
   return (
