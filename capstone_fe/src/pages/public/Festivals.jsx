@@ -1,22 +1,36 @@
 import { useState, useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Spinner, Container, Row, Col } from "react-bootstrap";
 import FestiMateCard from "../../components/FestiMateCard";
 
 const Festivals = () => {
   const [festivals, setFestivals] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFestivals = async () => {
       try {
         const res = await fetch("http://localhost:3002/festivals");
+        if (!res.ok) throw new Error("Failed to fetch festivals");
         const data = await res.json();
         setFestivals(data.content);
       } catch (err) {
         console.error("Error fetching festivals:", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchFestivals();
   }, []);
+
+  if (loading) {
+    return (
+      <Container className="text-center my-5">
+        <Spinner animation="grow" role="status" variant="none" className="spinner">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Container>
+    );
+  }
 
   return (
     <Container className="my-5">
