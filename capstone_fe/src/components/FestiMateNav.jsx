@@ -1,18 +1,17 @@
 import { Navbar, Container, Nav, NavDropdown, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import logo from "../assets/logo_turquoise.svg";
+import logo from "../assets/logo_mauve.svg";
 
 const FestiMateNav = () => {
   const user = useSelector((state) => state.user);
 
   return (
     <Navbar expand="lg" sticky="top" className="navbar-festimate shadow-sm py-3">
-      <Container>
-        {/* Logo */}
+      <Container fluid>
         <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
           <img alt="festimate-logo" src={logo} width="60" height="60" className="d-inline-block align-middle" />
-          <span className="d-none d-md-block links ms-2">FestiMate</span>
+          <span className="d-none d-md-block links ms-2 display-6">FestiMate</span>
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

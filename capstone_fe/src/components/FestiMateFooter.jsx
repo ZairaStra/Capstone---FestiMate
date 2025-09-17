@@ -3,7 +3,7 @@ import { Col, Container, Row } from "react-bootstrap";
 const MyFooter = () => {
   return (
     <footer className="footer-festimate py-3">
-      <Container>
+      <Container fluid>
         <Row className="align-items-center">
           <Col xs={12} md={6} className="text-center mb-2 mb-md-0 d-flex justify-content-center align-items-center">
             <p className="mb-0">&copy; 2025 FestiMate</p>

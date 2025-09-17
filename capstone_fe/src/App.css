@@ -1,11 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Asap+Condensed:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 body {
+  height: 100vh;
   margin: 0;
   font-family: "Asap Condensed", sans-serif;
   font-size: 1rem;
   color: #e6e6fa;
-  background: linear-gradient(150deg, #6a5acd, #20b2aa);
+  background: linear-gradient(165deg, #6a5acd, #ff69b4);
 }
 
 h1,
@@ -24,7 +25,7 @@ h6 {
   left: 0;
   right: 0;
   height: 6rem;
-  background-color: #2f4f4f;
+  background-color: #20b2aa;
   color: #e6e6fa;
   display: flex;
   align-items: center;
@@ -35,7 +36,6 @@ h6 {
 /* Generic links */
 .links {
   color: #e6e6fa;
-  font-weight: 500;
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -46,6 +46,10 @@ h6 {
 
 /* Navbar brand text */
 .navbar-festimate .navbar-brand span {
+  color: #e6e6fa;
+}
+
+.navbar-festimate .navbar-brand span:hover {
   color: #ff69b4;
 }
 
@@ -101,7 +105,7 @@ h6 {
   background-color: #e6e6fa;
   color: #2f4f4f;
   border-radius: 4rem;
-  box-shadow: 0 1rem 3rem #2f4f4f;
+  box-shadow: 0.25rem 0.25rem 0.25rem #20b2aa;
   padding: 1rem;
   margin-bottom: 1rem;
 }
