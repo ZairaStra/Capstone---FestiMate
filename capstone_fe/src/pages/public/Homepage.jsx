@@ -31,12 +31,13 @@ const Homepage = () => {
   }, []);
 
   return (
-    <Container className="my-5 pb-5">
-      <Row className="g-2 g-md-3 g-xl-4 mt-5 justify-content-end align-items-baseline">
-        <Col xs={4} sm={4}>
-          <img src={Logo} alt="Logo" className="my-5 logo d-inline-block" />
+    <Container className="my-5 py-2">
+      <Row className="g-2 g-md-3 g-xl-4 mt-5 justify-content-evenly align-items-baseline">
+        <Col xs={4}>
+          <img src={Logo} alt="Logo" className="my-4 logo d-inline-block" />
         </Col>
-        <Col xs={8} sm={8}>
+
+        <Col xs={8}>
           <Row className="align-items-center">
             <Col xs={12}>
               <h1 className="d-inline-block display-1">Festimate</h1>

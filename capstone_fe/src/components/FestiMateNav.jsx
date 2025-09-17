@@ -2,12 +2,31 @@ import { Navbar, Container, Nav, NavDropdown, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import logo from "../assets/logo_mauve.svg";
+import { useEffect, useState } from "react";
 
 const FestiMateNav = () => {
   const user = useSelector((state) => state.user);
 
+  const [showNav, setShowNav] = useState(true);
+  const [lastScroll, setLastScroll] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+      if (currentScroll > lastScroll && currentScroll > 50) {
+        setShowNav(false);
+      } else {
+        setShowNav(true);
+      }
+      setLastScroll(currentScroll);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScroll]);
+
   return (
-    <Navbar expand="lg" sticky="top" className="navbar-festimate shadow-sm py-3">
+    <Navbar expand="lg" className={`navbar-festimate shadow-sm py-3 ${showNav ? "navbar-visible" : "navbar-hidden"}`}>
       <Container fluid>
         <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
           <img alt="festimate-logo" src={logo} width="60" height="60" className="d-inline-block align-middle" />
@@ -18,7 +37,7 @@ const FestiMateNav = () => {
 
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto align-items-center gap-3">
-            <Nav.Link as={Link} to="/" className="links">
+            <Nav.Link as={Link} to="/" end className="links">
               Home
             </Nav.Link>
             <Nav.Link as={Link} to="/festivals" className="links">
