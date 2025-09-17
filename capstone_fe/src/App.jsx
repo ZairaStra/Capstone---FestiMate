@@ -7,6 +7,10 @@ import { useSelector } from "react-redux";
 import FestiMateNav from "./components/FestiMateNav";
 import FestiMateFooter from "./components/FestiMateFooter";
 import Homepage from "./pages/public/Homepage";
+import Festivals from "./pages/public/Festivals";
+import FestivalDetail from "./pages/public/FestivalDetail";
+import Artists from "./pages/public/Artists";
+import ArtistDetail from "./pages/public/ArtistDetail";
 
 function App() {
   const userRole = useSelector((state) => state.user.role);
@@ -22,11 +26,11 @@ function App() {
         {/*<Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />*/}
         <Route path="/" element={<Homepage />} />
-        {/*  <Route path="/festivals" element={<Festivals userRole={userRole} />} />
+        <Route path="/festivals" element={<Festivals userRole={userRole} />} />
         <Route path="/festivals/:id" element={<FestivalDetail userRole={userRole} />} />
         <Route path="/artists" element={<Artists userRole={userRole} />} />
         <Route path="/artists/:id" element={<ArtistDetail userRole={userRole} />} />
-        <Route path="/reservation" element={<Reservation />} />
+        {/* <Route path="/reservations/me/register" element={<Reservation />} />
         <Route path="/me" element={<MyProfile />} />
         <Route path="/settings" element={<Settings />} />
 

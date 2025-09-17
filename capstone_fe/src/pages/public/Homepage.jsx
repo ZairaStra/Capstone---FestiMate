@@ -31,10 +31,10 @@ const Homepage = () => {
   }, []);
 
   return (
-    <Container className="my-5 py-2">
+    <Container className="my-5 pt-1 pb-2">
       <Row className="g-2 g-md-3 g-xl-4 mt-5 justify-content-evenly align-items-baseline">
         <Col xs={4}>
-          <img src={Logo} alt="Logo" className="my-4 logo d-inline-block" />
+          <img src={Logo} alt="Logo" className="logo d-inline-block mb-3" />
         </Col>
 
         <Col xs={8}>
@@ -43,7 +43,7 @@ const Homepage = () => {
               <h1 className="d-inline-block display-1">Festimate</h1>
             </Col>
             <Col>
-              <h3 className="d-inline-block display-6 ms-5"> - your festival buddy</h3>
+              <h3 className="d-inline-block display-6 ms-5 pb-0"> - your festival buddy</h3>
             </Col>
           </Row>
         </Col>
@@ -58,7 +58,7 @@ const Homepage = () => {
                     className="d-block w-100 rounded"
                     src={festival.coverImg || Placeholder}
                     onError={(e) => (e.currentTarget.src = Placeholder)}
-                    style={{ maxHeight: "400px", objectFit: "cover" }}
+                    style={{ maxHeight: "30rem", objectFit: "cover" }}
                     alt={festival.name}
                   />
                 </Link>

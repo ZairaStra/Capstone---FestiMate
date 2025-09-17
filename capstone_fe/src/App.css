@@ -110,28 +110,33 @@ h6 {
 
 /* Buttons */
 .btn-festimate {
-  background-color: #2f4f4f;
-  border: 1rem solid #2f4f4f;
-  color: #e6e6fa;
-  border-radius: 4rem;
+  background-color: #e6e6fa;
+  border: 1px solid;
+  color: #2f4f4f;
+  border-radius: 1rem;
   cursor: pointer;
   font-size: 1rem;
   font-family: inherit;
-  padding: 0.5rem 1rem;
+  padding: 1rem;
   transition: all 0.2s;
+  font-family: inherit;
 }
 
 .btn-festimate:hover {
+  border: none;
   background-color: #20b2aa;
   color: #2f4f4f;
 }
 
 /* Card */
 .card-festimate {
-  background-color: #e6e6fa;
-  color: #2f4f4f;
-  border-radius: 4rem;
-  box-shadow: 0.25rem 0.25rem 0.25rem #20b2aa;
-  padding: 1rem;
+  background-color: #2f4f4f;
+  color: #e6e6fa;
+  box-shadow: 0.25rem 0.25rem 0.5rem #2f4f4f;
   margin-bottom: 1rem;
+  font-family: inherit;
+}
+
+.spinner {
+  color: #ff69b4;
 }
