@@ -11,6 +11,8 @@ import Festivals from "./pages/public/Festivals";
 import FestivalDetail from "./pages/public/FestivalDetail";
 import Artists from "./pages/public/Artists";
 import ArtistDetail from "./pages/public/ArtistDetail";
+import Login from "./pages/public/Login";
+import Registration from "./pages/public/Registration";
 
 function App() {
   const userRole = useSelector((state) => state.user.role);
@@ -23,8 +25,8 @@ function App() {
     <BrowserRouter>
       <FestiMateNav />
       <Routes>
-        {/*<Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />*/}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Registration />} />
         <Route path="/" element={<Homepage />} />
         <Route path="/festivals" element={<Festivals userRole={userRole} />} />
         <Route path="/festivals/:id" element={<FestivalDetail userRole={userRole} />} />
