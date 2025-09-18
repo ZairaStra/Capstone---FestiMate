@@ -27,6 +27,15 @@ const FestivalDetail = () => {
     fetchFestival();
   }, [id]);
 
+  const handleBuyTickets = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/reservations/me/register", { state: { festivalId: festival.id } });
+    } else {
+      navigate("/login");
+    }
+  };
+
   if (loading) {
     return (
       <Container className="text-center my-5">
@@ -38,10 +47,6 @@ const FestivalDetail = () => {
   }
 
   if (!festival) return <Alert variant="warning">Festival not found</Alert>;
-
-  const handleBuyTickets = () => {
-    navigate("/reservations/me/register", { state: { festivalId: festival.id } });
-  };
 
   return (
     <Container className="my-5 py-5">
