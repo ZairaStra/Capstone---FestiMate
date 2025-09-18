@@ -1,32 +1,31 @@
-import { useState } from "react";
-import { Form, InputGroup, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Form } from "react-bootstrap";
 
-const FestiMateSearchBar = ({ placeholder = "Search...", isFestival = false }) => {
-  const [query, setQuery] = useState("");
-  const navigate = useNavigate();
+const FestiMateSearchbar = ({ placeholder = "Search...", value, onChange, onSearch }) => {
+  const [internalValue, setInternalValue] = useState(value || "");
 
-  const handleSearch = (e) => {
+  useEffect(() => {
+    if (value !== undefined) setInternalValue(value);
+  }, [value]);
+
+  const handleChange = (e) => {
+    const val = e.target.value;
+    if (onChange) onChange(val);
+    if (value === undefined) setInternalValue(val);
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!query.trim()) return;
-
-    if (isFestival) {
-      navigate(`/festivals?festivalName=${encodeURIComponent(query)}`);
-    } else {
-      navigate(`/artists?name=${encodeURIComponent(query)}`);
-    }
+    const query = (value !== undefined ? value : internalValue).trim();
+    if (!query) return;
+    if (onSearch) onSearch(query);
   };
 
   return (
-    <Form onSubmit={handleSearch} className="d-flex mb-3">
-      <InputGroup>
-        <Form.Control placeholder={placeholder} value={query} onChange={(e) => setQuery(e.target.value)} />
-        <Button type="submit" className="btn-festimate" variant="none">
-          <i className="bi bi-search"></i>
-        </Button>
-      </InputGroup>
+    <Form onSubmit={handleSubmit} className="d-flex mb-3">
+      <Form.Control className="py-3" placeholder={placeholder} value={value !== undefined ? value : internalValue} onChange={handleChange} />
     </Form>
   );
 };
 
-export default FestiMateSearchBar;
+export default FestiMateSearchbar;
