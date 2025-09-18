@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Spinner, Alert, Container, Row, Col } from "react-bootstrap";
 import FestiMateDetailCard from "../../components/FestiMateDetailCard";
 import Placeholder from "../../assets/placeholder.webp";
+import FestiMateModal from "../../components/FestiMateModal";
 
 const ArtistDetail = () => {
   const { id } = useParams();
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchArtist = async () => {
@@ -39,10 +39,6 @@ const ArtistDetail = () => {
 
   if (!artist) return <Alert variant="warning">Artist not found</Alert>;
 
-  const handleViewFestivals = () => {
-    navigate(`/festivals?artist=${artist.id}`);
-  };
-
   return (
     <Container className="my-5 py-5">
       <Row className="justify-content-center">
@@ -52,8 +48,8 @@ const ArtistDetail = () => {
             text1={artist.name}
             text2={`Genre: ${artist.genre || "N/A"}`}
             text3={`Website: ${artist.link || "N/A"}`}
-            buttonText="View Festivals"
-            onButtonClick={handleViewFestivals}
+            buttonText={<FestiMateModal artistId={artist.id} />}
+            onButtonClick={() => {}}
           />
         </Col>
       </Row>

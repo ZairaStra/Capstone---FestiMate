@@ -23,7 +23,7 @@ const FestiMateDetailCard = ({ coverImg, text1, text2, text3, buttonText, onButt
           </Col>
           <Col className="text-end">
             {buttonText && onButtonClick && (
-              <Button onClick={onButtonClick} className="btn-festimate mt-3">
+              <Button onClick={onButtonClick} variant="none" className="btn-festimate">
                 {buttonText}
               </Button>
             )}
