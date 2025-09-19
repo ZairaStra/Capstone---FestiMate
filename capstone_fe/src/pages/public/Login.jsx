@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button, Alert, Spinner } from "react-bootstrap";
 
-const Login = () => {
+const Login = ({ setUserData }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || "/";
@@ -31,7 +31,13 @@ const Login = () => {
 
       const data = await res.json();
       localStorage.setItem("token", data.accessToken);
-      console.log("Token salvato:", localStorage.getItem("token"));
+      console.log("Saved token:", localStorage.getItem("token"));
+
+      const userRes = await fetch("http://localhost:3002/users/me", {
+        headers: { Authorization: `Bearer ${data.accessToken}` },
+      });
+      const userData = await userRes.json();
+      setUserData(userData);
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.message);

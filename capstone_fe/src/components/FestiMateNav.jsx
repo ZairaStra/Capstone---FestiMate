@@ -1,13 +1,11 @@
 import { Navbar, Container, Nav, NavDropdown, Image } from "react-bootstrap";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import logo from "../assets/logo_mauve.svg";
 import { useEffect, useState } from "react";
+import defaultAvatar from "../assets/account.png";
 
-const FestiMateNav = () => {
-  const user = useSelector((state) => state.user);
+const FestiMateNav = ({ user }) => {
   const navigate = useNavigate();
-
   const [showNav, setShowNav] = useState(true);
   const [lastScroll, setLastScroll] = useState(0);
 
@@ -34,10 +32,10 @@ const FestiMateNav = () => {
   const isLoggedIn = !!token;
 
   const renderUserIcon = () => {
-    if (isLoggedIn && user.avatar) {
+    if (isLoggedIn && user?.profileImg) {
       return (
         <Image
-          src={user.avatar}
+          src={user.profileImg}
           roundedCircle
           width="30"
           height="30"
@@ -45,11 +43,11 @@ const FestiMateNav = () => {
           style={{ objectFit: "cover" }}
           onError={(e) => {
             e.currentTarget.onerror = null;
-            e.currentTarget.replaceWith(<i className="bi bi-person-circle icons" style={{ color: "#ff69b4", fontSize: "1.5rem" }}></i>);
+            e.currentTarget.src = defaultAvatar;
           }}
         />
       );
-    } else if (isLoggedIn && !user.avatar) {
+    } else if (isLoggedIn && !user?.profileImg) {
       return <i className="bi bi-person-circle icons" style={{ color: "#6a5acd", fontSize: "1.5rem" }}></i>;
     } else {
       return <i className="bi bi-person-circle icons"></i>;

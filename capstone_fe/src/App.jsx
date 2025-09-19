@@ -14,19 +14,34 @@ import ArtistDetail from "./pages/public/ArtistDetail";
 import Login from "./pages/public/Login";
 import Registration from "./pages/public/Registration";
 import MyProfile from "./pages/public/MyProfile";
+import { useState } from "react";
+import { useEffect } from "react";
 
 function App() {
+  const [userData, setUserData] = useState(null);
   const userRole = useSelector((state) => state.user.role);
 
   const RoleRoute = ({ allowedRoles, element }) => {
     return allowedRoles.includes(userRole) ? element : <Navigate to="/" />;
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetch("http://localhost:3002/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => setUserData(data))
+        .catch(() => setUserData(null));
+    }
+  }, []);
+
   return (
     <BrowserRouter>
-      <FestiMateNav />
+      <FestiMateNav user={userData} setUserData={setUserData} />
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login setUserData={setUserData} />} />
         <Route path="/register" element={<Registration />} />
         <Route path="/" element={<Homepage />} />
         <Route path="/festivals" element={<Festivals userRole={userRole} />} />
@@ -34,7 +49,7 @@ function App() {
         <Route path="/artists" element={<Artists userRole={userRole} />} />
         <Route path="/artists/:id" element={<ArtistDetail userRole={userRole} />} />
         {/* <Route path="/reservations/me/register" element={<Reservation />} />*/}
-        <Route path="/me" element={<MyProfile />} />
+        <Route path="/me" element={<MyProfile user={userData} setUserData={setUserData} />} />
         {/*
         <Route path="/admin/users" element={<RoleRoute allowedRoles={["USER_MANAGER"]} element={<Users />} />} />
         <Route path="/admin/admins" element={<RoleRoute allowedRoles={["SYSTEM_ADMIN"]} element={<Admins />} />} />
