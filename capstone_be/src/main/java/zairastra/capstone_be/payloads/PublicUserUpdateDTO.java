@@ -20,7 +20,5 @@ public record PublicUserUpdateDTO(@NotEmpty(message = "Username is required")
                                   String city,
 
                                   @NotEmpty(message = "Country is required")
-                                  String country,
-
-                                  String profileImg) {
+                                  String country) {
 }

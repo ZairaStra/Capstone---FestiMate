@@ -1,23 +1,13 @@
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 
-const FestiMateModal = ({ show, onClose, title, children, footer }) => {
+const FestiMateModal = ({ show, onClose, title, children }) => {
   return (
     <Modal show={show} onHide={onClose} size="md" centered>
-      <Modal.Header closeButton>
+      <Modal.Header closeButton onHide={onClose}>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>{children}</Modal.Body>
-
-      <Modal.Footer>
-        {footer ? (
-          footer
-        ) : (
-          <Button variant="none" className="btn-festimate" onClick={onClose}>
-            Close
-          </Button>
-        )}
-      </Modal.Footer>
     </Modal>
   );
 };

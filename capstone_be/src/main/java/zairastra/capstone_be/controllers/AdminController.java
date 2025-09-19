@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import zairastra.capstone_be.entities.Admin;
 import zairastra.capstone_be.entities.enums.Department;
 import zairastra.capstone_be.exceptions.ValidationException;
 import zairastra.capstone_be.payloads.AdminRegistrationDTO;
+import zairastra.capstone_be.payloads.AdminResponseDTO;
 import zairastra.capstone_be.payloads.AdminUpdateDTO;
 import zairastra.capstone_be.payloads.UserRegistrationResponseDTO;
 import zairastra.capstone_be.services.AdminService;
@@ -96,4 +98,11 @@ public class AdminController {
     public void deleteAdminById(@PathVariable Long adminId) {
         adminService.deleteAdminById(adminId);
     }
+
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public AdminResponseDTO getMyProfile(@AuthenticationPrincipal Admin authorizedUser) {
+        return adminService.getMyProfile(authorizedUser);
+    }
 }
+

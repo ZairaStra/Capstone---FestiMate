@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Button, Form, Spinner, Row, Col, Alert } from "react-bootstrap";
+import { Button, Form, Spinner, Alert, Row, Col } from "react-bootstrap";
 import FestiMateModal from "./FestiMateModal";
 
-const FestiMatePatchField = ({ label, value, type, onPatch }) => {
+const FestiMatePatchField = ({ label, value, type = "text", onPatch }) => {
   const [showModal, setShowModal] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
-  const [inputValue, setInputValue] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
@@ -14,7 +14,7 @@ const FestiMatePatchField = ({ label, value, type, onPatch }) => {
   useEffect(() => {
     if (!showModal) {
       setOldPassword("");
-      setInputValue("");
+      setNewPassword("");
       setFile(null);
       setLoading(false);
       setSuccess("");
@@ -28,71 +28,81 @@ const FestiMatePatchField = ({ label, value, type, onPatch }) => {
     setError("");
 
     try {
-      if (type === "file" && file) {
+      if (type === "file") {
+        if (!file) throw new Error("No file selected");
         await onPatch(file);
+        setSuccess("Profile image updated successfully");
       } else if (type === "password") {
-        if (!oldPassword || !inputValue) throw new Error("Both old and new password required");
-        await onPatch({ oldPassword, newPassword: inputValue });
+        if (!oldPassword || !newPassword) throw new Error("Both old and new password are required");
+        await onPatch({ oldPassword, newPassword });
+        setSuccess("Password updated successfully");
       }
-
-      setSuccess("Password update successfully!");
     } catch (err) {
-      console.error("Errore PATCH field:", err);
-      setError("Update failed, please try again");
+      console.error("Error PATCH field:", err);
+      setError(err?.message || "Update failed, please try again");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Row className="align-items-end g-3">
-      <Col xs={10}>
-        <strong className="me-3">{label}</strong>
-        {type === "file" ? (
-          <img
-            src={value}
-            alt={label}
-            className="img-fluid rounded border"
-            style={{ maxWidth: "150px", minWidth: "80px", height: "auto", objectFit: "cover" }}
-          />
-        ) : type === "password" ? (
-          <span>••••••••</span>
-        ) : null}
-      </Col>
-      <Col xs={2}>
-        <Button variant="link" className="links p-0" onClick={() => setShowModal(true)}>
-          <i className="bi bi-pencil-fill"></i>
-        </Button>
-      </Col>
+    <>
+      <Row className="align-items-end g-3">
+        <Col className="d-flex align-items-end justify-content-between">
+          <div className="d-flex align-items-end gap-2">
+            <strong>{label}</strong>
+            {type === "file" && value ? (
+              <img
+                src={value}
+                alt={label}
+                className="img-fluid rounded border"
+                style={{ maxWidth: "150px", minWidth: "80px", height: "auto", objectFit: "cover" }}
+              />
+            ) : type === "password" ? (
+              <span>••••••••</span>
+            ) : null}
+          </div>
 
-      <FestiMateModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
-        title={`Update ${label}`}
-        footer={
-          <>
-            <Button variant="none" className="btn-festimate" onClick={() => setShowModal(false)}>
-              Cancel
-            </Button>
-            <Button variant="none" className="btn-festimate" onClick={handleSave} disabled={loading}>
-              {loading ? <Spinner animation="grow" className="spinner" /> : "Save"}
-            </Button>
-          </>
-        }
-      >
+          <Button variant="link" className="links" onClick={() => setShowModal(true)}>
+            <i className="bi bi-pencil-fill"></i>
+          </Button>
+        </Col>
+      </Row>
+
+      <FestiMateModal show={showModal} onClose={() => setShowModal(false)} title={`Update ${label || ""}`}>
         {success && <Alert variant="success">{success}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
 
         {type === "file" ? (
-          <Form.Control type="file" onChange={(e) => setFile(e.target.files[0])} />
+          <>
+            <Form.Control
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                setFile(e.target.files && e.target.files[0] ? e.target.files[0] : null);
+                setSuccess("");
+                setError("");
+              }}
+            />
+            <div className="mt-3 text-end">
+              <Button variant="none" className="btn-festimate" onClick={handleSave} disabled={loading}>
+                {loading ? <Spinner animation="grow" className="spinner" /> : "Save"}
+              </Button>
+            </div>
+          </>
         ) : type === "password" ? (
           <>
             <Form.Control type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} placeholder="Old password" className="mb-3" />
-            <Form.Control type="password" value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="New password" />
+            <Form.Control type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New password" />
+            <div className="mt-3 text-end">
+              <Button variant="none" className="btn-festimate" onClick={handleSave} disabled={loading}>
+                {loading ? <Spinner animation="grow" className="spinner" /> : "Save"}
+              </Button>
+            </div>
           </>
         ) : null}
       </FestiMateModal>
-    </Row>
+    </>
   );
 };
 

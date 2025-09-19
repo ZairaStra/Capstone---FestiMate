@@ -14,6 +14,7 @@ import zairastra.capstone_be.entities.enums.Role;
 import zairastra.capstone_be.exceptions.BadRequestException;
 import zairastra.capstone_be.exceptions.NotFoundException;
 import zairastra.capstone_be.payloads.AdminRegistrationDTO;
+import zairastra.capstone_be.payloads.AdminResponseDTO;
 import zairastra.capstone_be.payloads.AdminUpdateDTO;
 import zairastra.capstone_be.repositories.AdminRepository;
 
@@ -160,4 +161,19 @@ public class AdminService {
     public boolean adminExistsByUsernameOrEmail(String username, String email) {
         return adminRepository.existsByUsername(username) || adminRepository.existsByEmail(email);
     }
+
+    public AdminResponseDTO getMyProfile(Admin admin) {
+        return new AdminResponseDTO(
+                admin.getUsername(),
+                admin.getName(),
+                admin.getSurname(),
+                admin.getEmail(),
+                admin.getProfileImg(),
+                admin.getPhoneNumber(),
+                admin.getRole(),
+                admin.getDepartment(),
+                admin.getHireDate()
+        );
+    }
+
 }
