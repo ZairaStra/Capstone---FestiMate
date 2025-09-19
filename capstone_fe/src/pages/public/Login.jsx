@@ -30,7 +30,8 @@ const Login = () => {
       }
 
       const data = await res.json();
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.accessToken);
+      console.log("Token salvato:", localStorage.getItem("token"));
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.message);
@@ -57,7 +58,7 @@ const Login = () => {
             </Form.Group>
 
             <Button type="submit" className="btn-festimate" disabled={loading}>
-              {loading ? <Spinner animation="grow" size="sm" /> : "Login"}
+              {loading ? <Spinner variant="none" className="spinner" animation="grow" size="sm" /> : "Login"}
             </Button>
           </Form>
 

@@ -155,4 +155,9 @@ h6 {
   color: #ff69b4;
 }
 
+.p-form {
+  border: 2px solid #e6e6fa;
+  border-radius: 1rem;
+}
+
 /* DRopdown */

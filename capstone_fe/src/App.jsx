@@ -13,6 +13,7 @@ import Artists from "./pages/public/Artists";
 import ArtistDetail from "./pages/public/ArtistDetail";
 import Login from "./pages/public/Login";
 import Registration from "./pages/public/Registration";
+import MyProfile from "./pages/public/MyProfile";
 
 function App() {
   const userRole = useSelector((state) => state.user.role);
@@ -32,10 +33,9 @@ function App() {
         <Route path="/festivals/:id" element={<FestivalDetail userRole={userRole} />} />
         <Route path="/artists" element={<Artists userRole={userRole} />} />
         <Route path="/artists/:id" element={<ArtistDetail userRole={userRole} />} />
-        {/* <Route path="/reservations/me/register" element={<Reservation />} />
+        {/* <Route path="/reservations/me/register" element={<Reservation />} />*/}
         <Route path="/me" element={<MyProfile />} />
-        <Route path="/settings" element={<Settings />} />
-
+        {/*
         <Route path="/admin/users" element={<RoleRoute allowedRoles={["USER_MANAGER"]} element={<Users />} />} />
         <Route path="/admin/admins" element={<RoleRoute allowedRoles={["SYSTEM_ADMIN"]} element={<Admins />} />} />
         <Route path="/admin/reservations" element={<RoleRoute allowedRoles={["RESERVATION_MANAGER"]} element={<Reservations />} />} /> */}

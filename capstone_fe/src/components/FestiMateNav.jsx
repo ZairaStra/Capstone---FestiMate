@@ -88,8 +88,8 @@ const FestiMateNav = () => {
                     Reservations
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} to="/settings" className="nav-dropdown-links">
-                    Settings
+                  <NavDropdown.Item as={Link} to="/me" className="nav-dropdown-links">
+                    Profile
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handleLogout} className="nav-dropdown-links">
