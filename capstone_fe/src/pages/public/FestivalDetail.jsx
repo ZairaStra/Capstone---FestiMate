@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Spinner, Alert, Container, Row, Col } from "react-bootstrap";
+import { Alert, Container, Row, Col } from "react-bootstrap";
 import FestiMateDetailCard from "../../components/FestiMateDetailCard";
 import Placeholder from "../../assets/placeholder.webp";
+import FestiMateSpinner from "../../components/FestiMateSpinner";
 
 const FestivalDetail = () => {
   const { id } = useParams();
@@ -37,19 +38,13 @@ const FestivalDetail = () => {
   };
 
   if (loading) {
-    return (
-      <Container className="text-center my-5">
-        <Spinner animation="grow" role="status" variant="none" className="spinner">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </Container>
-    );
+    return <FestiMateSpinner />;
   }
 
   if (!festival) return <Alert variant="warning">Festival not found</Alert>;
 
   return (
-    <Container className="py-5">
+    <Container>
       <Row className="justify-content-center">
         <Col xs={12} md={10} lg={8}>
           <FestiMateDetailCard

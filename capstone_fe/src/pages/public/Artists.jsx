@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Spinner, Container, Row, Col, Alert, Button } from "react-bootstrap";
+import { Container, Row, Col, Alert, Button } from "react-bootstrap";
 import FestiMateCard from "../../components/FestiMateCard";
 import FestiMateDropdown from "../../components/FestiMateDropdown";
 import FestiMateSearchbar from "../../components/FestiMateSearchbar";
+import FestiMateSpinner from "../../components/FestiMateSpinner";
 
 const Artists = () => {
   const location = useLocation();
@@ -113,13 +114,7 @@ const Artists = () => {
         </div>
       )}
 
-      {loading && (
-        <div className="text-center my-4">
-          <Spinner animation="grow" role="status" variant="none" className="spinner">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-        </div>
-      )}
+      {loading && <FestiMateSpinner />}
     </Container>
   );
 };

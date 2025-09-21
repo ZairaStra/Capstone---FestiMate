@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Spinner, Alert, Container, Row, Col, Button, ListGroup } from "react-bootstrap";
+import { Alert, Container, Row, Col, Button, ListGroup } from "react-bootstrap";
 import FestiMateDetailCard from "../../components/FestiMateDetailCard";
 import FestiMateModal from "../../components/FestiMateModal";
 import Placeholder from "../../assets/placeholder.webp";
+import FestiMateSpinner from "../../components/FestiMateSpinner";
 
 const ArtistDetail = () => {
   const { id } = useParams();
@@ -52,20 +53,12 @@ const ArtistDetail = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <Container className="text-center my-5 py-5">
-        <Spinner animation="grow" role="status" variant="none" className="spinner">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </Container>
-    );
-  }
+  if (loading) return <FestiMateSpinner />;
 
   if (!artist) return <Alert variant="warning">Artist not found</Alert>;
 
   return (
-    <Container className="py-5">
+    <Container>
       <Row className="justify-content-center">
         <Col xs={12} md={10} lg={8}>
           <FestiMateDetailCard
@@ -80,7 +73,7 @@ const ArtistDetail = () => {
       </Row>
 
       <FestiMateModal show={show} onClose={() => setShow(false)} title="Festivals">
-        {loadingLineups && <Spinner animation="grow" className="spinner" />}
+        {loadingLineups && <FestiMateSpinner />}
         {errorLineups && <Alert variant="danger">{errorLineups}</Alert>}
         {!loadingLineups && !errorLineups && lineups.length === 0 && <Alert variant="warning">No festivals found for this artist.</Alert>}
         {!loadingLineups && !errorLineups && lineups.length > 0 && (

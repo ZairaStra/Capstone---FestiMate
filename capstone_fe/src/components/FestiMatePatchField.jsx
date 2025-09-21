@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Button, Form, Spinner, Alert, Row, Col } from "react-bootstrap";
+import { Button, Form, Alert, Row, Col } from "react-bootstrap";
 import FestiMateModal from "./FestiMateModal";
+import FestiMateSpinner from "./FestiMateSpinner";
 
 const FestiMatePatchField = ({ label, value, type = "text", onPatch }) => {
   const [showModal, setShowModal] = useState(false);
@@ -86,7 +87,7 @@ const FestiMatePatchField = ({ label, value, type = "text", onPatch }) => {
             />
             <div className="mt-3 text-end">
               <Button variant="none" className="btn-festimate" onClick={handleSave} disabled={loading}>
-                {loading ? <Spinner animation="grow" className="spinner" /> : "Save"}
+                {loading ? <FestiMateSpinner /> : "Save"}
               </Button>
             </div>
           </>
@@ -96,7 +97,7 @@ const FestiMatePatchField = ({ label, value, type = "text", onPatch }) => {
             <Form.Control type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New password" />
             <div className="mt-3 text-end">
               <Button variant="none" className="btn-festimate" onClick={handleSave} disabled={loading}>
-                {loading ? <Spinner animation="grow" className="spinner" /> : "Save"}
+                {loading ? <FestiMateSpinner /> : "Save"}
               </Button>
             </div>
           </>

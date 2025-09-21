@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { Container, Row, Col, Form, Button, Alert, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
+import FestiMateSpinner from "../../components/FestiMateSpinner";
 
 const Login = ({ setUserData }) => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const Login = ({ setUserData }) => {
       localStorage.setItem("token", data.accessToken);
       console.log("Saved token:", localStorage.getItem("token"));
 
-      const userRes = await fetch("http://localhost:3002/users/me", {
+      const userRes = await fetch("http://localhost:3002/", {
         headers: { Authorization: `Bearer ${data.accessToken}` },
       });
       const userData = await userRes.json();
@@ -64,7 +65,7 @@ const Login = ({ setUserData }) => {
             </Form.Group>
 
             <Button type="submit" className="btn-festimate" disabled={loading}>
-              {loading ? <Spinner variant="none" className="spinner" animation="grow" size="sm" /> : "Login"}
+              {loading ? <FestiMateSpinner /> : "Login"}
             </Button>
           </Form>
 

@@ -5,9 +5,11 @@ import { Col, Container, Row } from "react-bootstrap";
 import Placeholder from "../../assets/placeholder.webp";
 import Logo from "../../assets/logo_turquoise.svg";
 import FestiMateSearchbar from "../../components/FestiMateSearchbar";
+import FestiMateSpinner from "../../components/FestiMateSpinner";
 
 const Homepage = () => {
   const [festivals, setFestivals] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +26,8 @@ const Homepage = () => {
         }
       } catch (error) {
         console.error("Error fetching festivals:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -37,6 +41,8 @@ const Homepage = () => {
   const handleArtistSearch = (query) => {
     navigate(`/artists?name=${encodeURIComponent(query)}`);
   };
+
+  if (loading) return <FestiMateSpinner />;
 
   return (
     <Container className="my-5 pt-5">
