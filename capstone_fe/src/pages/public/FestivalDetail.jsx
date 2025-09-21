@@ -51,7 +51,7 @@ const FestivalDetail = () => {
             coverImg={festival.coverImg || Placeholder}
             text1={festival.name}
             text2={`${new Date(festival.startDate).toLocaleDateString()} – ${new Date(festival.endDate).toLocaleDateString()}`}
-            text3={`${festival.city}, ${festival.country}`}
+            text3={`${festival.city}, ${festival.country}  | Camping: ${festival.campingMap ? "Yes" : "No"}`}
             buttonText="Buy Tickets"
             onButtonClick={handleBuyTickets}
           />

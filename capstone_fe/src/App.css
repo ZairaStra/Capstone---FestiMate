@@ -162,3 +162,69 @@ h6 {
 }
 
 /* DRopdown */
+
+/* Camping */
+.camping-map-wrapper svg {
+  width: 100%;
+  height: auto;
+}
+.camping-map-wrapper svg rect,
+.camping-map-wrapper svg path {
+  transition: all 0.2s ease;
+}
+.camping-map-wrapper svg rect:hover:not([data-status="OCCUPIED"]),
+.camping-map-wrapper svg path:hover:not([data-status="OCCUPIED"]) {
+  stroke: #20b2aa;
+}
+.camping-map-wrapper svg [data-status="OCCUPIED"] {
+  fill: #888888;
+  stroke: #888888;
+}
+.legend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.legend-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.legend-shape {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+}
+.legend-shape.triangle {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  background-color: #e6e6fa;
+}
+.legend-shape.circle {
+  border-radius: 50%;
+  background-color: #e6e6fa;
+}
+.legend-shape.rectangle {
+  background-color: #e6e6fa;
+}
+.legend-color.selected {
+  background-color: #20b2aa;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 6px;
+}
+.legend-color.available {
+  background-color: #e6e6fa;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 6px;
+}
+.legend-color.occupied {
+  background-color: #888888;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 6px;
+}

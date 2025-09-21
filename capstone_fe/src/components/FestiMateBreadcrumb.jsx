@@ -18,7 +18,7 @@ const FestiMateBreadcrumb = () => {
   if (location.pathname === "/") return null;
 
   return (
-    <Container>
+    <Container className="d-flex justify-content-end">
       <Breadcrumb className="mt-5 pt-5">
         <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/", className: "links" }}>
           Home
