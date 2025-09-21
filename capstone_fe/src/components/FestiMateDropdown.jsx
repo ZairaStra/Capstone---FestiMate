@@ -7,7 +7,7 @@ const FestiMateDropdown = ({ value, onChange }) => {
 
   return (
     <Dropdown className="d-inline mx-2 mb-2">
-      <Dropdown.Toggle id="dropdown-autoclose-true" variant="none" className="btn-festimate">
+      <Dropdown.Toggle id="dropdown-autoclose-true" variant="none" className="btn-festimate rounded-pill">
         {value || "Genre"}
       </Dropdown.Toggle>
 

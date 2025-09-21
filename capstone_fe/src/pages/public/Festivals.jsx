@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Container, Row, Col, Alert, Button, FormControl } from "react-bootstrap";
+import { Container, Row, Col, Alert, FormControl } from "react-bootstrap";
 import FestiMateCard from "../../components/FestiMateCard";
 import FestiMateDropdown from "../../components/FestiMateDropdown";
 import FestiMateSearchbar from "../../components/FestiMateSearchbar";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
+import FestiMateButton from "../../components/FestiMateButton";
 
 const Festivals = () => {
   const location = useLocation();
@@ -175,11 +176,11 @@ const Festivals = () => {
                   <FormControl type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                 </Col>
               </Row>
-              <Row gyìì>
+              <Row>
                 <Col xs={12} className="text-end">
-                  <Button className="btn-festimate mt-2" onClick={handleSearch}>
+                  <FestiMateButton onClick={handleSearch} className="mt-2">
                     Search
-                  </Button>
+                  </FestiMateButton>
                 </Col>
               </Row>
             </Col>
@@ -199,9 +200,7 @@ const Festivals = () => {
 
       {hasMore && !loading && (
         <div className="text-center my-4">
-          <Button className="btn-festimate" variant="none" onClick={handleLoadMore}>
-            Load More
-          </Button>
+          <FestiMateButton onClick={handleLoadMore}>Load More</FestiMateButton>
         </div>
       )}
 

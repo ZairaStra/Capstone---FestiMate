@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Container, Row, Col, Alert, Button } from "react-bootstrap";
+import { Container, Row, Col, Alert } from "react-bootstrap";
 import FestiMateCard from "../../components/FestiMateCard";
 import FestiMateDropdown from "../../components/FestiMateDropdown";
 import FestiMateSearchbar from "../../components/FestiMateSearchbar";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
+import FestiMateButton from "../../components/FestiMateButton";
 
 const Artists = () => {
   const location = useLocation();
@@ -108,9 +109,7 @@ const Artists = () => {
 
       {hasMore && !loading && (
         <div className="text-center my-4">
-          <Button className="btn-festimate" variant="none" onClick={handleLoadMore}>
-            Load More
-          </Button>
+          <FestiMateButton onClick={handleLoadMore}>Load More</FestiMateButton>
         </div>
       )}
 

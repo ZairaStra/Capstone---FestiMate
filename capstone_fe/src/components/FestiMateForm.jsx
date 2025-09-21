@@ -1,4 +1,5 @@
-import { Form, Button } from "react-bootstrap";
+import { Form } from "react-bootstrap";
+import FestiMateButton from "./FestiMateButton";
 
 const FestiMateForm = ({ fields = [], onSubmit, submitLabel = "Submit", loading }) => {
   return (
@@ -18,9 +19,9 @@ const FestiMateForm = ({ fields = [], onSubmit, submitLabel = "Submit", loading 
           )}
         </Form.Group>
       ))}
-      <Button type="submit" variant="none" className="btn-festimate" disabled={loading}>
+      <FestiMateButton type="submit" disabled={loading}>
         {loading ? "Loading..." : submitLabel}
-      </Button>
+      </FestiMateButton>
     </Form>
   );
 };

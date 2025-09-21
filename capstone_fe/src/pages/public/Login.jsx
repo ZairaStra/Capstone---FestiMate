@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
+import { Container, Row, Col, Form, Alert } from "react-bootstrap";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
+import FestiMateButton from "../../components/FestiMateButton";
 
 const Login = ({ setUserData }) => {
   const navigate = useNavigate();
@@ -64,9 +65,9 @@ const Login = ({ setUserData }) => {
               <Form.Control type="password" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </Form.Group>
 
-            <Button type="submit" className="btn-festimate" disabled={loading}>
+            <FestiMateButton type="submit" disabled={loading}>
               {loading ? <FestiMateSpinner /> : "Login"}
-            </Button>
+            </FestiMateButton>
           </Form>
 
           <Form.Text className="text-muted mt-3 d-block">

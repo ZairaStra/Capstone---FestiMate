@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
+import { Container, Row, Col, Form, Alert } from "react-bootstrap";
+import FestiMateButton from "../../components/FestiMateButton";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -122,9 +123,9 @@ const Registration = () => {
               </Form.Group>
             )}
 
-            <Button type="submit" className="btn-festimate">
+            <FestiMateButton type="submit" className="btn-festimate">
               Register
-            </Button>
+            </FestiMateButton>
           </Form>
         </Col>
       </Row>

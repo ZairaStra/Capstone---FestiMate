@@ -1,7 +1,8 @@
 import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
+
 import { Col, Row } from "react-bootstrap";
 import Placeholder from "../assets/placeholder.webp";
+import FestiMateButton from "./FestiMateButton";
 
 const FestiMateDetailCard = ({ coverImg, text1, text2, text3, buttonText, onButtonClick }) => {
   return (
@@ -13,13 +14,7 @@ const FestiMateDetailCard = ({ coverImg, text1, text2, text3, buttonText, onButt
             {text2 && <Card.Text>{text2}</Card.Text>}
             {text3 && <Card.Text>{text3}</Card.Text>}
           </Col>
-          <Col className="text-end">
-            {buttonText && onButtonClick && (
-              <Button onClick={onButtonClick} variant="none" className="btn-festimate">
-                {buttonText}
-              </Button>
-            )}
-          </Col>
+          <Col className="text-end">{buttonText && onButtonClick && <FestiMateButton onClick={onButtonClick}>{buttonText}</FestiMateButton>}</Col>
         </Row>
       </Card.Body>
       {coverImg && (

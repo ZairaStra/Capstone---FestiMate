@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Alert } from "react-bootstrap";
+import { Container, Row, Col, Alert } from "react-bootstrap";
 import FestiMatePatchField from "../../components/FestiMatePatchField";
 import FestiMateModal from "../../components/FestiMateModal";
 import FestiMateForm from "../../components/FestiMateForm";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
+import FestiMateButton from "../../components/FestiMateButton";
 
 const MyProfile = () => {
   const [userData, setUserData] = useState(null);
@@ -243,9 +244,7 @@ const MyProfile = () => {
           {isPublicUser && (
             <>
               <div className="mt-4 text-end">
-                <Button
-                  variant="none"
-                  className="btn-festimate"
+                <FestiMateButton
                   onClick={() => {
                     setSuccess("");
                     setError("");
@@ -253,7 +252,7 @@ const MyProfile = () => {
                   }}
                 >
                   Update Profile
-                </Button>
+                </FestiMateButton>
               </div>
 
               <FestiMateModal show={showUpdateModal} title="Update Profile" onClose={() => setShowUpdateModal(false)}>
