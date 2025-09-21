@@ -695,7 +695,7 @@ const MyProfile = () => {
   ];
 
   return (
-    <Container className="my-5 py-5">
+    <Container className="mb-5 ">
       <Row className="justify-content-center g-2">
         <Col xs={12} md={8}>
           <h2 className="display-3 mt-5">My Profile</h2>

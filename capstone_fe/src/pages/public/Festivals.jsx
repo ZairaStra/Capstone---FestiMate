@@ -134,7 +134,7 @@ const Festivals = () => {
   };
 
   return (
-    <Container className="my-5">
+    <Container className="mb-5">
       <Row className="align-items-baseline g-2 g-md-3 g-xl-4 ">
         <Col xs={12} md={6}>
           <h2 className="my-5 pt-5 display-3">All Festivals</h2>

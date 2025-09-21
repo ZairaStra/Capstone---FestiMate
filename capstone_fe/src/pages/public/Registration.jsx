@@ -65,7 +65,7 @@ const Registration = () => {
   };
 
   return (
-    <Container className="my-5 py-5">
+    <Container className="mb-5">
       <Row className="justify-content-center">
         <Col xs={12} md={8}>
           <h2 className="display-4 my-5">Register</h2>

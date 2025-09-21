@@ -65,7 +65,7 @@ const ArtistDetail = () => {
   if (!artist) return <Alert variant="warning">Artist not found</Alert>;
 
   return (
-    <Container className="my-5 py-5">
+    <Container className="py-5">
       <Row className="justify-content-center">
         <Col xs={12} md={10} lg={8}>
           <FestiMateDetailCard

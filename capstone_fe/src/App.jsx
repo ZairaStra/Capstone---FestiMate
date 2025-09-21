@@ -16,6 +16,7 @@ import Registration from "./pages/public/Registration";
 import MyProfile from "./pages/public/MyProfile";
 import { useState } from "react";
 import { useEffect } from "react";
+import FestiMateBreadcrumb from "./components/FestiMateBreadcrumb";
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -40,6 +41,7 @@ function App() {
   return (
     <BrowserRouter>
       <FestiMateNav user={userData} setUserData={setUserData} />
+      <FestiMateBreadcrumb />
       <Routes>
         <Route path="/login" element={<Login setUserData={setUserData} />} />
         <Route path="/register" element={<Registration />} />
