@@ -1,5 +1,6 @@
 //IMPAGINATO MA NON CAMBIA COLORE
-import { useState, useEffect } from "react";
+{
+  /*import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Alert } from "react-bootstrap";
 import FestiMateForm from "../../components/FestiMateForm";
@@ -260,12 +261,10 @@ const Reservation = () => {
   );
 };
 
-export default Reservation;
+export default Reservation;*/
+}
 
 //INTERATTIVO MA SPAGINATO
-
-{
-  /*}
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Alert } from "react-bootstrap";
@@ -286,9 +285,9 @@ const Reservation = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [tickets, setTickets] = useState(1);
-  const [selectedCampingUnits, setSelectedCampingUnits] = useState([]);
-
+  const [selectedCampingUnits, setSelectedCampingUnits] = useState([]); // spotCode
   const [campingUnits, setCampingUnits] = useState([]);
+  const [spotCodeToId, setSpotCodeToId] = useState({}); // mappa spotCode -> id numerico
   const [svgViewBox, setSvgViewBox] = useState("0 0 800 600");
 
   useEffect(() => {
@@ -306,6 +305,13 @@ const Reservation = () => {
         setFestival(data);
 
         const unitsData = data.campingUnits || [];
+
+        // costruisco mappa spotCode -> id numerico
+        const spotMap = {};
+        unitsData.forEach((u) => {
+          if (u.spotCode && u.id) spotMap[u.spotCode] = u.id;
+        });
+        setSpotCodeToId(spotMap);
 
         if (data.campingMap) {
           setLoadingCamping(true);
@@ -325,7 +331,8 @@ const Reservation = () => {
               const unitData = unitsData.find((u) => u.spotCode === el.id);
               const status = unitData?.status || "AVAILABLE";
               return {
-                id: el.id,
+                spotCode: el.id,
+                id: unitData?.id || null,
                 type: el.tagName.toLowerCase(),
                 status,
                 d: el.getAttribute("d") || "",
@@ -356,6 +363,10 @@ const Reservation = () => {
     fetchFestival();
   }, [festivalId]);
 
+  const handleCampingClick = (spotCode) => {
+    setSelectedCampingUnits((prev) => (prev.includes(spotCode) ? prev.filter((s) => s !== spotCode) : [...prev, spotCode]));
+  };
+
   const handleReservation = async () => {
     setError("");
     setSuccess("");
@@ -366,13 +377,15 @@ const Reservation = () => {
     }
 
     try {
+      const campingIds = selectedCampingUnits.map((spot) => spotCodeToId[spot]).filter((id) => id != null);
+
       const payload = {
         festivalId: festival.id,
         startDate,
         endDate,
         numTickets: tickets,
         totalPrice: tickets * festival.dailyPrice,
-        campingUnitIds: selectedCampingUnits.map(Number),
+        campingUnitIds: campingIds,
       };
 
       const res = await fetch("http://localhost:3002/reservations/me/register", {
@@ -390,17 +403,10 @@ const Reservation = () => {
       }
 
       setSuccess("Reservation successful!");
-      setTimeout(() => navigate("/profile/reservations"), 2000);
+      setTimeout(() => navigate("/me/reservations"), 2000);
     } catch (err) {
       setError(err.message || "Reservation failed");
     }
-  };
-
-  const handleCampingClick = (unitId) => {
-    setSelectedCampingUnits((prev) => {
-      const isSelected = prev.includes(unitId);
-      return isSelected ? prev.filter((id) => id !== unitId) : [...prev, unitId];
-    });
   };
 
   if (loadingFestival) return <FestiMateSpinner />;
@@ -475,37 +481,37 @@ const Reservation = () => {
             <div className="camping-map-wrapper">
               <svg width="100%" height="600" viewBox={svgViewBox} style={{ border: "1px solid #ccc", cursor: "pointer" }}>
                 {campingUnits.map((unit) => {
-                  const isSelected = selectedCampingUnits.includes(unit.id);
+                  const isSelected = selectedCampingUnits.includes(unit.spotCode);
                   let fillColor = unit.status === "OCCUPIED" ? "#888888" : "#e6e6fa";
                   if (isSelected) fillColor = "#20b2aa";
 
                   if (unit.type === "rect") {
                     return (
                       <rect
-                        key={unit.id}
+                        key={unit.spotCode}
                         x={unit.x}
                         y={unit.y}
                         width={unit.width}
                         height={unit.height}
                         fill={fillColor}
                         stroke={fillColor}
-                        onClick={() => handleCampingClick(unit.id)}
+                        onClick={() => handleCampingClick(unit.spotCode)}
                       />
                     );
                   } else if (unit.type === "circle") {
                     return (
                       <circle
-                        key={unit.id}
+                        key={unit.spotCode}
                         cx={unit.cx}
                         cy={unit.cy}
                         r={unit.r}
                         fill={fillColor}
                         stroke={fillColor}
-                        onClick={() => handleCampingClick(unit.id)}
+                        onClick={() => handleCampingClick(unit.spotCode)}
                       />
                     );
                   } else if (unit.type === "path") {
-                    return <path key={unit.id} d={unit.d} fill={fillColor} stroke={fillColor} onClick={() => handleCampingClick(unit.id)} />;
+                    return <path key={unit.spotCode} d={unit.d} fill={fillColor} stroke={fillColor} onClick={() => handleCampingClick(unit.spotCode)} />;
                   }
                   return null;
                 })}
@@ -519,5 +525,3 @@ const Reservation = () => {
 };
 
 export default Reservation;
-*/
-}
