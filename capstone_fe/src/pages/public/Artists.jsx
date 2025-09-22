@@ -85,7 +85,7 @@ const Artists = () => {
   };
 
   return (
-    <Container className="mb-5">
+    <Container className="mb-5" style={{ minHeight: "80vh" }}>
       <Row className="align-items-baseline pb-4">
         <h2 className="my-5  display-3">All Artists</h2>
         <h2 className="display-6">Search by artist name or genre</h2>

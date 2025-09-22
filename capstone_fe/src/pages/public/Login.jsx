@@ -49,8 +49,8 @@ const Login = ({ setUserData }) => {
   };
 
   return (
-    <Container className="mt-3 py-5">
-      <Row className="justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
+    <Container className="mt-3 py-5" style={{ minHeight: "80vh" }}>
+      <Row className="justify-content-center align-items-center">
         <Col xs={12} md={6}>
           <h2 className="display-4">Login</h2>
           {error && <Alert variant="danger">{error}</Alert>}

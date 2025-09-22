@@ -54,7 +54,7 @@ public class Reservation {
     @NotNull(message = "Reservation date and time are required")
     private LocalDateTime createdAt;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "reservation_camping_units",
             joinColumns = @JoinColumn(name = "reservation_id"),

@@ -2,7 +2,7 @@ import { Col, Container, Row } from "react-bootstrap";
 
 const MyFooter = () => {
   return (
-    <footer className="footer-festimate pt-3">
+    <footer className="footer-festimate py-3">
       <Container fluid>
         <Row className="align-items-center">
           <Col xs={12} sm={6} className="text-center  d-flex justify-content-center align-items-center">

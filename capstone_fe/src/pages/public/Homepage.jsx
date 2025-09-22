@@ -45,7 +45,8 @@ const Homepage = () => {
   if (loading) return <FestiMateSpinner />;
 
   return (
-    <Container className="my-5 pt-5">
+    <Container className="my-5 pt-5" style={{ minHeight: "80vh" }}>
+      {loading && <FestiMateSpinner />}
       <Row className="g-2 g-md-3 g-xl-4 mt-3">
         <Col>
           <Carousel slide={false} interval={10000}>

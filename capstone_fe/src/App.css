@@ -228,3 +228,13 @@ h6 {
   display: inline-block;
   margin-right: 6px;
 }
+
+/* LISTGROUP */
+
+.list-festimate {
+  background-color: #2f4f4f;
+  color: #e6e6fa;
+  margin-bottom: 1rem;
+  padding: 3rem;
+  font-family: inherit;
+}

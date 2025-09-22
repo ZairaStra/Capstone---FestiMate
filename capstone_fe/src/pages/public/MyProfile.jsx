@@ -167,104 +167,89 @@ const MyProfile = () => {
     }
   };
 
-  if (loading) return <FestiMateSpinner />;
-  if (!userData) return <Alert variant="warning">Profile not found</Alert>;
-
-  const isPublicUser = !userData.role;
+  const isPublicUser = !userData?.role;
 
   const fields = [
-    {
-      id: "username",
-      label: "Username",
-      type: "text",
-      value: formValues.username,
-      onChange: (e) => setFormValues({ ...formValues, username: e.target.value }),
-    },
-    { id: "name", label: "Name", type: "text", value: formValues.name, onChange: (e) => setFormValues({ ...formValues, name: e.target.value }) },
-    { id: "surname", label: "Surname", type: "text", value: formValues.surname, onChange: (e) => setFormValues({ ...formValues, surname: e.target.value }) },
-    { id: "email", label: "Email", type: "email", value: formValues.email, onChange: (e) => setFormValues({ ...formValues, email: e.target.value }) },
-    { id: "city", label: "City", type: "text", value: formValues.city, onChange: (e) => setFormValues({ ...formValues, city: e.target.value }) },
-    { id: "country", label: "Country", type: "text", value: formValues.country, onChange: (e) => setFormValues({ ...formValues, country: e.target.value }) },
+    { id: "username", label: "Username", type: "text", value: formValues.username },
+    { id: "name", label: "Name", type: "text", value: formValues.name },
+    { id: "surname", label: "Surname", type: "text", value: formValues.surname },
+    { id: "email", label: "Email", type: "email", value: formValues.email },
+    { id: "city", label: "City", type: "text", value: formValues.city },
+    { id: "country", label: "Country", type: "text", value: formValues.country },
   ];
 
   return (
-    <Container className="mb-5 ">
-      <Row className="justify-content-center g-2">
-        <Col xs={12} md={8}>
-          <h2 className="display-3 mt-5">My Profile</h2>
+    <Container className="mb-5" style={{ minHeight: "80vh" }}>
+      {loading ? (
+        <FestiMateSpinner />
+      ) : !userData ? (
+        <Alert variant="warning">Profile not found</Alert>
+      ) : (
+        <Row className="justify-content-center g-2">
+          <Col xs={12} md={8}>
+            <h2 className="display-3 mt-5">My Profile</h2>
 
-          <Row className="g-4 justify-content-center">
-            <Col xs={12} md={8}>
-              <Row className="justify-content-between align-items-end">
-                <Col xs={12} sm={6}>
-                  <FestiMatePatchField label="Password" type="password" value="" onPatch={(pw) => handlePatch("password", pw)} />
-                </Col>
-                <Col xs={12} sm={6}>
-                  <FestiMatePatchField label="" type="file" value={userData.profileImg} onPatch={(file) => handlePatch("profileImg", file)} />
-                </Col>
-              </Row>
-            </Col>
-
-            <Col xs={12} md={8}>
-              <p className="p-form p-2 text-center">
-                <strong className="me-2">Username:</strong> {userData.username}
-              </p>
-            </Col>
-            <Col xs={12} md={8}>
-              <p className="p-form p-2 text-center">
-                <strong className="me-2">Name:</strong> {userData.name}
-              </p>
-            </Col>
-            <Col xs={12} md={8}>
-              <p className="p-form p-2 text-center">
-                <strong className="me-2">Surname:</strong> {userData.surname}
-              </p>
-            </Col>
-            <Col xs={12} md={8}>
-              <p className="p-form p-2 text-center">
-                <strong className="me-2">Email:</strong> {userData.email}
-              </p>
-            </Col>
-            {userData.city && (
+            <Row className="g-4 justify-content-center">
               <Col xs={12} md={8}>
-                <p className="p-form p-2 f-4 text-center">
-                  <strong className="me-2">City:</strong> {userData.city}
-                </p>
+                <Row className="justify-content-between align-items-end">
+                  <Col xs={12} sm={6}>
+                    <FestiMatePatchField label="Password" type="password" value="" onPatch={(pw) => handlePatch("password", pw)} />
+                  </Col>
+                  <Col xs={12} sm={6}>
+                    <FestiMatePatchField label="" type="file" value={userData.profileImg} onPatch={(file) => handlePatch("profileImg", file)} />
+                  </Col>
+                </Row>
               </Col>
+
+              {fields.map((field) => (
+                <Col xs={12} md={8} key={field.id}>
+                  <p className="p-form p-2 text-center">
+                    <strong className="me-2">{field.label}:</strong> {field.value}
+                  </p>
+                </Col>
+              ))}
+
+              {userData.city && (
+                <Col xs={12} md={8}>
+                  <p className="p-form p-2 f-4 text-center">
+                    <strong className="me-2">City:</strong> {userData.city}
+                  </p>
+                </Col>
+              )}
+              {userData.country && (
+                <Col xs={12} md={8}>
+                  <p className="p-form p-2 text-center">
+                    <strong className="me-2"> Country:</strong> {userData.country}
+                  </p>
+                </Col>
+              )}
+            </Row>
+
+            {isPublicUser && (
+              <>
+                <div className="mt-4 text-end">
+                  <FestiMateButton
+                    onClick={() => {
+                      setSuccess("");
+                      setError("");
+                      setShowUpdateModal(true);
+                    }}
+                  >
+                    Update Profile
+                  </FestiMateButton>
+                </div>
+
+                <FestiMateModal show={showUpdateModal} title="Update Profile" onClose={() => setShowUpdateModal(false)}>
+                  {success && <Alert variant="success">{success}</Alert>}
+                  {error && <Alert variant="danger">{error}</Alert>}
+
+                  <FestiMateForm fields={fields} onSubmit={handlePublicUserUpdate} submitLabel="Update Profile" loading={formLoading} />
+                </FestiMateModal>
+              </>
             )}
-            {userData.country && (
-              <Col xs={12} md={8}>
-                <p className="p-form p-2 text-center">
-                  <strong className="me-2"> Country:</strong> {userData.country}
-                </p>
-              </Col>
-            )}
-          </Row>
-
-          {isPublicUser && (
-            <>
-              <div className="mt-4 text-end">
-                <FestiMateButton
-                  onClick={() => {
-                    setSuccess("");
-                    setError("");
-                    setShowUpdateModal(true);
-                  }}
-                >
-                  Update Profile
-                </FestiMateButton>
-              </div>
-
-              <FestiMateModal show={showUpdateModal} title="Update Profile" onClose={() => setShowUpdateModal(false)}>
-                {success && <Alert variant="success">{success}</Alert>}
-                {error && <Alert variant="danger">{error}</Alert>}
-
-                <FestiMateForm fields={fields} onSubmit={handlePublicUserUpdate} submitLabel="Update Profile" loading={formLoading} />
-              </FestiMateModal>
-            </>
-          )}
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      )}
     </Container>
   );
 };

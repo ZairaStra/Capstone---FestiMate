@@ -18,6 +18,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import FestiMateBreadcrumb from "./components/FestiMateBreadcrumb";
 import Reservation from "./pages/public/Reservation";
+import Wishlist from "./pages/public/Wishlist";
+import Reservations from "./pages/public/Reservations";
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -51,8 +53,10 @@ function App() {
         <Route path="/festivals/:id" element={<FestivalDetail userRole={userRole} />} />
         <Route path="/artists" element={<Artists userRole={userRole} />} />
         <Route path="/artists/:id" element={<ArtistDetail userRole={userRole} />} />
-        <Route path="/reservations/me/register" element={<Reservation />} />
         <Route path="/me" element={<MyProfile user={userData} setUserData={setUserData} />} />
+        <Route path="public-users/me/wishlist" element={<Wishlist />} />
+        <Route path="/reservations/me" element={<Reservations />} />
+        <Route path="/reservations/me/register" element={<Reservation />} />
         {/*
         <Route path="/admin/users" element={<RoleRoute allowedRoles={["USER_MANAGER"]} element={<Users />} />} />
         <Route path="/admin/admins" element={<RoleRoute allowedRoles={["SYSTEM_ADMIN"]} element={<Admins />} />} />

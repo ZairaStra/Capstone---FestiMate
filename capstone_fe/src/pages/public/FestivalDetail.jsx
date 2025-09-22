@@ -30,33 +30,32 @@ const FestivalDetail = () => {
 
   const handleBuyTickets = () => {
     const token = localStorage.getItem("token");
-    if (token) {
+    if (token && festival) {
       navigate("/reservations/me/register", { state: { festivalId: festival.id } });
     } else {
       navigate("/login");
     }
   };
 
-  if (loading) {
-    return <FestiMateSpinner />;
-  }
-
-  if (!festival) return <Alert variant="warning">Festival not found</Alert>;
-
   return (
-    <Container>
-      <Row className="justify-content-center">
-        <Col xs={12} md={10} lg={8}>
-          <FestiMateDetailCard
-            coverImg={festival.coverImg || Placeholder}
-            text1={festival.name}
-            text2={`${new Date(festival.startDate).toLocaleDateString()} – ${new Date(festival.endDate).toLocaleDateString()}`}
-            text3={`${festival.city}, ${festival.country}  | Camping: ${festival.campingMap ? "Yes" : "No"}`}
-            buttonText="Buy Tickets"
-            onButtonClick={handleBuyTickets}
-          />
-        </Col>
-      </Row>
+    <Container style={{ minHeight: "80vh" }}>
+      {loading && <FestiMateSpinner />}
+      {!loading && !festival && <Alert variant="warning">Festival not found</Alert>}
+
+      {festival && (
+        <Row className="justify-content-center">
+          <Col xs={12} md={10} lg={8}>
+            <FestiMateDetailCard
+              coverImg={festival.coverImg || Placeholder}
+              text1={festival.name}
+              text2={`${new Date(festival.startDate).toLocaleDateString()} – ${new Date(festival.endDate).toLocaleDateString()}`}
+              text3={`${festival.city}, ${festival.country} | Camping: ${festival.campingMap ? "Yes" : "No"}`}
+              buttonText="Buy Tickets"
+              onButtonClick={handleBuyTickets}
+            />
+          </Col>
+        </Row>
+      )}
     </Container>
   );
 };

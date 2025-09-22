@@ -79,10 +79,10 @@ const FestiMateNav = ({ user }) => {
             <NavDropdown title={renderUserIcon()} id="user-nav-dropdown" align="end">
               {isLoggedIn ? (
                 <>
-                  <NavDropdown.Item as={Link} to="/wishlist" className="nav-dropdown-links">
+                  <NavDropdown.Item as={Link} to="public-users/me/wishlist" className="nav-dropdown-links">
                     Wishlist
                   </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/reservations" className="nav-dropdown-links">
+                  <NavDropdown.Item as={Link} to="/reservations/me" className="nav-dropdown-links">
                     Reservations
                   </NavDropdown.Item>
                   <NavDropdown.Divider />

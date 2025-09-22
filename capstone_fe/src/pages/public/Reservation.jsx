@@ -99,7 +99,6 @@ const Reservation = () => {
       return;
     }
 
-    // trasformiamo gli spotCode selezionati nei rispettivi ID numerici
     const campingIds = selectedCampingUnits.map((spotCode) => unitMap[spotCode]).filter((id) => id !== undefined && id !== null);
 
     try {
@@ -127,14 +126,14 @@ const Reservation = () => {
       }
 
       setSuccess("Reservation successful!");
-      setTimeout(() => navigate("/profile/reservations"), 2000);
+      setTimeout(() => navigate("/reservations/me"), 2000);
     } catch (err) {
       setError(err.message || "Reservation failed");
     }
   };
 
   const handleCampingClick = (e) => {
-    const unitId = e.target.id; // spotCode
+    const unitId = e.target.id;
     const status = e.target.getAttribute("data-status");
     if (!unitId || status === "OCCUPIED") return;
 
@@ -183,7 +182,10 @@ const Reservation = () => {
   ];
 
   return (
-    <Container className="my-5">
+    <Container className="my-5" style={{ minHeight: "80vh" }}>
+      {loadingFestival && <FestiMateSpinner />}
+
+      {error && !festival}
       {success && <Alert variant="success">{success}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
 
