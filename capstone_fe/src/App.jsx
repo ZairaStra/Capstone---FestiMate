@@ -4,8 +4,12 @@ import "./App.css";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+
 import FestiMateNav from "./components/FestiMateNav";
 import FestiMateFooter from "./components/FestiMateFooter";
+import FestiMateBreadcrumb from "./components/FestiMateBreadcrumb";
+
 import Homepage from "./pages/public/Homepage";
 import Festivals from "./pages/public/Festivals";
 import FestivalDetail from "./pages/public/FestivalDetail";
@@ -14,19 +18,20 @@ import ArtistDetail from "./pages/public/ArtistDetail";
 import Login from "./pages/public/Login";
 import Registration from "./pages/public/Registration";
 import MyProfile from "./pages/public/MyProfile";
-import { useState } from "react";
-import { useEffect } from "react";
-import FestiMateBreadcrumb from "./components/FestiMateBreadcrumb";
 import Reservation from "./pages/public/Reservation";
 import Wishlist from "./pages/public/Wishlist";
 import Reservations from "./pages/public/Reservations";
+import Backoffice from "./pages/admin/Backoffice";
+import NotFound from "./pages/public/NotFound";
 
 function App() {
   const [userData, setUserData] = useState(null);
   const userRole = useSelector((state) => state.user.role);
 
-  const RoleRoute = ({ allowedRoles, element }) => {
-    return allowedRoles.includes(userRole) ? element : <Navigate to="/" />;
+  const ProtectedRoute = ({ allowedRoles, children }) => {
+    if (!userRole) return <Navigate to="/login" replace />;
+    if (!allowedRoles.includes(userRole)) return <Navigate to="/" replace />;
+    return children;
   };
 
   useEffect(() => {
@@ -46,6 +51,7 @@ function App() {
       <FestiMateNav user={userData} setUserData={setUserData} />
       <FestiMateBreadcrumb />
       <Routes>
+        <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login setUserData={setUserData} />} />
         <Route path="/register" element={<Registration />} />
         <Route path="/" element={<Homepage />} />
@@ -57,10 +63,15 @@ function App() {
         <Route path="public-users/me/wishlist" element={<Wishlist />} />
         <Route path="/reservations/me" element={<Reservations />} />
         <Route path="/reservations/me/register" element={<Reservation />} />
-        {/*
-        <Route path="/admin/users" element={<RoleRoute allowedRoles={["USER_MANAGER"]} element={<Users />} />} />
-        <Route path="/admin/admins" element={<RoleRoute allowedRoles={["SYSTEM_ADMIN"]} element={<Admins />} />} />
-        <Route path="/admin/reservations" element={<RoleRoute allowedRoles={["RESERVATION_MANAGER"]} element={<Reservations />} />} /> */}
+
+        <Route
+          path="/backoffice"
+          element={
+            <ProtectedRoute allowedRoles={["SYSTEM_ADMIN", "ARTIST_MANAGER", "FESTIVAL_MANAGER", "RESERVATION_MANAGER", "USER_MANAGER"]}>
+              <Backoffice />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <FestiMateFooter />
     </BrowserRouter>

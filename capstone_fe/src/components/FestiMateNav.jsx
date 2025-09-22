@@ -79,12 +79,23 @@ const FestiMateNav = ({ user }) => {
             <NavDropdown title={renderUserIcon()} id="user-nav-dropdown" align="end">
               {isLoggedIn ? (
                 <>
-                  <NavDropdown.Item as={Link} to="public-users/me/wishlist" className="nav-dropdown-links">
-                    Wishlist
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/reservations/me" className="nav-dropdown-links">
-                    Reservations
-                  </NavDropdown.Item>
+                  {!user?.role && (
+                    <>
+                      <NavDropdown.Item as={Link} to="public-users/me/wishlist" className="nav-dropdown-links">
+                        Wishlist
+                      </NavDropdown.Item>
+                      <NavDropdown.Item as={Link} to="/reservations/me" className="nav-dropdown-links">
+                        Reservations
+                      </NavDropdown.Item>
+                    </>
+                  )}
+
+                  {user?.role && (
+                    <NavDropdown.Item as={Link} to="/backoffice" className="nav-dropdown-links">
+                      Backoffice
+                    </NavDropdown.Item>
+                  )}
+
                   <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/me" className="nav-dropdown-links">
                     Profile

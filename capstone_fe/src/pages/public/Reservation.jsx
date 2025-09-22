@@ -426,15 +426,15 @@ const Reservation = () => {
   ];
 
   return (
-    <Container className="my-5">
+    <Container className="mb-5" style={{ minHeight: "80vh" }}>
       {success && <Alert variant="success">{success}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
 
       <Row className="mb-4 align-items-center">
         <Col>
-          <h3 className="display-6 pb-4">
+          <h2 className="my-5 display-3">
             Book your tickets for <strong>{festival.name}</strong>
-          </h3>
+          </h2>
           <p className="p-form p-3">
             Dates: {festival.startDate} – {festival.endDate} <br />
             Daily Price: ${festival.dailyPrice} <br />
