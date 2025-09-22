@@ -9,9 +9,13 @@ import FestiMateButton from "../../components/FestiMateButton";
 const MyProfile = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+
   const [formValues, setFormValues] = useState({
     username: "",
     name: "",
@@ -20,7 +24,9 @@ const MyProfile = () => {
     city: "",
     country: "",
   });
+
   const [formLoading, setFormLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -167,15 +173,46 @@ const MyProfile = () => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    setDeleteLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const res = await fetch("http://localhost:3002/public-users/me", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `Delete failed: ${res.status}`);
+      }
+
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Delete error:", err);
+      setError(err?.message || "Failed to delete account");
+    } finally {
+      setDeleteLoading(false);
+      setShowDeleteModal(false);
+    }
+  };
+
   const isPublicUser = !userData?.role;
 
+  const handleChange = (id, val) => {
+    setFormValues((prev) => ({ ...prev, [id]: val }));
+  };
+
   const fields = [
-    { id: "username", label: "Username", type: "text", value: formValues.username },
-    { id: "name", label: "Name", type: "text", value: formValues.name },
-    { id: "surname", label: "Surname", type: "text", value: formValues.surname },
-    { id: "email", label: "Email", type: "email", value: formValues.email },
-    { id: "city", label: "City", type: "text", value: formValues.city },
-    { id: "country", label: "Country", type: "text", value: formValues.country },
+    { id: "username", label: "Username", type: "text", value: formValues.username, onChange: (e) => handleChange("username", e.target.value) },
+    { id: "name", label: "Name", type: "text", value: formValues.name, onChange: (e) => handleChange("name", e.target.value) },
+    { id: "surname", label: "Surname", type: "text", value: formValues.surname, onChange: (e) => handleChange("surname", e.target.value) },
+    { id: "email", label: "Email", type: "email", value: formValues.email, onChange: (e) => handleChange("email", e.target.value) },
+    { id: "city", label: "City", type: "text", value: formValues.city, onChange: (e) => handleChange("city", e.target.value) },
+    { id: "country", label: "Country", type: "text", value: formValues.country, onChange: (e) => handleChange("country", e.target.value) },
   ];
 
   return (
@@ -208,42 +245,48 @@ const MyProfile = () => {
                   </p>
                 </Col>
               ))}
-
-              {userData.city && (
-                <Col xs={12} md={8}>
-                  <p className="p-form p-2 f-4 text-center">
-                    <strong className="me-2">City:</strong> {userData.city}
-                  </p>
-                </Col>
-              )}
-              {userData.country && (
-                <Col xs={12} md={8}>
-                  <p className="p-form p-2 text-center">
-                    <strong className="me-2"> Country:</strong> {userData.country}
-                  </p>
-                </Col>
-              )}
             </Row>
 
             {isPublicUser && (
               <>
-                <div className="mt-4 text-end">
-                  <FestiMateButton
-                    onClick={() => {
-                      setSuccess("");
-                      setError("");
-                      setShowUpdateModal(true);
-                    }}
-                  >
-                    Update Profile
-                  </FestiMateButton>
-                </div>
+                <Row className="mt-4 gy-4 justify-content-evenly">
+                  <Col xs={12} sm={6} className="text-center">
+                    <FestiMateButton onClick={() => setShowDeleteModal(true)}>Delete Account</FestiMateButton>
+                  </Col>
+                  <Col xs={12} sm={6} className="text-center">
+                    <FestiMateButton
+                      onClick={() => {
+                        setSuccess("");
+                        setError("");
+                        setShowUpdateModal(true);
+                      }}
+                    >
+                      Update Profile
+                    </FestiMateButton>
+                  </Col>
+                </Row>
 
                 <FestiMateModal show={showUpdateModal} title="Update Profile" onClose={() => setShowUpdateModal(false)}>
                   {success && <Alert variant="success">{success}</Alert>}
                   {error && <Alert variant="danger">{error}</Alert>}
 
                   <FestiMateForm fields={fields} onSubmit={handlePublicUserUpdate} submitLabel="Update Profile" loading={formLoading} />
+                </FestiMateModal>
+
+                <FestiMateModal show={showDeleteModal} title="Confirm Delete" onClose={() => setShowDeleteModal(false)}>
+                  {error && <Alert variant="danger">{error}</Alert>}
+
+                  <p className="text-center">
+                    Are you sure you want to <strong>permanently</strong> delete your account? This action cannot be undone.
+                  </p>
+                  <div className="d-flex justify-content-end gap-2 mt-3">
+                    <FestiMateButton variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                      Cancel
+                    </FestiMateButton>
+                    <FestiMateButton variant="danger" onClick={handleDeleteAccount} disabled={deleteLoading}>
+                      {deleteLoading ? "Deleting..." : "Delete"}
+                    </FestiMateButton>
+                  </div>
                 </FestiMateModal>
               </>
             )}
