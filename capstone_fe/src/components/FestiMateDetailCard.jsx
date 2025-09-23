@@ -1,51 +1,14 @@
-import { useState, useEffect } from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import Placeholder from "../assets/placeholder.webp";
 import FestiMateButton from "./FestiMateButton";
 
-const FestiMateDetailCard = ({ id, coverImg, text1, text2, text3, buttonText, onButtonClick }) => {
-  const [isWishlisted, setIsWishlisted] = useState(false);
+const FestiMateDetailCard = ({ id, coverImg, text1, text2, text3, buttonText, onButtonClick, initialWishlisted = false, onWishlistToggle }) => {
+  const isWishlisted = initialWishlisted;
 
-  useEffect(() => {
-    const fetchWishlist = async () => {
-      try {
-        const res = await fetch("http://localhost:3002/public-users/me/wishlist?page=0&size=100", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        if (!res.ok) throw new Error("Failed to fetch wishlist");
-        const data = await res.json();
-        if (data.content.some((f) => f.id === id)) {
-          setIsWishlisted(true);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchWishlist();
-  }, [id]);
-
-  const toggleWishlist = async (e) => {
+  const handleWishlistClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-
-    try {
-      const method = isWishlisted ? "DELETE" : "POST";
-      const url = `http://localhost:3002/public-users/me/wishlist${isWishlisted ? `/${id}` : ""}`;
-
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: !isWishlisted ? JSON.stringify({ id }) : null,
-      });
-
-      if (!res.ok) throw new Error("Failed to update wishlist");
-      setIsWishlisted(!isWishlisted);
-    } catch (err) {
-      console.error(err);
-    }
+    if (onWishlistToggle) onWishlistToggle(id);
   };
 
   return (
@@ -59,21 +22,23 @@ const FestiMateDetailCard = ({ id, coverImg, text1, text2, text3, buttonText, on
         />
       )}
 
-      <div
-        onClick={toggleWishlist}
-        style={{
-          position: "absolute",
-          top: "15px",
-          right: "15px",
-          cursor: "pointer",
-          fontSize: "2rem",
-          color: isWishlisted ? "#ff69b4" : "#fff",
-          textShadow: isWishlisted ? "none" : "0 0 4px #2f4f4f",
-          zIndex: 10,
-        }}
-      >
-        <i className={`bi ${isWishlisted ? "bi-heart-fill" : "bi-heart"}`} />
-      </div>
+      {onWishlistToggle && (
+        <div
+          onClick={handleWishlistClick}
+          style={{
+            position: "absolute",
+            top: "15px",
+            right: "15px",
+            cursor: "pointer",
+            fontSize: "2rem",
+            color: isWishlisted ? "#ff69b4" : "#fff",
+            textShadow: isWishlisted ? "none" : "0 0 4px #2f4f4f",
+            zIndex: 10,
+          }}
+        >
+          <i className={`bi ${isWishlisted ? "bi-heart-fill" : "bi-heart"}`} />
+        </div>
+      )}
 
       <Card.Body>
         <Row className="align-items-center">

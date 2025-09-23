@@ -33,12 +33,31 @@ const Login = ({ setUserData }) => {
 
       const data = await res.json();
       localStorage.setItem("token", data.accessToken);
-      console.log("Saved token:", localStorage.getItem("token"));
 
-      const userRes = await fetch("http://localhost:3002/", {
-        headers: { Authorization: `Bearer ${data.accessToken}` },
-      });
-      const userData = await userRes.json();
+      let userData = null;
+
+      try {
+        const adminRes = await fetch("http://localhost:3002/admins/me", {
+          headers: { Authorization: `Bearer ${data.accessToken}` },
+        });
+        if (adminRes.ok) {
+          const adminData = await adminRes.json();
+          userData = { ...adminData, userType: "ADMIN" };
+        }
+      } catch {
+        error;
+      }
+
+      if (!userData) {
+        const publicRes = await fetch("http://localhost:3002/public-users/me", {
+          headers: { Authorization: `Bearer ${data.accessToken}` },
+        });
+        if (publicRes.ok) {
+          const publicData = await publicRes.json();
+          userData = { ...publicData, userType: "PUBLIC" };
+        }
+      }
+
       setUserData(userData);
       navigate(from, { replace: true });
     } catch (err) {

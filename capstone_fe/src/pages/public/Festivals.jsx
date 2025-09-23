@@ -2,21 +2,18 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Alert, FormControl } from "react-bootstrap";
 import FestiMateCard from "../../components/FestiMateCard";
-import FestiMateDropdown from "../../components/FestiMateDropdown";
 import FestiMateSearchbar from "../../components/FestiMateSearchbar";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 import FestiMateButton from "../../components/FestiMateButton";
 
-const Festivals = () => {
+const Festivals = ({ user }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const query = new URLSearchParams(location.search);
   const [festivalName, setFestivalName] = useState(query.get("festivalName") || "");
-  /*const [artistName, setArtistName] = useState(query.get("artistName") || "");*/
   const [city, setCity] = useState(query.get("city") || "");
   const [country, setCountry] = useState(query.get("country") || "");
-  /*const [genre, setGenre] = useState(query.get("genre") || "");*/
   const [startDate, setStartDate] = useState(query.get("startDate") || "");
   const [endDate, setEndDate] = useState(query.get("endDate") || "");
 
@@ -30,6 +27,7 @@ const Festivals = () => {
   const formatDate = (date) => (date ? new Date(date).toISOString().split("T")[0] : null);
 
   useEffect(() => {
+    if (!user || user.role) return;
     const fetchWishlist = async () => {
       try {
         const res = await fetch("http://localhost:3002/public-users/me/wishlist?page=0&size=100", {
@@ -43,45 +41,41 @@ const Festivals = () => {
       }
     };
     fetchWishlist();
-  }, []);
+  }, [user]);
+
+  const fetchFestivals = async (pageToFetch = 0) => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      params.append("page", pageToFetch);
+      params.append("size", 12);
+
+      const festivalNameClean = cleanParam(festivalName);
+      const cityClean = cleanParam(city);
+      const countryClean = cleanParam(country);
+      const startDateClean = formatDate(startDate);
+      const endDateClean = formatDate(endDate);
+
+      if (festivalNameClean) params.append("festivalName", festivalNameClean);
+      if (cityClean) params.append("city", cityClean);
+      if (countryClean) params.append("country", countryClean);
+      if (startDateClean) params.append("startDate", startDateClean);
+      if (endDateClean) params.append("endDate", endDateClean);
+
+      const res = await fetch(`http://localhost:3002/festivals/search?${params.toString()}`);
+      if (!res.ok) throw new Error("Failed to fetch festivals");
+
+      const data = await res.json();
+      setFestivals((prev) => (pageToFetch === 0 ? data.content : [...prev, ...(data.content || [])]));
+      setHasMore(pageToFetch < (data.totalPages ? data.totalPages - 1 : 0));
+    } catch (err) {
+      console.error("Error fetching festivals:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchFestivals = async (pageToFetch = 0) => {
-      try {
-        setLoading(true);
-        const params = new URLSearchParams();
-        params.append("page", pageToFetch);
-        params.append("size", 12);
-
-        const festivalNameClean = cleanParam(festivalName);
-        /*const artistNameClean = cleanParam(artistName);*/
-        const cityClean = cleanParam(city);
-        const countryClean = cleanParam(country);
-        /*const genreClean = cleanParam(genre);*/
-        const startDateClean = formatDate(startDate);
-        const endDateClean = formatDate(endDate);
-
-        if (festivalNameClean) params.append("festivalName", festivalNameClean);
-        /*if (artistNameClean) params.append("artistName", artistNameClean);*/
-        if (cityClean) params.append("city", cityClean);
-        if (countryClean) params.append("country", countryClean);
-        /*if (genreClean) params.append("genre", genreClean);*/
-        if (startDateClean) params.append("startDate", startDateClean);
-        if (endDateClean) params.append("endDate", endDateClean);
-
-        const res = await fetch(`http://localhost:3002/festivals/search?${params.toString()}`);
-        if (!res.ok) throw new Error("Failed to fetch festivals");
-
-        const data = await res.json();
-        setFestivals((prev) => (pageToFetch === 0 ? data.content : [...prev, ...(data.content || [])]));
-        setHasMore(pageToFetch < (data.totalPages ? data.totalPages - 1 : 0));
-      } catch (err) {
-        console.error("Error fetching festivals:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     setPage(0);
     setFestivals([]);
     setHasMore(true);
@@ -90,21 +84,11 @@ const Festivals = () => {
 
   const handleSearch = () => {
     const params = new URLSearchParams();
-    const festivalNameClean = cleanParam(festivalName);
-    /*const artistNameClean = cleanParam(artistName);*/
-    const cityClean = cleanParam(city);
-    const countryClean = cleanParam(country);
-    /*const genreClean = cleanParam(genre);*/
-    const startDateClean = formatDate(startDate);
-    const endDateClean = formatDate(endDate);
-
-    if (festivalNameClean) params.append("festivalName", festivalNameClean);
-    /* if (artistNameClean) params.append("artistName", artistNameClean);*/
-    if (cityClean) params.append("city", cityClean);
-    if (countryClean) params.append("country", countryClean);
-    /*if (genreClean) params.append("genre", genreClean);*/
-    if (startDateClean) params.append("startDate", startDateClean);
-    if (endDateClean) params.append("endDate", endDateClean);
+    if (cleanParam(festivalName)) params.append("festivalName", cleanParam(festivalName));
+    if (cleanParam(city)) params.append("city", cleanParam(city));
+    if (cleanParam(country)) params.append("country", cleanParam(country));
+    if (formatDate(startDate)) params.append("startDate", formatDate(startDate));
+    if (formatDate(endDate)) params.append("endDate", formatDate(endDate));
 
     navigate(`/festivals?${params.toString()}`, { replace: true });
   };
@@ -112,44 +96,37 @@ const Festivals = () => {
   const handleLoadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
-
-    const fetchFestivals = async (pageToFetch = nextPage) => {
-      try {
-        setLoading(true);
-        const params = new URLSearchParams();
-        params.append("page", pageToFetch);
-        params.append("size", 12);
-
-        const festivalNameClean = cleanParam(festivalName);
-        /*const artistNameClean = cleanParam(artistName);*/
-        const cityClean = cleanParam(city);
-        const countryClean = cleanParam(country);
-        /*const genreClean = cleanParam(genre);*/
-        const startDateClean = formatDate(startDate);
-        const endDateClean = formatDate(endDate);
-
-        if (festivalNameClean) params.append("festivalName", festivalNameClean);
-        /*if (artistNameClean) params.append("artistName", artistNameClean);*/
-        if (cityClean) params.append("city", cityClean);
-        if (countryClean) params.append("country", countryClean);
-        /*if (genreClean) params.append("genre", genreClean);*/
-        if (startDateClean) params.append("startDate", startDateClean);
-        if (endDateClean) params.append("endDate", endDateClean);
-
-        const res = await fetch(`http://localhost:3002/festivals/search?${params.toString()}`);
-        if (!res.ok) throw new Error("Failed to fetch festivals");
-
-        const data = await res.json();
-        setFestivals((prev) => [...prev, ...(data.content || [])]);
-        setHasMore(pageToFetch < (data.totalPages ? data.totalPages - 1 : 0));
-      } catch (err) {
-        console.error("Error fetching festivals:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchFestivals(nextPage);
+  };
+
+  const handleWishlistToggle = async (festivalId) => {
+    if (!user || user.role) return;
+
+    try {
+      const isWishlisted = wishlistIds.has(festivalId);
+      const method = isWishlisted ? "DELETE" : "POST";
+      const url = `http://localhost:3002/public-users/me/wishlist${isWishlisted ? `/${festivalId}` : ""}`;
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: !isWishlisted ? JSON.stringify({ id: festivalId }) : null,
+      });
+
+      if (!res.ok) throw new Error("Failed to update wishlist");
+
+      setWishlistIds((prev) => {
+        const newSet = new Set(prev);
+        if (isWishlisted) newSet.delete(festivalId);
+        else newSet.add(festivalId);
+        return newSet;
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -166,7 +143,6 @@ const Festivals = () => {
                 <Col xs={12}>
                   <FestiMateSearchbar placeholder="Festival Name" value={festivalName} onChange={setFestivalName} />
                 </Col>
-                {/*<Col xs={12} sm={6} md={4}><FestiMateSearchbar placeholder="Artist Name" value={artistName} onChange={setArtistName} /></Col>*/}
               </Row>
               <Row>
                 <Col xs={12} sm={6} md={6}>
@@ -175,7 +151,6 @@ const Festivals = () => {
                 <Col xs={12} sm={6} md={6}>
                   <FestiMateSearchbar placeholder="Country" value={country} onChange={setCountry} />
                 </Col>
-                {/*<Col xs={12} sm={6} md={4}><FestiMateDropdown value={genre} onChange={setGenre} /></Col>*/}
               </Row>
               <Row className="g-2">
                 <Col xs={12} sm={6} md={6}>
@@ -208,8 +183,8 @@ const Festivals = () => {
               title={f.name}
               subtitle={`${f.city}, ${f.country}`}
               linkPath="/festivals"
-              isFestival={true}
               initialWishlisted={wishlistIds.has(f.id)}
+              onWishlistToggle={handleWishlistToggle}
             />
           </Col>
         ))}

@@ -5,7 +5,7 @@ import FestiMateDetailCard from "../../components/FestiMateDetailCard";
 import Placeholder from "../../assets/placeholder.webp";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 
-const FestivalDetail = () => {
+const FestivalDetail = ({ user }) => {
   const { id } = useParams();
   const [festival, setFestival] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,31 +16,54 @@ const FestivalDetail = () => {
     const fetchFestival = async () => {
       try {
         setLoading(true);
-        const [festivalRes, wishlistRes] = await Promise.all([
-          fetch(`http://localhost:3002/festivals/${id}`),
-          fetch("http://localhost:3002/public-users/me/wishlist?page=0&size=100", {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          }),
-        ]);
-
+        const festivalRes = await fetch(`http://localhost:3002/festivals/${id}`);
         if (!festivalRes.ok) throw new Error("Failed to fetch festival");
         const festivalData = await festivalRes.json();
         setFestival(festivalData);
 
-        if (wishlistRes.ok) {
-          const wishlistData = await wishlistRes.json();
-          const ids = new Set(wishlistData.content.map((f) => f.id));
-          setIsWishlisted(ids.has(festivalData.id));
+        if (user && !user.role) {
+          const wishlistRes = await fetch("http://localhost:3002/public-users/me/wishlist?page=0&size=100", {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          });
+          if (wishlistRes.ok) {
+            const wishlistData = await wishlistRes.json();
+            const ids = new Set(wishlistData.content.map((f) => f.id));
+            setIsWishlisted(ids.has(festivalData.id));
+          }
         }
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchFestival();
-  }, [id]);
+  }, [id, user]);
+
+  const handleWishlistToggle = async () => {
+    if (!user || user.role || !festival) return;
+
+    try {
+      const method = isWishlisted ? "DELETE" : "POST";
+      const url = `http://localhost:3002/public-users/me/wishlist${isWishlisted ? `/${festival.id}` : ""}`;
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: !isWishlisted ? JSON.stringify({ id: festival.id }) : null,
+      });
+
+      if (!res.ok) throw new Error("Failed to update wishlist");
+
+      setIsWishlisted((prev) => !prev);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleBuyTickets = () => {
     const token = localStorage.getItem("token");
@@ -65,9 +88,10 @@ const FestivalDetail = () => {
               text1={festival.name}
               text2={`${new Date(festival.startDate).toLocaleDateString()} – ${new Date(festival.endDate).toLocaleDateString()}`}
               text3={`${festival.city}, ${festival.country} | Camping: ${festival.campingMap ? "Yes" : "No"}`}
-              buttonText="Buy Tickets"
-              onButtonClick={handleBuyTickets}
+              buttonText={user && !user.role ? "Buy Tickets" : undefined}
+              onButtonClick={user && !user.role ? handleBuyTickets : undefined}
               initialWishlisted={isWishlisted}
+              onWishlistToggle={handleWishlistToggle}
               isFestival={true}
             />
           </Col>

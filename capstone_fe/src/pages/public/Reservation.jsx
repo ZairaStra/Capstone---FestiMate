@@ -266,12 +266,12 @@ export default Reservation;*/
 
 //INTERATTIVO MA SPAGINATO
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Container, Row, Col, Alert } from "react-bootstrap";
 import FestiMateForm from "../../components/FestiMateForm";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 
-const Reservation = () => {
+const Reservation = ({ user }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const festivalId = location.state?.festivalId;
@@ -285,9 +285,9 @@ const Reservation = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [tickets, setTickets] = useState(1);
-  const [selectedCampingUnits, setSelectedCampingUnits] = useState([]); // spotCode
+  const [selectedCampingUnits, setSelectedCampingUnits] = useState([]);
   const [campingUnits, setCampingUnits] = useState([]);
-  const [spotCodeToId, setSpotCodeToId] = useState({}); // mappa spotCode -> id numerico
+  const [spotCodeToId, setSpotCodeToId] = useState({});
   const [svgViewBox, setSvgViewBox] = useState("0 0 800 600");
 
   useEffect(() => {
@@ -305,8 +305,6 @@ const Reservation = () => {
         setFestival(data);
 
         const unitsData = data.campingUnits || [];
-
-        // costruisco mappa spotCode -> id numerico
         const spotMap = {};
         unitsData.forEach((u) => {
           if (u.spotCode && u.id) spotMap[u.spotCode] = u.id;
@@ -368,6 +366,11 @@ const Reservation = () => {
   };
 
   const handleReservation = async () => {
+    if (!user || user.role) {
+      setError("Only public users can make reservations.");
+      return;
+    }
+
     setError("");
     setSuccess("");
 
@@ -403,7 +406,7 @@ const Reservation = () => {
       }
 
       setSuccess("Reservation successful!");
-      setTimeout(() => navigate("/me/reservations"), 2000);
+      setTimeout(() => navigate("/"), 2000);
     } catch (err) {
       setError(err.message || "Reservation failed");
     }

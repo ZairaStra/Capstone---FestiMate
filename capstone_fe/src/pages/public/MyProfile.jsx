@@ -6,9 +6,9 @@ import FestiMateForm from "../../components/FestiMateForm";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 import FestiMateButton from "../../components/FestiMateButton";
 
-const MyProfile = () => {
-  const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(true);
+const MyProfile = ({ user }) => {
+  const [userData, setUserData] = useState(user || null);
+  const [loading, setLoading] = useState(!user);
 
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -23,12 +23,39 @@ const MyProfile = () => {
     email: "",
     city: "",
     country: "",
+    phoneNumber: "",
+    department: "",
   });
 
   const [formLoading, setFormLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (user) {
+      setUserData(user);
+      if (!user.role) {
+        setFormValues({
+          username: user.username || "",
+          name: user.name || "",
+          surname: user.surname || "",
+          email: user.email || "",
+          city: user.city || "",
+          country: user.country || "",
+        });
+      } else {
+        setFormValues({
+          username: user.username || "",
+          name: user.name || "",
+          surname: user.surname || "",
+          email: user.email || "",
+          phoneNumber: user.phoneNumber || "",
+          department: user.department || "",
+        });
+      }
+    }
+  }, [user]);
 
   const fetchUserData = async () => {
     setLoading(true);
@@ -59,6 +86,14 @@ const MyProfile = () => {
       if (res.ok) {
         const adm = await res.json();
         setUserData(adm);
+        setFormValues({
+          username: adm.username || "",
+          name: adm.name || "",
+          surname: adm.surname || "",
+          email: adm.email || "",
+          phoneNumber: adm.phoneNumber || "",
+          department: adm.department || "",
+        });
         setLoading(false);
         return;
       }
@@ -71,9 +106,8 @@ const MyProfile = () => {
   };
 
   useEffect(() => {
-    if (token) fetchUserData();
-    else setLoading(false);
-  }, [token]);
+    if (!user && token) fetchUserData();
+  }, [token, user]);
 
   const handlePatch = async (field, value) => {
     try {
@@ -86,12 +120,7 @@ const MyProfile = () => {
           headers: { Authorization: `Bearer ${token}` },
           body: formData,
         });
-
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(text || `Image update failed: ${res.status}`);
-        }
-
+        if (!res.ok) throw new Error(await res.text());
         const data = await res.json();
         setUserData((prev) => ({ ...prev, profileImg: data.profileImg || prev.profileImg }));
         return;
@@ -106,19 +135,10 @@ const MyProfile = () => {
           },
           body: JSON.stringify(value),
         });
-
-        if (!res.ok) {
-          const text = await res.text();
-          try {
-            const json = JSON.parse(text);
-            const msg = json?.message || json?.errors || JSON.stringify(json) || text;
-            throw new Error(msg);
-          } catch {
-            throw new Error(text || `Password update failed: ${res.status}`);
-          }
-        }
+        if (!res.ok) throw new Error(await res.text());
         return;
       }
+
       throw new Error("Unsupported patch field");
     } catch (err) {
       console.error("Error updating profile:", err);
@@ -156,11 +176,7 @@ const MyProfile = () => {
         });
       }
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || `Update failed: ${res.status}`);
-      }
-
+      if (!res.ok) throw new Error(await res.text());
       const updated = await res.json();
       setUserData(updated);
       setFormValues((prev) => ({ ...prev, profileImg: updated.profileImg || prev.profileImg }));
@@ -183,12 +199,7 @@ const MyProfile = () => {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || `Delete failed: ${res.status}`);
-      }
-
+      if (!res.ok) throw new Error(await res.text());
       localStorage.removeItem("token");
       window.location.href = "/";
     } catch (err) {
@@ -202,18 +213,38 @@ const MyProfile = () => {
 
   const isPublicUser = !userData?.role;
 
-  const handleChange = (id, val) => {
-    setFormValues((prev) => ({ ...prev, [id]: val }));
-  };
+  const handleChange = (id, val) => setFormValues((prev) => ({ ...prev, [id]: val }));
 
-  const fields = [
-    { id: "username", label: "Username", type: "text", value: formValues.username, onChange: (e) => handleChange("username", e.target.value) },
-    { id: "name", label: "Name", type: "text", value: formValues.name, onChange: (e) => handleChange("name", e.target.value) },
-    { id: "surname", label: "Surname", type: "text", value: formValues.surname, onChange: (e) => handleChange("surname", e.target.value) },
-    { id: "email", label: "Email", type: "email", value: formValues.email, onChange: (e) => handleChange("email", e.target.value) },
-    { id: "city", label: "City", type: "text", value: formValues.city, onChange: (e) => handleChange("city", e.target.value) },
-    { id: "country", label: "Country", type: "text", value: formValues.country, onChange: (e) => handleChange("country", e.target.value) },
-  ];
+  const fields = isPublicUser
+    ? [
+        { id: "username", label: "Username", type: "text", value: formValues.username, onChange: (e) => handleChange("username", e.target.value) },
+        { id: "name", label: "Name", type: "text", value: formValues.name, onChange: (e) => handleChange("name", e.target.value) },
+        { id: "surname", label: "Surname", type: "text", value: formValues.surname, onChange: (e) => handleChange("surname", e.target.value) },
+        { id: "email", label: "Email", type: "email", value: formValues.email, onChange: (e) => handleChange("email", e.target.value) },
+        { id: "city", label: "City", type: "text", value: formValues.city, onChange: (e) => handleChange("city", e.target.value) },
+        { id: "country", label: "Country", type: "text", value: formValues.country, onChange: (e) => handleChange("country", e.target.value) },
+        {
+          id: "registrationDate",
+          label: "Registration Date",
+          type: "text",
+          value: userData?.registrationDate ? new Date(userData.registrationDate).toLocaleDateString() : "",
+          readOnly: true,
+        },
+      ]
+    : [
+        { id: "username", label: "Username", type: "text", value: formValues.username },
+        { id: "name", label: "Name", type: "text", value: formValues.name },
+        { id: "surname", label: "Surname", type: "text", value: formValues.surname },
+        { id: "email", label: "Email", type: "email", value: formValues.email },
+        { id: "phoneNumber", label: "Phone Number", type: "text", value: formValues.phoneNumber },
+        { id: "department", label: "Department", type: "text", value: formValues.department },
+        {
+          id: "hireDate",
+          label: "Hire Date",
+          type: "text",
+          value: userData?.hireDate ? new Date(userData.hireDate).toLocaleDateString() : "",
+        },
+      ];
 
   return (
     <Container className="mb-5" style={{ minHeight: "80vh" }}>

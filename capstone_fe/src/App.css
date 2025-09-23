@@ -126,6 +126,7 @@ h6 {
 
 /* Buttons */
 .btn-festimate {
+  min-width: 6rem;
   background-color: #e6e6fa;
   border: 1px solid;
   color: #2f4f4f;
