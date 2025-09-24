@@ -1201,7 +1201,7 @@ const Backoffice = ({ user }) => {
               Cancel
             </FestiMateButton>
             <FestiMateButton onClick={handleUpdateCampingMapOnly} disabled={modalLoading}>
-              {modalLoading ? "Updating..." : "Update Camping Map"}
+              {modalLoading && <FestiMateSpinner />}
             </FestiMateButton>
           </div>
         </Form>
@@ -1242,7 +1242,7 @@ const Backoffice = ({ user }) => {
               Cancel
             </FestiMateButton>
             <FestiMateButton onClick={handleUpdateAccommodationPrices} disabled={modalLoading}>
-              {modalLoading ? "Updating..." : "Update Prices"}
+              {modalLoading && <FestiMateSpinner />}
             </FestiMateButton>
           </div>
         </Form>
