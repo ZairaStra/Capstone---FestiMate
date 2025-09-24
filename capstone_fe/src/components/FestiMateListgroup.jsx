@@ -9,7 +9,7 @@ const FestiMateListgroup = ({ items = [], disabled = false, onItemClick }) => {
           key={index}
           action={!disabled && !!onItemClick}
           onClick={() => !disabled && onItemClick && onItemClick(item)}
-          className={disabled ? "text-muted" : ""}
+          className={disabled ? "text-muted fs-3" : " fs-5"}
         >
           {item.label}
         </ListGroup.Item>

@@ -14,8 +14,6 @@ const Backoffice = ({ user }) => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [hasMore, setHasMore] = useState(true);
-  const [currentPage, setCurrentPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [modalData, setModalData] = useState(null);
@@ -29,57 +27,11 @@ const Backoffice = ({ user }) => {
   const [selectedFestival, setSelectedFestival] = useState(null);
   const [showLineupForm, setShowLineupForm] = useState(false);
   const [editingLineup, setEditingLineup] = useState(null);
-  const [artists, setArtists] = useState([]);
 
   const [showCampingMapModal, setShowCampingMapModal] = useState(false);
-  const [campingMapFile, setCampingMapFile] = useState(null);
-
-  const [accommodationPrices, setAccommodationPrices] = useState([]);
-  const [showAccommodationModal, setShowAccommodationModal] = useState(false);
-
-  const handlePatchCampingMap = (festival) => {
-    setSelectedFestival(festival);
-    setCampingMapFile(null);
-    setShowCampingMapModal(true);
-    setError("");
-    setSuccess("");
-  };
-
-  const handleUpdateCampingMapOnly = async () => {
-    if (!selectedFestival || !campingMapFile) {
-      setError("Please select a camping map file");
-      return;
-    }
-
-    setModalLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append("campingMap", campingMapFile);
-
-      const res = await fetch(`http://localhost:3002/festivals/${selectedFestival.id}/camping-map`, {
-        method: "PATCH",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Failed to update camping map: ${errorText}`);
-      }
-
-      const updatedItems = items.map((item) => (item.id === selectedFestival.id ? { ...item, campingMap: URL.createObjectURL(campingMapFile) } : item));
-      setItems(updatedItems);
-      setFilteredItems(updatedItems);
-
-      setSuccess("Camping map updated successfully");
-      setShowCampingMapModal(false);
-    } catch (err) {
-      console.error("Camping map update error:", err);
-      setError(err.message || "Failed to update camping map");
-    } finally {
-      setModalLoading(false);
-    }
-  };
+  const [showAccomodationModal, setShowAccomodationModal] = useState(false);
+  const [campingMapData, setCampingMapData] = useState({ campingMap: null, pricesByUnitType: {} });
+  const [accomodationPrices, setAccomodationPrices] = useState({});
 
   const admin = user;
   const token = localStorage.getItem("token");
@@ -118,53 +70,28 @@ const Backoffice = ({ user }) => {
     return role !== "RESERVATION_MANAGER";
   };
 
-  const fetchArtists = async () => {
-    try {
-      const res = await fetch("http://localhost:3002/artists", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setArtists(data.content || data || []);
-      }
-    } catch (err) {
-      console.error("Failed to fetch artists:", err);
-    }
-  };
-
-  useEffect(() => {
-    if (admin?.role === "FESTIVAL_MANAGER") {
-      fetchArtists();
-    }
-  }, [admin?.role]);
-
   useEffect(() => {
     if (!admin) return;
 
-    const fetchItems = async (page = 0, reset = true) => {
-      if (reset) {
-        setLoading(true);
-        setItems([]);
-        setFilteredItems([]);
-      }
-
+    const fetchItems = async () => {
+      setLoading(true);
       try {
         let url = "";
         switch (admin.role) {
           case "SYSTEM_ADMIN":
-            url = `http://localhost:3002/admins?page=${page}&size=10`;
+            url = "http://localhost:3002/admins";
             break;
           case "ARTIST_MANAGER":
-            url = `http://localhost:3002/artists?page=${page}&size=10`;
+            url = "http://localhost:3002/artists";
             break;
           case "FESTIVAL_MANAGER":
-            url = `http://localhost:3002/festivals?page=${page}&size=10`;
+            url = "http://localhost:3002/festivals";
             break;
           case "RESERVATION_MANAGER":
-            url = `http://localhost:3002/reservations?page=${page}&size=10`;
+            url = "http://localhost:3002/reservations";
             break;
           case "USER_MANAGER":
-            url = `http://localhost:3002/public-users?page=${page}&size=10`;
+            url = "http://localhost:3002/public-users";
             break;
           default:
             url = "";
@@ -175,18 +102,8 @@ const Backoffice = ({ user }) => {
         if (!res.ok) throw new Error("Failed to fetch items");
         const data = await res.json();
         const itemsArray = data.content || data.admins || data.artists || data.festivals || data.publicUsers || data || [];
-
-        if (reset) {
-          setItems(itemsArray);
-          setFilteredItems(itemsArray);
-          setCurrentPage(0);
-        } else {
-          setItems((prev) => [...prev, ...itemsArray]);
-          setFilteredItems((prev) => [...prev, ...itemsArray]);
-          setCurrentPage(page);
-        }
-
-        setHasMore(page < (data.totalPages ? data.totalPages - 1 : 0));
+        setItems(itemsArray);
+        setFilteredItems(itemsArray);
       } catch (err) {
         console.error("Fetch error:", err);
         setError(err.message || "Failed to fetch items");
@@ -197,53 +114,6 @@ const Backoffice = ({ user }) => {
 
     fetchItems();
   }, [admin, token]);
-
-  const handleLoadMore = () => {
-    const nextPage = currentPage + 1;
-    const fetchItems = async () => {
-      setLoading(true);
-
-      try {
-        let url = "";
-        switch (admin.role) {
-          case "SYSTEM_ADMIN":
-            url = `http://localhost:3002/admins?page=${nextPage}&size=10`;
-            break;
-          case "ARTIST_MANAGER":
-            url = `http://localhost:3002/artists?page=${nextPage}&size=10`;
-            break;
-          case "FESTIVAL_MANAGER":
-            url = `http://localhost:3002/festivals?page=${nextPage}&size=10`;
-            break;
-          case "RESERVATION_MANAGER":
-            url = `http://localhost:3002/reservations?page=${nextPage}&size=10`;
-            break;
-          case "USER_MANAGER":
-            url = `http://localhost:3002/public-users?page=${nextPage}&size=10`;
-            break;
-          default:
-            return;
-        }
-
-        const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-        if (!res.ok) throw new Error("Failed to fetch more items");
-        const data = await res.json();
-        const newItems = data.content || data.admins || data.artists || data.festivals || data.publicUsers || data || [];
-
-        setItems((prev) => [...prev, ...newItems]);
-        setFilteredItems((prev) => [...prev, ...newItems]);
-        setCurrentPage(nextPage);
-        setHasMore(nextPage < (data.totalPages ? data.totalPages - 1 : 0));
-      } catch (err) {
-        console.error("Load more error:", err);
-        setError(err.message || "Failed to load more items");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchItems();
-  };
 
   const handleSearch = (query) => {
     setSearch(query);
@@ -340,11 +210,93 @@ const Backoffice = ({ user }) => {
 
       setItems((prev) => prev.filter((i) => i.id !== item.id));
       setFilteredItems((prev) => prev.filter((i) => i.id !== item.id));
-
-      setTimeout(() => setSuccess(""), 3000);
+      setSuccess("Item deleted successfully");
     } catch (err) {
       console.error("Delete error:", err);
       setError(err.message || "Failed to delete item");
+    }
+  };
+
+  const handleOpenCampingMapModal = (festival) => {
+    setSelectedFestival(festival);
+    setCampingMapData({
+      campingMap: null,
+    });
+    setShowCampingMapModal(true);
+    setError("");
+    setSuccess("");
+  };
+
+  const handleUpdateCampingMap = async () => {
+    if (!selectedFestival || !campingMapData.campingMap) {
+      setError("Please select a camping map file");
+      return;
+    }
+
+    setModalLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("campingMap", campingMapData.campingMap);
+
+      if (Object.keys(campingMapData.pricesByUnitType).length > 0) {
+        formData.append("pricesByUnitType", JSON.stringify(campingMapData.pricesByUnitType));
+      }
+
+      const res = await fetch(`http://localhost:3002/festivals/${selectedFestival.id}/camping-map`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to update camping map: ${errorText}`);
+      }
+
+      setSuccess("Camping map updated successfully");
+      setShowCampingMapModal(false);
+    } catch (err) {
+      console.error("Camping map update error:", err);
+      setError(err.message || "Failed to update camping map");
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleOpenAccomodationModal = (festival) => {
+    setSelectedFestival(festival);
+    setAccomodationPrices(festival.pricesByUnitType || {});
+    setShowAccomodationModal(true);
+    setError("");
+    setSuccess("");
+  };
+
+  const handleUpdateAccomodationPrices = async () => {
+    if (!selectedFestival) return;
+
+    setModalLoading(true);
+    try {
+      const res = await fetch(`http://localhost:3002/festivals/${selectedFestival.id}/accomodation-prices`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(accomodationPrices),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to update accomodation prices: ${errorText}`);
+      }
+
+      setSuccess("Accomodation prices updated successfully");
+      setShowAccomodationModal(false);
+    } catch (err) {
+      console.error("Accomodation prices update error:", err);
+      setError(err.message || "Failed to update accomodation prices");
+    } finally {
+      setModalLoading(false);
     }
   };
 
@@ -407,17 +359,10 @@ const Backoffice = ({ user }) => {
 
       const method = editingLineup ? "PUT" : "POST";
 
-      const lineupData = editingLineup || {};
-
       const payload = {
-        date: formData.date || lineupData.date,
-        startTime: formData.startTime || lineupData.startTime,
-        endTime: formData.endTime || lineupData.endTime,
-        artistId: parseInt(formData.artistId || lineupData.artistId),
+        ...formData,
         festivalId: selectedFestival.id,
       };
-
-      console.log("Lineup payload:", payload);
 
       const res = await fetch(url, {
         method,
@@ -428,18 +373,9 @@ const Backoffice = ({ user }) => {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Lineup request failed:", res.status, errorText);
-        throw new Error(`Failed to ${editingLineup ? "update" : "create"} lineup: ${errorText}`);
-      }
+      if (!res.ok) throw new Error(`Failed to ${editingLineup ? "update" : "create"} lineup`);
 
-      let savedLineup;
-      try {
-        savedLineup = await res.json();
-      } catch (e) {
-        savedLineup = { ...payload, id: editingLineup?.id || Date.now() };
-      }
+      const savedLineup = editingLineup ? await res.json() : { ...payload, id: Date.now() };
 
       if (editingLineup) {
         setLineups((prev) => prev.map((l) => (l.id === editingLineup.id ? savedLineup : l)));
@@ -453,48 +389,7 @@ const Backoffice = ({ user }) => {
       setEditingLineup(null);
     } catch (err) {
       console.error("Lineup submit error:", err);
-      setError(err.message || `Failed to ${editingLineup ? "update" : "create"} lineup`);
-    } finally {
-      setModalLoading(false);
-    }
-  };
-
-  const handleOpenAccommodationModal = (festival) => {
-    setSelectedFestival(festival);
-    setAccommodationPrices(festival.pricesByUnitType || {});
-    setShowAccommodationModal(true);
-    setError("");
-    setSuccess("");
-  };
-
-  const handleUpdateAccommodationPrices = async () => {
-    if (!selectedFestival) return;
-
-    setModalLoading(true);
-    try {
-      const res = await fetch(`http://localhost:3002/festivals/${selectedFestival.id}/accomodation-prices`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(accommodationPrices),
-      });
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Failed to update accommodation prices: ${errorText}`);
-      }
-
-      const updatedFestival = { ...selectedFestival, pricesByUnitType: accommodationPrices };
-      setItems((prev) => prev.map((item) => (item.id === selectedFestival.id ? updatedFestival : item)));
-      setFilteredItems((prev) => prev.map((item) => (item.id === selectedFestival.id ? updatedFestival : item)));
-
-      setSuccess("Accommodation prices updated successfully");
-      setShowAccommodationModal(false);
-    } catch (err) {
-      console.error("Accommodation prices update error:", err);
-      setError(err.message || "Failed to update accommodation prices");
+      setError(`Failed to ${editingLineup ? "update" : "create"} lineup`);
     } finally {
       setModalLoading(false);
     }
@@ -540,9 +435,14 @@ const Backoffice = ({ user }) => {
         const fd = new FormData();
         Object.keys(formData).forEach((key) => {
           if (formData[key] != null && formData[key] !== "") {
-            fd.append(key, formData[key]);
+            if ((key === "coverImg" || key === "campingMap") && formData[key] instanceof File) {
+              fd.append(key, formData[key]);
+            } else if (key !== "coverImg" && key !== "campingMap") {
+              fd.append(key, formData[key]);
+            }
           }
         });
+
         if (modalData.coverImg instanceof File) {
           fd.append("coverImg", modalData.coverImg);
         }
@@ -567,6 +467,7 @@ const Backoffice = ({ user }) => {
       }
 
       console.log("Request:", method, url);
+      console.log("Body:", modalType === "festival" || modalType === "artist" ? "FormData" : JSON.parse(options.body));
 
       const res = await fetch(url, options);
 
@@ -579,7 +480,7 @@ const Backoffice = ({ user }) => {
       let savedItem;
       try {
         savedItem = await res.json();
-      } catch (e) {
+      } catch (err) {
         savedItem = modalData;
       }
 
@@ -676,7 +577,6 @@ const Backoffice = ({ user }) => {
             id: "campingMap",
             label: "Camping Map",
             type: "file",
-            className: "text-truncate",
             accept: "image/*",
             onChange: (e) => setModalData({ ...data, campingMap: e.target.files[0] }),
           },
@@ -694,31 +594,8 @@ const Backoffice = ({ user }) => {
           {
             id: "genre",
             label: "Genre",
-            type: "select",
-            options: [
-              { value: "POP", label: "POP" },
-              { value: "ROCK", label: "ROCK" },
-              { value: "RAP", label: "RAP" },
-              { value: "HIPHOP", label: "HIPHOP" },
-              { value: "TRAP", label: "TRAP" },
-              { value: "INDIE", label: "INDIE" },
-              { value: "METAL", label: "METAL" },
-              { value: "PUNK", label: "PUNK" },
-              { value: "ALTERNATIVE", label: "ALTERNATIVE" },
-              { value: "TECHNO", label: "TECHNO" },
-              { value: "ELECTRONIC", label: "ELECTRONIC" },
-              { value: "JAZZ", label: "JAZZ" },
-              { value: "FOLK", label: "FOLK" },
-              { value: "ETHNIC", label: "ETHNIC" },
-              { value: "REGGAE", label: "REGGAE" },
-              { value: "SKA", label: "SKA" },
-              { value: "LATIN", label: "LATIN" },
-              { value: "AFROBEAT", label: "AFROBEAT" },
-              { value: "MEDIEVAL", label: "MEDIEVAL" },
-              { value: "EXPERIMENTAL", label: "EXPERIMENTAL" },
-            ],
-            value: data.genre || "POP",
-            onChange: (e) => setModalData({ ...data, genre: e.target.value }),
+            type: "custom",
+            component: <FestiMateDropdown value={data.genre || "POP"} onChange={(genre) => setModalData({ ...data, genre })} />,
             required: true,
           },
           {
@@ -848,22 +725,6 @@ const Backoffice = ({ user }) => {
             onChange: (e) => setModalData({ ...data, role: e.target.value }),
             required: true,
           },
-          ...(data?.id
-            ? [
-                {
-                  id: "department",
-                  label: "Department",
-                  value: data.department || "N/A",
-                  disabled: true,
-                },
-                {
-                  id: "hiringDate",
-                  label: "Hiring Date",
-                  value: data.hiringDate || "N/A",
-                  disabled: true,
-                },
-              ]
-            : []),
         ];
 
       default:
@@ -880,11 +741,6 @@ const Backoffice = ({ user }) => {
         label: "Date",
         type: "date",
         value: data.date || "",
-        onChange: (e) => {
-          if (editingLineup) {
-            setEditingLineup({ ...editingLineup, date: e.target.value });
-          }
-        },
         required: true,
       },
       {
@@ -892,11 +748,6 @@ const Backoffice = ({ user }) => {
         label: "Start Time",
         type: "time",
         value: data.startTime || "",
-        onChange: (e) => {
-          if (editingLineup) {
-            setEditingLineup({ ...editingLineup, startTime: e.target.value });
-          }
-        },
         required: true,
       },
       {
@@ -904,27 +755,13 @@ const Backoffice = ({ user }) => {
         label: "End Time",
         type: "time",
         value: data.endTime || "",
-        onChange: (e) => {
-          if (editingLineup) {
-            setEditingLineup({ ...editingLineup, endTime: e.target.value });
-          }
-        },
         required: true,
       },
       {
         id: "artistId",
-        label: "Artist",
-        type: "select",
-        options: artists.map((artist) => ({
-          value: artist.id.toString(),
-          label: `${artist.name} (ID: ${artist.id})`,
-        })),
-        value: data.artistId?.toString() || "",
-        onChange: (e) => {
-          if (editingLineup) {
-            setEditingLineup({ ...editingLineup, artistId: parseInt(e.target.value) });
-          }
-        },
+        label: "Artist ID",
+        type: "number",
+        value: data.artistId || "",
         required: true,
       },
     ];
@@ -938,186 +775,236 @@ const Backoffice = ({ user }) => {
     setModalType("");
   };
 
+  const handlePatchField = async (item, fieldType, data) => {
+    try {
+      const entityType = getEntityTypeByRole(admin.role);
+      let url = "";
+      let options = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+
+      switch (fieldType) {
+        case "campingMap":
+          url = `http://localhost:3002/festivals/${item.id}/camping-map`;
+          const formData = new FormData();
+          formData.append("campingMap", data);
+          options.method = "PATCH";
+          options.body = formData;
+          break;
+
+        case "coverImg":
+          if (entityType === "festival") {
+            url = `http://localhost:3002/festivals/${item.id}`;
+            const fd = new FormData();
+            fd.append("coverImg", data);
+            options.method = "PUT";
+            options.body = fd;
+          } else if (entityType === "artist") {
+            url = `http://localhost:3002/artists/${item.id}`;
+            const fd = new FormData();
+            fd.append("coverImg", data);
+            options.method = "PUT";
+            options.body = fd;
+          }
+          break;
+
+        case "dailyPrice":
+          url = `http://localhost:3002/festivals/${item.id}`;
+          options.method = "PUT";
+          options.headers["Content-Type"] = "application/json";
+          options.body = JSON.stringify({ ...item, dailyPrice: data.newPrice });
+          break;
+
+        default:
+          throw new Error("Unknown field type");
+      }
+
+      const res = await fetch(url, options);
+      if (!res.ok) throw new Error("Failed to update field");
+
+      const updatedItems = items.map((i) => (i.id === item.id ? { ...i, [fieldType]: fieldType === "dailyPrice" ? data.newPrice : data } : i));
+      setItems(updatedItems);
+      setFilteredItems(updatedItems);
+      setSuccess(`${fieldType} updated successfully`);
+    } catch (err) {
+      console.error("Patch field error:", err);
+      setError(`Failed to update ${fieldType}`);
+    }
+  };
+
   const renderItemLabel = (item) => {
     const entityType = getEntityTypeByRole(admin.role);
 
     return (
       <Row className="align-items-center gy-2">
-        <Col xs={12} sm={10}>
+        <Col xs={12} sm={8}>
           {entityType === "reservation" ? (
             <>
-              <div>
-                <strong>ID:</strong> {item.id}
+              <div className="d-flex align-items-center justify-content-between">
+                <span>
+                  <strong>ID:</strong> {item.id}
+                </span>
               </div>
-              <div>
-                <strong>Festival ID:</strong> {item.festivalId}
+              <div className="d-flex align-items-center justify-content-between">
+                <span>
+                  <strong>Festival ID:</strong> {item.festivalId}
+                </span>
               </div>
-              <div>
-                <strong>User ID:</strong> {item.userId}
+              <div className="d-flex align-items-center justify-content-between">
+                <span>
+                  <strong>User ID:</strong> {item.userId}
+                </span>
               </div>
-              <div>
-                <strong>Start Date:</strong> {item.startDate}
+              <div className="d-flex align-items-center justify-content-between">
+                <span>
+                  <strong>Start Date:</strong> {item.startDate}
+                </span>
               </div>
-              <div>
-                <strong>End Date:</strong> {item.endDate}
-              </div>
-              <div>
-                <strong>Number of Tickets:</strong> {item.numTickets}
-              </div>
-              <div>
-                <strong>Total Price:</strong> {item.totalPrice}
-              </div>
-              <div>
-                <strong>Created:</strong> {item.createdAt}
+              <div className="d-flex align-items-center justify-content-between">
+                <span>
+                  <strong>End Date:</strong> {item.endDate}
+                </span>
               </div>
             </>
           ) : (
             <>
-              <div>
-                <strong>ID:</strong> {item.id}
+              <div className="d-flex align-items-center justify-content-between">
+                <span>
+                  <strong>ID:</strong> {item.id}
+                </span>
               </div>
               {item.name && (
-                <div>
-                  <strong>Name:</strong> {item.name}
+                <div className="d-flex align-items-center justify-content-between">
+                  <span>
+                    <strong>Name:</strong> {item.name}
+                  </span>
                 </div>
               )}
               {item.username && (
-                <div>
-                  <strong>Username:</strong> {item.username}
-                </div>
-              )}
-              {item.surname && (
-                <div>
-                  <strong>Surname:</strong> {item.surname}
+                <div className="d-flex align-items-center justify-content-between">
+                  <span>
+                    <strong>Username:</strong> {item.username}
+                  </span>
                 </div>
               )}
               {item.email && (
-                <div>
-                  <strong>Email:</strong> {item.email}
-                </div>
-              )}
-              {item.phoneNumber && (
-                <div>
-                  <strong>Phone:</strong> {item.phoneNumber}
+                <div className="d-flex align-items-center justify-content-between">
+                  <span>
+                    <strong>Email:</strong> {item.email}
+                  </span>
                 </div>
               )}
               {item.role && (
-                <div>
-                  <strong>Role:</strong> {item.role}
-                </div>
-              )}
-              {item.department && (
-                <div>
-                  <strong>Department:</strong> {item.department}
-                </div>
-              )}
-              {item.hiringDate && (
-                <div>
-                  <strong>Hiring Date:</strong> {item.hiringDate}
+                <div className="d-flex align-items-center justify-content-between">
+                  <span>
+                    <strong>Role:</strong> {item.role}
+                  </span>
                 </div>
               )}
               {item.genre && (
-                <div>
-                  <strong>Genre:</strong> {item.genre}
-                </div>
-              )}
-              {item.link && (
-                <div>
-                  <strong>Link:</strong> {item.link}
-                </div>
-              )}
-              {item.coverImg && (
-                <div>
-                  <strong>Cover Image:</strong> {item.coverImg}
+                <div className="d-flex align-items-center justify-content-between">
+                  <span>
+                    <strong>Genre:</strong> {item.genre}
+                  </span>
                 </div>
               )}
               {item.city && (
-                <div>
-                  <strong>City:</strong> {item.city}
-                </div>
-              )}
-              {item.country && (
-                <div>
-                  <strong>Country:</strong> {item.country}
+                <div className="d-flex align-items-center justify-content-between">
+                  <span>
+                    <strong>City:</strong> {item.city}
+                  </span>
                 </div>
               )}
               {item.startDate && (
-                <div>
-                  <strong>Start Date:</strong> {item.startDate}
-                </div>
-              )}
-              {item.endDate && (
-                <div>
-                  <strong>End Date:</strong> {item.endDate}
-                </div>
-              )}
-              {item.dailyPrice && (
-                <div>
-                  <strong>Daily Price:</strong> €{item.dailyPrice}
-                </div>
-              )}
-              {item.campingMap && (
-                <div className="d-flex align-items-center">
+                <div className="d-flex align-items-center justify-content-between">
                   <span>
-                    <strong>Camping Map:</strong> {item.campingMap}
+                    <strong>Start Date:</strong> {item.startDate}
                   </span>
-                  {admin.role === "FESTIVAL_MANAGER" && (
-                    <FestiMatePatchField label="" type="file" value={item.campingMapFile} onPatch={(file) => handlePatchCampingMap("campingMap", file)} />
+                </div>
+              )}
+              {admin.role === "FESTIVAL_MANAGER" && entityType === "festival" && (
+                <>
+                  {item.dailyPrice && (
+                    <div className="d-flex align-items-center justify-content-between">
+                      <span>
+                        <strong>Daily Price:</strong> €{item.dailyPrice}
+                      </span>
+                      <FestiMatePatchField label="" value={item.dailyPrice} type="price" onPatch={(data) => handlePatchField(item, "dailyPrice", data)} />
+                    </div>
                   )}
+                  <div className="d-flex align-items-center justify-content-between">
+                    <span>
+                      <strong>Cover Image:</strong>
+                    </span>
+                    <FestiMatePatchField label="" value={item.coverImg} type="file" onPatch={(file) => handlePatchField(item, "coverImg", file)} />
+                  </div>
+                  <div className="d-flex align-items-center justify-content-between">
+                    <span>
+                      <strong>Camping Map:</strong>
+                    </span>
+                    <FestiMatePatchField label="" value={item.campingMap} type="file" onPatch={(file) => handlePatchField(item, "campingMap", file)} />
+                  </div>
+                </>
+              )}
+
+              {admin.role === "ARTIST_MANAGER" && entityType === "artist" && (
+                <div className="d-flex align-items-center justify-content-between">
+                  <span>
+                    <strong>Cover Image:</strong>
+                  </span>
+                  <FestiMatePatchField label="" value={item.coverImg} type="file" onPatch={(file) => handlePatchField(item, "coverImg", file)} />
                 </div>
               )}
             </>
           )}
         </Col>
-        <Col xs={12} sm={2}>
-          <Row className="gy-3 text-end">
+        <Col xs={12} sm={4}>
+          <div className="d-flex flex-wrap gap-2 mb-2">
             {canEdit(admin.role) && (
-              <Col>
-                <FestiMateButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEdit(item);
-                  }}
-                >
-                  Edit
-                </FestiMateButton>
-              </Col>
-            )}
-            <Col>
               <FestiMateButton
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleDelete(item);
+                  handleEdit(item);
                 }}
               >
-                Delete
+                Edit
               </FestiMateButton>
-            </Col>
-            {admin.role === "FESTIVAL_MANAGER" && entityType === "festival" && (
-              <>
-                <Col>
-                  <FestiMateButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenLineupsModal(item);
-                    }}
-                  >
-                    Lineups
-                  </FestiMateButton>
-                </Col>
-                <Col>
-                  <FestiMateButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenAccommodationModal(item);
-                    }}
-                  >
-                    Prices
-                  </FestiMateButton>
-                </Col>
-              </>
             )}
-          </Row>
+            <FestiMateButton
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(item);
+              }}
+            >
+              Delete
+            </FestiMateButton>
+            {admin.role === "FESTIVAL_MANAGER" && entityType === "festival" && (
+              <FestiMateButton
+                variant="success"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpenLineupsModal(item);
+                }}
+              >
+                Lineups
+              </FestiMateButton>
+            )}
+          </div>
+          {admin.role === "FESTIVAL_MANAGER" && entityType === "festival" && (
+            <div className="d-flex flex-wrap gap-2">
+              <FestiMateButton
+                variant="info"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpenAccomodationModal(item);
+                }}
+              >
+                Accomodation Prices
+              </FestiMateButton>
+            </div>
+          )}
         </Col>
       </Row>
     );
@@ -1150,21 +1037,13 @@ const Backoffice = ({ user }) => {
       {!loading && filteredItems.length === 0 && <Alert variant="warning">No items found</Alert>}
 
       {!loading && filteredItems.length > 0 && (
-        <>
-          <FestiMateListgroup
-            items={filteredItems.map((item) => ({
-              id: item.id,
-              label: renderItemLabel(item),
-            }))}
-          />
-          {hasMore && !loading && (
-            <div className="text-center my-4">
-              <FestiMateButton onClick={handleLoadMore}>Load More</FestiMateButton>
-            </div>
-          )}
-        </>
+        <FestiMateListgroup
+          items={filteredItems.map((item) => ({
+            id: item.id,
+            label: renderItemLabel(item),
+          }))}
+        />
       )}
-
       <FestiMateModal show={showModal} onClose={handleCloseModal} title={modalData?.id ? "Edit Item" : "Add New Item"}>
         {error && (
           <Alert variant="danger" className="my-2">
@@ -1193,21 +1072,53 @@ const Backoffice = ({ user }) => {
         <Form>
           <Form.Group className="mb-3">
             <Form.Label>Camping Map</Form.Label>
-            <Form.Control type="file" accept="image/*" onChange={(e) => setCampingMapFile(e.target.files[0])} required />
+            <Form.Control
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setCampingMapData({
+                  ...campingMapData,
+                  campingMap: e.target.files[0],
+                })
+              }
+              required
+            />
           </Form.Group>
+
+          <h5>Prices by Unit Type (Optional)</h5>
+          {UNIT_TYPES.map((unitType) => (
+            <Form.Group key={unitType.value} className="mb-2">
+              <Form.Label>{unitType.label}</Form.Label>
+              <Form.Control
+                type="number"
+                step="0.01"
+                placeholder="Enter price"
+                value={campingMapData.pricesByUnitType[unitType.value] || ""}
+                onChange={(e) =>
+                  setCampingMapData({
+                    ...campingMapData,
+                    pricesByUnitType: {
+                      ...campingMapData.pricesByUnitType,
+                      [unitType.value]: e.target.value ? parseFloat(e.target.value) : undefined,
+                    },
+                  })
+                }
+              />
+            </Form.Group>
+          ))}
 
           <div className="d-flex justify-content-end mt-3">
             <FestiMateButton variant="secondary" className="me-2" onClick={() => setShowCampingMapModal(false)}>
               Cancel
             </FestiMateButton>
-            <FestiMateButton onClick={handleUpdateCampingMapOnly} disabled={modalLoading}>
+            <FestiMateButton onClick={handleUpdateCampingMap} disabled={modalLoading}>
               {modalLoading ? "Updating..." : "Update Camping Map"}
             </FestiMateButton>
           </div>
         </Form>
       </FestiMateModal>
 
-      <FestiMateModal show={showAccommodationModal} onClose={() => setShowAccommodationModal(false)} title="Update Accommodation Prices">
+      <FestiMateModal show={showAccomodationModal} onClose={() => setShowAccomodationModal(false)} title="Update Accomodation Prices">
         {error && (
           <Alert variant="danger" className="my-2">
             {error}
@@ -1226,10 +1137,10 @@ const Backoffice = ({ user }) => {
                 type="number"
                 step="0.01"
                 placeholder="Enter price"
-                value={accommodationPrices[unitType.value] || ""}
+                value={accomodationPrices[unitType.value] || ""}
                 onChange={(e) =>
-                  setAccommodationPrices({
-                    ...accommodationPrices,
+                  setAccomodationPrices({
+                    ...accomodationPrices,
                     [unitType.value]: e.target.value ? parseFloat(e.target.value) : undefined,
                   })
                 }
@@ -1238,10 +1149,10 @@ const Backoffice = ({ user }) => {
           ))}
 
           <div className="d-flex justify-content-end mt-3">
-            <FestiMateButton variant="secondary" className="me-2" onClick={() => setShowAccommodationModal(false)}>
+            <FestiMateButton variant="secondary" className="me-2" onClick={() => setShowAccomodationModal(false)}>
               Cancel
             </FestiMateButton>
-            <FestiMateButton onClick={handleUpdateAccommodationPrices} disabled={modalLoading}>
+            <FestiMateButton onClick={handleUpdateAccomodationPrices} disabled={modalLoading}>
               {modalLoading ? "Updating..." : "Update Prices"}
             </FestiMateButton>
           </div>
@@ -1296,11 +1207,6 @@ const Backoffice = ({ user }) => {
                         <div>
                           <strong>Artist ID:</strong> {lineup.artistId}
                         </div>
-                        {artists.find((a) => a.id === lineup.artistId)?.name && (
-                          <div>
-                            <strong>Artist:</strong> {artists.find((a) => a.id === lineup.artistId).name}
-                          </div>
-                        )}
                       </Col>
                       <Col xs={12} sm={4}>
                         <FestiMateButton
