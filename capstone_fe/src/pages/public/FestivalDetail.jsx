@@ -11,25 +11,36 @@ const FestivalDetail = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const navigate = useNavigate();
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const isPrivilegedUser = Boolean(user && user.role);
+  const canInteract = !isPrivilegedUser;
 
   useEffect(() => {
     const fetchFestival = async () => {
       try {
         setLoading(true);
+
         const festivalRes = await fetch(`http://localhost:3002/festivals/${id}`);
         if (!festivalRes.ok) throw new Error("Failed to fetch festival");
         const festivalData = await festivalRes.json();
         setFestival(festivalData);
-
-        if (user && !user.role) {
-          const wishlistRes = await fetch("http://localhost:3002/public-users/me/wishlist?page=0&size=100", {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          });
-          if (wishlistRes.ok) {
-            const wishlistData = await wishlistRes.json();
-            const ids = new Set(wishlistData.content.map((f) => f.id));
-            setIsWishlisted(ids.has(festivalData.id));
+        if (user && !user.role && token) {
+          try {
+            const wishlistRes = await fetch("http://localhost:3002/public-users/me/wishlist?page=0&size=100", {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (wishlistRes.ok) {
+              const wishlistData = await wishlistRes.json();
+              const ids = new Set((wishlistData.content || []).map((f) => f.id));
+              setIsWishlisted(ids.has(festivalData.id));
+            } else {
+              console.warn("Wishlist fetch returned non-ok:", wishlistRes.status);
+            }
+          } catch (err) {
+            console.error("Failed to fetch wishlist:", err);
           }
+        } else {
+          setIsWishlisted(false);
         }
       } catch (err) {
         console.error(err);
@@ -39,10 +50,17 @@ const FestivalDetail = ({ user }) => {
     };
 
     fetchFestival();
-  }, [id, user]);
+  }, [id, user, token]);
 
   const handleWishlistToggle = async () => {
-    if (!user || user.role || !festival) return;
+    if (!festival) return;
+    if (isPrivilegedUser) return;
+
+    const localToken = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!localToken) {
+      navigate("/login");
+      return;
+    }
 
     try {
       const method = isWishlisted ? "DELETE" : "POST";
@@ -52,12 +70,15 @@ const FestivalDetail = ({ user }) => {
         method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localToken}`,
         },
         body: !isWishlisted ? JSON.stringify({ id: festival.id }) : null,
       });
 
-      if (!res.ok) throw new Error("Failed to update wishlist");
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(text || "Failed to update wishlist");
+      }
 
       setIsWishlisted((prev) => !prev);
     } catch (err) {
@@ -66,8 +87,12 @@ const FestivalDetail = ({ user }) => {
   };
 
   const handleBuyTickets = () => {
-    const token = localStorage.getItem("token");
-    if (token && festival) {
+    if (!festival) return;
+
+    if (isPrivilegedUser) return;
+
+    const localToken = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (localToken) {
       navigate("/reservations/me/register", { state: { festivalId: festival.id } });
     } else {
       navigate("/login");
@@ -88,10 +113,10 @@ const FestivalDetail = ({ user }) => {
               text1={festival.name}
               text2={`${new Date(festival.startDate).toLocaleDateString()} – ${new Date(festival.endDate).toLocaleDateString()}`}
               text3={`${festival.city}, ${festival.country} | Camping: ${festival.campingMap ? "Yes" : "No"}`}
-              buttonText={user && !user.role ? "Buy Tickets" : undefined}
-              onButtonClick={user && !user.role ? handleBuyTickets : undefined}
+              buttonText={canInteract ? "Buy Tickets" : undefined}
+              onButtonClick={canInteract ? handleBuyTickets : undefined}
               initialWishlisted={isWishlisted}
-              onWishlistToggle={handleWishlistToggle}
+              onWishlistToggle={canInteract ? handleWishlistToggle : undefined}
               isFestival={true}
             />
           </Col>
