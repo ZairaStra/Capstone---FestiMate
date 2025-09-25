@@ -5,8 +5,6 @@ import FestiMateInteractiveCampingMap from "../../components/FestiMateInteractiv
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 import FestiMateButton from "../../components/FestiMateButton";
 
-//TODO: selezione spot non funzionante
-
 const Reservation = ({ user }) => {
   const location = useLocation();
   const festivalId = location.state?.festivalId;
@@ -84,7 +82,7 @@ const Reservation = ({ user }) => {
     const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
 
     const totalPrice =
-      ticketNum * festival.dailyPrice +
+      ticketNum * festival.dailyPrice * days +
       selectedUnits.reduce((sum, unitId) => {
         const unit = campingUnits.find((u) => u.id === unitId);
         return sum + (unit?.accomodationType?.pricePerNight || 0) * days;
@@ -114,6 +112,15 @@ const Reservation = ({ user }) => {
     } catch (err) {
       setError(err.message);
     }
+  };
+
+  const getSelectedSpotCodes = () => {
+    return selectedUnits
+      .map((unitId) => {
+        const unit = campingUnits.find((u) => u.id === unitId);
+        return unit?.spotCode;
+      })
+      .filter(Boolean);
   };
 
   if (loading) return <FestiMateSpinner />;
@@ -152,10 +159,16 @@ const Reservation = ({ user }) => {
       <Row className="g-4">
         <Col>
           <Form onSubmit={handleSubmit}>
-            <Row className="mb-3 g-3">
+            <Row className="mb-3 g-3 align-items-center">
               <Col>
                 <Row className="flex-column g-4">
                   <Col>
+                    {" "}
+                    {selectedUnits.length > 0 && (
+                      <div className="my-3 p-2 p-form">
+                        <strong>Selected Units:</strong> {getSelectedSpotCodes().join(", ")}
+                      </div>
+                    )}
                     <Form.Group>
                       <Form.Label>Ticket's number</Form.Label>
                       <Form.Select value={tickets} onChange={(e) => setTickets(Number(e.target.value))}>
@@ -180,7 +193,8 @@ const Reservation = ({ user }) => {
                     </Form.Group>
                   </Col>
                 </Row>
-                <FestiMateButton type="submit" className="my-3">
+
+                <FestiMateButton type="submit" className="my-4">
                   Confirm reservation
                 </FestiMateButton>
               </Col>

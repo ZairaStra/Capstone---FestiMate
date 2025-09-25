@@ -127,7 +127,7 @@ public class FestivalService {
             String[] parts = label.split("_");
             try {
                 UnitType type = UnitType.valueOf(parts[0].toUpperCase());
-                unitsByType.computeIfAbsent(type, k -> new ArrayList<>()).add(parts[1]);
+                unitsByType.computeIfAbsent(type, k -> new ArrayList<>()).add(label);
             } catch (IllegalArgumentException e) {
             }
         }

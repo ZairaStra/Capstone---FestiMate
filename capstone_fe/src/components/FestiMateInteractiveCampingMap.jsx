@@ -14,10 +14,10 @@ const FestiMateInteractiveCampingMap = ({ svgString, campingUnits, selectedUnits
     const units = Array.from(svgEl.querySelectorAll("[id^='bungalow'], [id^='tent'], [id^='bubble']"));
     setParsedElements(
       units.map((el) => {
-        const spotCode = el.id;
-        const unit = campingUnits.find((u) => u.spotCode === spotCode);
+        const fullSpotCode = el.id;
+        const unit = campingUnits.find((u) => u.spotCode === fullSpotCode);
         return {
-          id: spotCode,
+          id: fullSpotCode,
           unitId: unit?.id,
           tag: el.tagName,
           attributes: Array.from(el.attributes).reduce((acc, attr) => {
@@ -30,18 +30,21 @@ const FestiMateInteractiveCampingMap = ({ svgString, campingUnits, selectedUnits
     );
   }, [svgString, campingUnits]);
 
-  console.log("Parsed elements:", parsedElements);
-  console.log("Camping units:", campingUnits);
-  console.log("Selected units:", selectedUnits);
+  const handleSvgClick = (event) => {
+    const clickedElement = event.target;
+    const fullSpotCode = clickedElement.id;
 
-  const handleClick = (spotCode, status) => {
-    if (status === "OCCUPIED") return;
+    if (!fullSpotCode || (!fullSpotCode.startsWith("bungalow") && !fullSpotCode.startsWith("tent") && !fullSpotCode.startsWith("bubble"))) {
+      return;
+    }
 
-    const unit = campingUnits.find((u) => u.spotCode === spotCode);
-    if (!unit || !unit.id) return;
+    const unit = campingUnits.find((u) => u.spotCode === fullSpotCode);
+
+    if (!unit || !unit.id || unit.status === "OCCUPIED") {
+      return;
+    }
 
     const unitId = unit.id;
-
     setSelectedUnits((prev) => (prev.includes(unitId) ? prev.filter((id) => id !== unitId) : [...prev, unitId]));
   };
 
@@ -52,37 +55,40 @@ const FestiMateInteractiveCampingMap = ({ svgString, campingUnits, selectedUnits
       "stroke-linejoin": "strokeLinejoin",
       "fill-rule": "fillRule",
     };
-
     return Object.fromEntries(Object.entries(attrs).map(([key, value]) => [mapping[key] || key, value]));
   };
 
   return (
     <div style={{ width: "100%", overflow: "hidden" }}>
-      <svg viewBox={viewBox} style={{ width: "100%", height: "auto", display: "block" }}>
+      <svg viewBox={viewBox} style={{ width: "100%", height: "auto", display: "block", cursor: "pointer" }} onMouseDown={handleSvgClick}>
         {parsedElements.map(({ id, unitId, tag, attributes, status }) => {
           const selected = selectedUnits.includes(unitId);
           const fill = status === "OCCUPIED" ? "#888888" : selected ? "#20b2aa" : "#e6e6fa";
           const stroke = selected ? "#20b2aa" : "#444444";
 
           const cleanedAttributes = convertAttributes(attributes);
+          delete cleanedAttributes.fill;
+          delete cleanedAttributes.stroke;
 
           return tag === "rect" ? (
             <rect
               key={id}
               {...cleanedAttributes}
+              id={id}
               fill={fill}
               stroke={stroke}
-              onClick={() => handleClick(id, status)}
-              style={{ cursor: status !== "OCCUPIED" ? "pointer" : "not-allowed" }}
+              strokeWidth="2"
+              style={{ cursor: status !== "OCCUPIED" ? "pointer" : "not-allowed", pointerEvents: "auto" }}
             />
           ) : (
             <path
               key={id}
               {...cleanedAttributes}
+              id={id}
               fill={fill}
               stroke={stroke}
-              onClick={() => handleClick(id, status)}
-              style={{ cursor: status !== "OCCUPIED" ? "pointer" : "not-allowed" }}
+              strokeWidth="2"
+              style={{ cursor: status !== "OCCUPIED" ? "pointer" : "not-allowed", pointerEvents: "auto" }}
             />
           );
         })}
