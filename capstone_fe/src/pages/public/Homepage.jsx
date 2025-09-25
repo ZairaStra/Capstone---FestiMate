@@ -5,6 +5,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import Placeholder from "../../assets/placeholder.webp";
 import FestiMateSearchbar from "../../components/FestiMateSearchbar";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
+import PulsingLogo from "../../assets/pulsing_logo.svg";
 
 const Homepage = () => {
   const [festivals, setFestivals] = useState([]);
@@ -46,54 +47,72 @@ const Homepage = () => {
   return (
     <Container className="my-5 pt-5" style={{ minHeight: "80vh" }}>
       {loading && <FestiMateSpinner />}
-      <Row className="g-2 g-md-3 g-xl-4 mt-3">
-        <Col>
-          <Carousel slide={false} interval={10000}>
-            {festivals.map((festival) => (
-              <Carousel.Item key={festival.id}>
-                <Link to={`/festivals/${festival.id}`}>
-                  <img
-                    className="d-block w-100 rounded"
-                    src={festival.coverImg || Placeholder}
-                    onError={(e) => (e.currentTarget.src = Placeholder)}
-                    style={{ maxHeight: "30rem", objectFit: "cover" }}
-                    alt={festival.name}
-                  />
-                </Link>
-                <Carousel.Caption className="bg-dark bg-opacity-50 rounded p-2">
-                  <h3>
-                    <Link to={`/festivals/${festival.id}`} className="links">
-                      {festival.name}
-                    </Link>
-                  </h3>
-                  <p>
-                    {festival.city}, {festival.country} <br />
-                    {new Date(festival.startDate).toLocaleDateString()} – {new Date(festival.endDate).toLocaleDateString()}
-                  </p>
-                </Carousel.Caption>
-              </Carousel.Item>
-            ))}
-          </Carousel>
-        </Col>
-      </Row>
+      <main className="my-3">
+        <Row className="g-2 g-md-3 g-xl-4 mt-3">
+          <Col>
+            <Carousel slide={false} interval={10000}>
+              {festivals.map((festival) => (
+                <Carousel.Item key={festival.id}>
+                  <Link to={`/festivals/${festival.id}`}>
+                    <img
+                      className="d-block w-100 rounded"
+                      src={festival.coverImg || Placeholder}
+                      onError={(e) => (e.currentTarget.src = Placeholder)}
+                      style={{ maxHeight: "30rem", objectFit: "cover" }}
+                      alt={festival.name}
+                    />
+                  </Link>
+                  <Carousel.Caption className="bg-dark bg-opacity-50 rounded p-2">
+                    <h3>
+                      <Link to={`/festivals/${festival.id}`} className="links">
+                        {festival.name}
+                      </Link>
+                    </h3>
+                    <p>
+                      {festival.city}, {festival.country} <br />
+                      {new Date(festival.startDate).toLocaleDateString()} – {new Date(festival.endDate).toLocaleDateString()}
+                    </p>
+                  </Carousel.Caption>
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          </Col>
+        </Row>
+      </main>
+      <section className="my-3">
+        <Row className="align-items-center">
+          <Col xs={12} sm={6}>
+            <h3 className="display-5">Your festival buddy</h3>
+            <p className="lead ms-5">
+              Discover upcoming festivals all across Europe, search for your favorite artists and see where and when they'll perform. Build your personal
+              wishlist and book single-day or multi-day tickets with ease. If the festival offers camping, explore the maps to pick your spot — and soon you'll
+              be able to book tickets and accommodation together in one seamless step!
+            </p>
+          </Col>
+          <Col>
+            <img src={PulsingLogo} alt="FestiMate logo" className="img-fluid" style={{ maxHeight: "500px" }} />
+          </Col>
+        </Row>
+      </section>
+      <section className="my-3">
+        <Row className="my-3 g-2 g-md-3 g-xl-4 align-items-center">
+          <Col md={6}>
+            <h2 className="display-4">Find your festival</h2>
+            <p>Search for festivals and discover upcoming events!</p>
+          </Col>
+          <Col md={6}>
+            <FestiMateSearchbar placeholder="Search festivals..." onSearch={handleFestivalSearch} />
+          </Col>
 
-      <Row className="my-3 g-2 g-md-3 g-xl-4 align-items-center">
-        <Col md={6}>
-          <h2 className="display-4">Find your festival</h2>
-          <p>Search for festivals and discover upcoming events!</p>
-        </Col>
-        <Col md={6}>
-          <FestiMateSearchbar placeholder="Search festivals..." onSearch={handleFestivalSearch} />
-        </Col>
-
-        <Col md={6}>
-          <h2 className="display-4">Find your artist</h2>
-          <p>Search for artists and see where they are performing next!</p>
-        </Col>
-        <Col md={6}>
-          <FestiMateSearchbar placeholder="Search artists..." onSearch={handleArtistSearch} />
-        </Col>
-      </Row>
+          <Col md={6}>
+            <h2 className="display-4">Find your artist</h2>
+            <p>Search for artists and see where they are performing next!</p>
+          </Col>
+          <Col md={6}>
+            <FestiMateSearchbar placeholder="Search artists..." onSearch={handleArtistSearch} />
+          </Col>
+        </Row>
+      </section>
     </Container>
   );
 };
