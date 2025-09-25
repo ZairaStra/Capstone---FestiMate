@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import Carousel from "react-bootstrap/Carousel";
 import { Col, Container, Row } from "react-bootstrap";
 import Placeholder from "../../assets/placeholder.webp";
-import Logo from "../../assets/logo_turquoise.svg";
 import FestiMateSearchbar from "../../components/FestiMateSearchbar";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 

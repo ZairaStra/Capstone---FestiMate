@@ -407,4 +407,24 @@ public class FestivalService {
         log.info("Festival " + festival.getId() + " has been deleted");
     }
 
+    public List<CampingUnit> getCampingUnitsByFestival(Long festivalId) {
+        Festival festival = findFestivalById(festivalId);
+
+        Optional<Camping> campingOpt = campingRepository.findByFestival(festival);
+        if (campingOpt.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Camping camping = campingOpt.get();
+        List<AccomodationType> accTypes = accomodationTypeRepository.findByCamping(camping);
+        List<CampingUnit> campingUnits = new ArrayList<>();
+
+        for (AccomodationType accType : accTypes) {
+            campingUnits.addAll(campingUnitRepository.findByAccomodationType(accType, Pageable.unpaged()).getContent());
+        }
+
+        return campingUnits;
+    }
+
+
 }
