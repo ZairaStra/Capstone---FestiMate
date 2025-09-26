@@ -26,10 +26,10 @@ const Backoffice = ({ user }) => {
   const [error, setError] = useState("");
 
   const [selectedFestival, setSelectedFestival] = useState(null);
-  const [artists, setArtists] = useState([]);
+  const [_artists, setArtists] = useState([]);
 
   const [showCampingMapModal, setShowCampingMapModal] = useState(false);
-  const [campingMapFile, setCampingMapFile] = useState(null);
+  const [_campingMapFile, setCampingMapFile] = useState(null);
 
   const [accommodationPrices, setAccommodationPrices] = useState([]);
   const [showAccommodationModal, setShowAccommodationModal] = useState(false);
@@ -826,11 +826,9 @@ const Backoffice = ({ user }) => {
                           });
 
                           if (res.ok) {
-                            const responseData = await res.json();
-                            const updatedItems = items.map((i) => (i.id === item.id ? { ...i, campingMap: responseData.campingMap || item.campingMap } : i));
+                            const updatedItems = items.map((i) => (i.id === item.id ? { ...i, campingMap: "Updated" } : i));
                             setItems(updatedItems);
                             setFilteredItems(updatedItems);
-                            setSuccess("Camping map updated successfully");
                           } else {
                             throw new Error("Failed to update camping map");
                           }
@@ -909,18 +907,6 @@ const Backoffice = ({ user }) => {
           {canCreate(admin.role) && <FestiMateButton onClick={handleAddNew}>Add New</FestiMateButton>}
         </Col>
       </Row>
-
-      {success && (
-        <Alert variant="success" className="mb-3">
-          {success}
-        </Alert>
-      )}
-
-      {error && (
-        <Alert variant="danger" className="mb-3">
-          {error}
-        </Alert>
-      )}
 
       {loading && <FestiMateSpinner />}
       {!loading && filteredItems.length === 0 && <Alert variant="warning">No items found</Alert>}
