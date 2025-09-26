@@ -20,7 +20,7 @@ const FestiMateBreadcrumb = () => {
   return (
     <Container className="d-flex justify-content-end">
       <Breadcrumb className="mt-5 pt-5">
-        <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/", className: "links" }}>
+        <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/", className: "card-links" }}>
           Home
         </Breadcrumb.Item>
 
@@ -40,7 +40,7 @@ const FestiMateBreadcrumb = () => {
               {label}
             </Breadcrumb.Item>
           ) : (
-            <Breadcrumb.Item linkAs={Link} linkProps={{ to, className: "links" }} key={to}>
+            <Breadcrumb.Item linkAs={Link} linkProps={{ to, className: "card-links" }} key={to}>
               {label}
             </Breadcrumb.Item>
           );

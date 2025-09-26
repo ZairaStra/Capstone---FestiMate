@@ -11,8 +11,8 @@ body {
   padding-top: 3rem;
   font-family: "Asap Condensed", sans-serif;
   font-size: 1rem;
-  color: #e6e6fa;
-  background: linear-gradient(165deg, #6a5acd, #ff69b4);
+  color: #2f4f4f;
+  background: #e6e6fa;
 }
 
 ::-webkit-scrollbar {
@@ -25,7 +25,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: #e6e6fa;
+  color: #2f4f4f;
 }
 
 /* Navbar */
@@ -35,7 +35,7 @@ h6 {
   left: 0;
   right: 0;
   height: 6rem;
-  background-color: #20b2aa;
+  background: linear-gradient(165deg, #6a5acd, #ff69b4);
   color: #e6e6fa;
   display: flex;
   align-items: center;
@@ -61,7 +61,7 @@ h6 {
 }
 
 .navbar-festimate .navbar-brand span:hover {
-  color: #ff69b4;
+  color: #20b2aa;
 }
 
 .navbar-festimate .nav-link.active {
@@ -77,10 +77,19 @@ h6 {
 }
 
 .links:hover {
-  color: #ff69b4;
+  color: #20b2aa;
 }
 
-/* Nav links */
+/* Card links */
+.card-links {
+  color: #2f4f4f;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.card-links:hover {
+  color: #20b2aa;
+}
 
 .nav-dropdown-links {
   color: #20b2aa;
@@ -88,7 +97,7 @@ h6 {
   transition: color 0.2s;
 }
 .nav-dropdown-links:hover {
-  color: #ff69b4;
+  color: #20b2aa;
 }
 
 /* Icons */
@@ -127,9 +136,9 @@ h6 {
 /* Buttons */
 .btn-festimate {
   min-width: 6rem;
-  background-color: #e6e6fa;
+  background-color: #2f4f4f;
   border: 1px solid;
-  color: #2f4f4f;
+  color: #e6e6fa;
   cursor: pointer;
   font-size: 1rem;
   font-family: inherit;
@@ -146,9 +155,8 @@ h6 {
 
 /* Card */
 .card-festimate {
-  background-color: #2f4f4f;
-  color: #e6e6fa;
-  box-shadow: 0.25rem 0.25rem 0.5rem #2f4f4f;
+  background-color: #e6e6fa;
+  color: #2f4f4f;
   margin-bottom: 1rem;
   font-family: inherit;
 }
@@ -158,7 +166,7 @@ h6 {
 }
 
 .p-form {
-  border: 2px solid #e6e6fa;
+  border: 2px solid #2f4f4f;
   border-radius: 1rem;
 }
 
@@ -200,14 +208,14 @@ h6 {
 }
 .legend-shape.triangle {
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  background-color: #e6e6fa;
+  background-color: #ff69b4;
 }
 .legend-shape.circle {
   border-radius: 50%;
-  background-color: #e6e6fa;
+  background-color: #ff69b4;
 }
 .legend-shape.rectangle {
-  background-color: #e6e6fa;
+  background-color: #ff69b4;
 }
 .legend-color.selected {
   background-color: #20b2aa;
@@ -217,7 +225,7 @@ h6 {
   margin-right: 6px;
 }
 .legend-color.available {
-  background-color: #e6e6fa;
+  background-color: #ff69b4;
   width: 16px;
   height: 16px;
   display: inline-block;

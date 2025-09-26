@@ -12,7 +12,7 @@ const FestiMateCard = ({ id, image, title, subtitle, linkPath, initialWishlisted
   };
 
   return (
-    <Card className="card-festimate mb-3 shadow-sm rounded border-0 position-relative">
+    <Card className="card-festimate border-0 mb-3 shadow rounded position-relative">
       <Link to={`${linkPath}/${id}`}>
         <Card.Img
           variant="top"
@@ -42,7 +42,7 @@ const FestiMateCard = ({ id, image, title, subtitle, linkPath, initialWishlisted
       <Card.Body>
         <Row>
           <Col className="text-start text-truncate">
-            <Link to={`${linkPath}/${id}`} className="links">
+            <Link to={`${linkPath}/${id}`} className="card-links">
               <Card.Title>{title}</Card.Title>
             </Link>
           </Col>

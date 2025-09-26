@@ -12,7 +12,7 @@ const FestiMateDetailCard = ({ id, coverImg, text1, text2, text3, buttonText, on
   };
 
   return (
-    <Card className="my-5 rounded border-0 card-festimate position-relative">
+    <Card className="my-5 rounded card-festimate position-relative">
       {coverImg && (
         <Card.Img
           variant="top"
