@@ -13,6 +13,7 @@ import zairastra.capstone_be.entities.PublicUser;
 import zairastra.capstone_be.entities.User;
 import zairastra.capstone_be.exceptions.ValidationException;
 import zairastra.capstone_be.payloads.PublicUserRegistrationDTO;
+import zairastra.capstone_be.payloads.PublicUserResponseDTO;
 import zairastra.capstone_be.payloads.PublicUserUpdateDTO;
 import zairastra.capstone_be.payloads.UserRegistrationResponseDTO;
 import zairastra.capstone_be.services.PublicUserService;
@@ -84,6 +85,12 @@ public class PublicUserController {
     @PreAuthorize("hasRole('USER_MANAGER')")
     public void deletePublicUserById(@PathVariable Long publicUserId) {
         publicUserService.deletePublicUserById(publicUserId);
+    }
+
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public PublicUserResponseDTO getMyProfile(@AuthenticationPrincipal PublicUser authorizedUser) {
+        return publicUserService.getMyProfile(authorizedUser);
     }
 
     @PutMapping("/me")

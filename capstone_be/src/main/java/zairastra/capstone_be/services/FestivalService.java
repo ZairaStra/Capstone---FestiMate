@@ -127,7 +127,7 @@ public class FestivalService {
             String[] parts = label.split("_");
             try {
                 UnitType type = UnitType.valueOf(parts[0].toUpperCase());
-                unitsByType.computeIfAbsent(type, k -> new ArrayList<>()).add(parts[1]);
+                unitsByType.computeIfAbsent(type, k -> new ArrayList<>()).add(label);
             } catch (IllegalArgumentException e) {
             }
         }
@@ -406,5 +406,25 @@ public class FestivalService {
 
         log.info("Festival " + festival.getId() + " has been deleted");
     }
+
+    public List<CampingUnit> getCampingUnitsByFestival(Long festivalId) {
+        Festival festival = findFestivalById(festivalId);
+
+        Optional<Camping> campingOpt = campingRepository.findByFestival(festival);
+        if (campingOpt.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Camping camping = campingOpt.get();
+        List<AccomodationType> accTypes = accomodationTypeRepository.findByCamping(camping);
+        List<CampingUnit> campingUnits = new ArrayList<>();
+
+        for (AccomodationType accType : accTypes) {
+            campingUnits.addAll(campingUnitRepository.findByAccomodationType(accType, Pageable.unpaged()).getContent());
+        }
+
+        return campingUnits;
+    }
+
 
 }

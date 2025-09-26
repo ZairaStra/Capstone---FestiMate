@@ -75,6 +75,8 @@ public class MailgunSender {
                         
                         - Dates: %s → %s\n
                         
+                        - Number of Tickets:  %d\n
+                        
                         - Total Paid: €%.2f\n""",
 
 
@@ -84,11 +86,12 @@ public class MailgunSender {
                 festival.getCountry(),
                 festival.getStartDate(),
                 festival.getEndDate(),
+                reservation.getNumTickets(),
                 reservation.getTotalPrice()
         );
 
         if (!reservation.getCampingUnits().isEmpty()) {
-            textBody += " Accommodation booked:\n";
+            textBody += " \n Accommodation booked:\n";
             for (CampingUnit unit : reservation.getCampingUnits()) {
                 textBody += String.format(
                         "   - %s (spot %s)\n",

@@ -1,0 +1,250 @@
+@import url("https://fonts.googleapis.com/css2?family=Asap+Condensed:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  margin: 0;
+  padding-top: 3rem;
+  font-family: "Asap Condensed", sans-serif;
+  font-size: 1rem;
+  color: #2f4f4f;
+  background: #e6e6fa;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #2f4f4f;
+}
+
+/* Navbar */
+.navbar-festimate {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6rem;
+  background: linear-gradient(165deg, #6a5acd, #ff69b4);
+  color: #e6e6fa;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  z-index: 1200;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.navbar-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.navbar-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+*/
+
+/* Navbar brand text */
+.navbar-festimate .navbar-brand span {
+  color: #e6e6fa;
+}
+
+.navbar-festimate .navbar-brand span:hover {
+  color: #20b2aa;
+}
+
+.navbar-festimate .nav-link.active {
+  color: #6a5acd !important;
+  font-weight: bold;
+}
+
+/* Generic links */
+.links {
+  color: #e6e6fa;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.links:hover {
+  color: #20b2aa;
+}
+
+/* Card links */
+.card-links {
+  color: #2f4f4f;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.card-links:hover {
+  color: #20b2aa;
+}
+
+.nav-dropdown-links {
+  color: #20b2aa;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-dropdown-links:hover {
+  color: #20b2aa;
+}
+
+/* Icons */
+.icons {
+  color: #e6e6fa;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  margin-right: 0.5rem;
+}
+
+.icons:hover {
+  color: #ff69b4;
+}
+
+/* LOGO */
+.logo {
+  max-width: 100%;
+  height: auto;
+}
+/* Footer */
+.footer-festimate {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5rem;
+  background-color: #2f4f4f;
+  color: #e6e6fa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  z-index: 1200;
+}
+
+/* Buttons */
+.btn-festimate {
+  min-width: 6rem;
+  background-color: #2f4f4f;
+  border: 1px solid;
+  color: #e6e6fa;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 1rem;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-festimate:hover {
+  border: none;
+  background-color: #20b2aa;
+  color: #2f4f4f;
+}
+
+/* Card */
+.card-festimate {
+  background-color: #e6e6fa;
+  color: #2f4f4f;
+  margin-bottom: 1rem;
+  font-family: inherit;
+}
+
+.spinner {
+  color: #ff69b4;
+}
+
+.p-form {
+  border: 2px solid #2f4f4f;
+  border-radius: 1rem;
+}
+
+/* DRopdown */
+
+/* Camping */
+.camping-map-wrapper svg {
+  width: 100%;
+  height: auto;
+}
+.camping-map-wrapper svg rect,
+.camping-map-wrapper svg path {
+  transition: all 0.2s ease;
+}
+.camping-map-wrapper svg rect:hover:not([data-status="OCCUPIED"]),
+.camping-map-wrapper svg path:hover:not([data-status="OCCUPIED"]) {
+  stroke: #20b2aa;
+}
+.camping-map-wrapper svg [data-status="OCCUPIED"] {
+  fill: #888888;
+  stroke: #888888;
+}
+.legend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.legend-list li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.legend-shape {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+}
+.legend-shape.triangle {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  background-color: #ff69b4;
+}
+.legend-shape.circle {
+  border-radius: 50%;
+  background-color: #ff69b4;
+}
+.legend-shape.rectangle {
+  background-color: #ff69b4;
+}
+.legend-color.selected {
+  background-color: #20b2aa;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 6px;
+}
+.legend-color.available {
+  background-color: #ff69b4;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 6px;
+}
+.legend-color.occupied {
+  background-color: #888888;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* LISTGROUP */
+
+.list-festimate {
+  background-color: #2f4f4f;
+  color: #e6e6fa;
+  margin-bottom: 1rem;
+  padding: 3rem;
+  font-family: inherit;
+}

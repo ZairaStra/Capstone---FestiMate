@@ -100,8 +100,21 @@ public class ReservationService {
             campingUnitRepository.save(unit);
         }
 
+        updateFestivalCapacity(festival.getId(), payload.numTickets());
+
         log.info("Reservation created in festival " + festival.getName());
         return saved;
+    }
+
+
+    @Transactional
+    public void updateFestivalCapacity(Long festivalId, int ticketsSold) {
+        Festival festival = festivalRepository.findById(festivalId)
+                .orElseThrow(() -> new NotFoundException("Festival not found"));
+
+        int newCapacity = Math.max(0, festival.getMaxNumbPartecipants() - ticketsSold);
+        festival.setMaxNumbPartecipants(newCapacity);
+        festivalRepository.save(festival);
     }
 
 

@@ -13,6 +13,7 @@ import zairastra.capstone_be.entities.PublicUser;
 import zairastra.capstone_be.exceptions.BadRequestException;
 import zairastra.capstone_be.exceptions.NotFoundException;
 import zairastra.capstone_be.payloads.PublicUserRegistrationDTO;
+import zairastra.capstone_be.payloads.PublicUserResponseDTO;
 import zairastra.capstone_be.payloads.PublicUserUpdateDTO;
 import zairastra.capstone_be.repositories.FestivalRepository;
 import zairastra.capstone_be.repositories.PublicUserRepository;
@@ -84,6 +85,19 @@ public class PublicUserService {
                 .orElseThrow(() -> new NotFoundException("PublicUser with email " + email + " not found"));
     }
 
+    public PublicUserResponseDTO getMyProfile(PublicUser publicUser) {
+        return new PublicUserResponseDTO(
+                publicUser.getUsername(),
+                publicUser.getName(),
+                publicUser.getSurname(),
+                publicUser.getEmail(),
+                publicUser.getCity(),
+                publicUser.getCountry(),
+                publicUser.getProfileImg(),
+                publicUser.getRegistrationDate()
+        );
+    }
+
     public PublicUser updatePublicUser(Long id, PublicUserUpdateDTO payload) {
 
         publicUserRepository.findByUsernameIgnoreCase(payload.username())
@@ -103,7 +117,6 @@ public class PublicUserService {
         publicUser.setName(payload.name());
         publicUser.setSurname(payload.surname());
         publicUser.setEmail(payload.email());
-        publicUser.setProfileImg(payload.profileImg());
         publicUser.setCity(payload.city());
         publicUser.setCountry(payload.country());
 

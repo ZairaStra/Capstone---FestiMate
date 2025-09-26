@@ -30,6 +30,7 @@ public class SecurityConfig {
         httpSecurity.sessionManagement((sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS)));
         httpSecurity.authorizeHttpRequests((authorized -> authorized
                         .requestMatchers("/", "/lineups/**", "/festivals/**", "/artists/**", "/auth/**", "/public-users/register").permitAll()
+                        .requestMatchers("/admins/me").authenticated()
                         .requestMatchers("/admins/**").hasRole("SYSTEM_ADMIN")
                         .anyRequest().authenticated()))
                 .addFilterBefore(jwtCheckerFilter, UsernamePasswordAuthenticationFilter.class);

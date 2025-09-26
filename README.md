@@ -11,7 +11,7 @@ I chose to work on festivals because I have a great passion for music and this k
 From the technical side, I wanted to challenge myself with a project complex enough to simulate real-world cases, like:
 
 - Managing different user roles with permissions
-- Handling reservations, availability, and payments
+- Handling reservations and availability
 - Designing a relational database with multiple entities and relationships
 - Building a full-stack application from scratch
 - Implementing an interactive map for booking
@@ -34,7 +34,7 @@ That’s why FestiMate represents both my personal passion and the skills I gain
 - Handle camping setup and availability
 - Oversee reservations
 - Different admin roles:
-  - TEAM_MANAGER → manage admins
+  - SYSTEM_ADMIN → manage admins
   - ARTIST_MANAGER → manage artists
   - FESTIVAL_MANAGER → manage festivals, camping, lineups
   - RESERVATION_MANAGER → manage reservations
@@ -43,13 +43,13 @@ That’s why FestiMate represents both my personal passion and the skills I gain
 🗂️ Project Structure
 
 - capstone_be/ → Backend (Java, Spring Boot, JPA/Hibernate, PostgreSQL)
-- capstone_fe/ → Frontend (ReactBootstrap, TypeScript)
+- capstone_fe/ → Frontend (ReactBootstrap)
 - .git/ → Git versioning
 
 🛠️ Technologies Used
 
 - Backend: Java 17+, Spring Boot, JPA/Hibernate, Maven
-- Frontend: React Bootstrap, TypeScript
+- Frontend: React Bootstrap
 - Database: PostgreSQL
 - Authentication: Spring Security + JWT
 - Integration: CORS configuration to connect Frontend & Backend
@@ -64,9 +64,8 @@ The frontend is fully responsive and provides a smooth user experience across de
 🏠 Homepage
 
 - Dynamic navbar (guest, user, admin)
-- Hero section with claim
-- Search bar
-- Festival card carousel
+- Hero section with carousel
+- Search bars
 - Footer (social pages, contacts)
 
 🔑 Authentication & Users
@@ -79,31 +78,53 @@ The frontend is fully responsive and provides a smooth user experience across de
 - /festivals page with searchable festival list and filters
 - /festival/:id page with festival details:
 - General info
-- Lineup
-- Camping & accommodations
-- “Book” button
+- Lineup button/modal
+- “Buy Tickets” button
 
-⭐ Wishlist
+🎶 Artists Catalog
 
-- /me/wishlist page to view saved festivals
-
-🎫 Reservations
-
-- /reservations page with multi-step flow:
-  1. Ticket selection
-  2. Accommodation choice on interactive camping map
-  3. Confirmation
-- Redirect to /me after booking
+- /artists page with searchable artist list and genre filter
+- /artists/:id page with artist details:
+- General info
+- “View Festivals” button
 
 👤 Public User Area
 
-- /me/reservations: reservation history
-- /me/settings: manage personal data
+⭐ Wishlist
 
-🛠️ Admin Dashboard
+    - /public-users/me/wishlist page to view saved festivals
 
-- Role-based access control
-- CRUD UI with tables and modals
+⭐ Reservations
+
+    - /reservations/me page to view all reservations
+
+🎫 Reservation
+
+- /reservations/me/register page:
+  - Form for ticket selection (number of tickets, dates)
+  - Accommodation choice on interactive camping map
+  - Confirmation button
+- Redirect to /reservations/me after booking
+
+👤 Profile
+
+- /me page:
+- View/edit all personal data
+- Delete Account button
+
+🛠️ Admin area
+
+⚙️ Backoffice
+
+    - /backoffice page:
+      - Role-based access control
+      - CRUD UI with tables and modals
+
+
+    👤 Profile
+
+    - /me page:
+    - View/edit some personal data
 
 ⚙️ Backend Structure
 
@@ -156,7 +177,7 @@ The backend is built with Java + Spring Boot, following REST principles and laye
 - Auth API: login, register (only PublicUser self-registers)
 - User API: manage user profile
 - Wishlist API: add/remove festivals (PublicUser only)
-- Admin API: CRUD admins (TEAM_MANAGER only)
+- Admin API: CRUD admins (SYSTEM_ADMIN only)
 - Festival API: CRUD festivals, multiparametric queries (FESTIVAL_MANAGER only)
 - Camping API: upload and manage camping maps in SVG, auto-generate units (FESTIVAL_MANAGER only)
 - Lineup API: assign artists, manage schedules (FESTIVAL_MANAGER only)
@@ -166,13 +187,34 @@ The backend is built with Java + Spring Boot, following REST principles and laye
 📌 Extra Features
 
 - Cloudinary → store images (festival covers, user profile, camping maps)
-- Mailgun → confirmation emails on registration and booking
+- Mailgun → confirmation emails on registration, booking and reservation cancellation
 
 🛠️ Future Improvements
 
+- Modal for CRUD Lineup in Backoffice/ FESTIVAL_MANAGER
+- React-Redux, Typescript integration
 - SASS integration
 - Stripe integration for payments
 - Deploy on cloud platform
+
+🚀 Run the project
+
+- Prerequisites
+
+  - Java 17+
+  - Node.js 16+
+  - PostgreSQL
+  - Maven
+
+- Installation
+  1. Clone the repository
+  2. Setup database and environment variables
+  3. Run backend: `mvn spring-boot:run`
+  4. Run frontend: `npm start`
+
+🗂️ Github Repository url
+
+- https://github.com/ZairaStra/Capstone---FestiMate
 
 🎓 Conclusion  
 FestiMate is more than just a diploma project: it’s a real-world application idea that combines my passion for festivals with the full range of skills I gained as a full-stack developer.

@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import zairastra.capstone_be.entities.Admin;
+import zairastra.capstone_be.entities.CampingUnit;
 import zairastra.capstone_be.entities.Festival;
 import zairastra.capstone_be.entities.enums.Genre;
 import zairastra.capstone_be.entities.enums.UnitType;
@@ -63,6 +64,7 @@ public class FestivalController {
         return festivalService.findFestivalById(festivalId);
     }
 
+
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public Page<Festival> searchFestivals(
@@ -110,5 +112,11 @@ public class FestivalController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFestivalById(@PathVariable Long festivalId) {
         festivalService.deleteFestivalById(festivalId);
+    }
+
+    @GetMapping("/{festivalId}/camping-units")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CampingUnit> getCampingUnits(@PathVariable Long festivalId) {
+        return festivalService.getCampingUnitsByFestival(festivalId);
     }
 }
