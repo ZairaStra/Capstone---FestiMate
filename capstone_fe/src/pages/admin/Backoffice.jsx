@@ -886,7 +886,7 @@ const Backoffice = ({ user }) => {
                       handleOpenAccommodationModal(item);
                     }}
                   >
-                    Prices
+                    Camping prices
                   </FestiMateButton>
                 </Col>
               </>

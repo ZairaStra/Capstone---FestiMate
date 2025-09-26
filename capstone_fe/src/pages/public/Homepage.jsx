@@ -79,14 +79,16 @@ const Homepage = () => {
           </Col>
         </Row>
       </main>
-      <section className="my-3">
+      <section className="my-5">
         <Row className="align-items-center">
-          <Col xs={12} sm={6}>
+          <Col xs={12} md={6}>
             <h3 className="display-5">Your festival buddy</h3>
-            <p className="lead ms-5">
-              Discover upcoming festivals all across Europe, search for your favorite artists and see where and when they'll perform. Build your personal
-              wishlist and book single-day or multi-day tickets with ease. If the festival offers camping, explore the maps to pick your spot — and soon you'll
-              be able to book tickets and accommodation together in one seamless step!
+            <p className="lead ms-5 my-3">
+              Discover upcoming festivals all across Europe, search for your favorite artists and see where and when they'll perform.
+            </p>
+            <p className="lead ms-5  my-3">Build your personal wishlist and book single-day or multi-day tickets with ease.</p>
+            <p className="lead ms-5  my-3">
+              If the festival offers camping, explore the maps to pick your spot and book tickets and accommodation together in one seamless step!
             </p>
           </Col>
           <Col>
@@ -94,19 +96,19 @@ const Homepage = () => {
           </Col>
         </Row>
       </section>
-      <section className="my-3">
+      <section className="my-5">
         <Row className="my-3 g-2 g-md-3 g-xl-4 align-items-center">
           <Col md={6}>
-            <h2 className="display-4">Find your festival</h2>
-            <p>Search for festivals and discover upcoming events!</p>
+            <h3 className="display-4">Find your festival</h3>
+            <p className="lead ms-5">Search for festivals and discover upcoming events!</p>
           </Col>
           <Col md={6}>
             <FestiMateSearchbar placeholder="Search festivals..." onSearch={handleFestivalSearch} />
           </Col>
 
           <Col md={6}>
-            <h2 className="display-4">Find your artist</h2>
-            <p>Search for artists and see where they are performing next!</p>
+            <h3 className="display-4">Find your artist</h3>
+            <p className="lead ms-5">Search for artists and see where they are performing next!</p>
           </Col>
           <Col md={6}>
             <FestiMateSearchbar placeholder="Search artists..." onSearch={handleArtistSearch} />
