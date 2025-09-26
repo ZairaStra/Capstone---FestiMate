@@ -91,7 +91,7 @@ const Login = ({ setUserData }) => {
 
           <Form.Text className="text-muted mt-3 d-block">
             Don't have an account?{" "}
-            <Link className="links" to="/register">
+            <Link className="card-links" style={{ color: "#ff69b4" }} to="/register">
               Register
             </Link>
           </Form.Text>
