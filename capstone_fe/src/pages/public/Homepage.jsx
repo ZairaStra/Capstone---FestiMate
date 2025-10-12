@@ -82,7 +82,7 @@ const Homepage = () => {
       <section className="my-5">
         <Row className="align-items-center">
           <Col xs={12} md={6}>
-            <h3 className="display-5">Your festival buddy</h3>
+            <h3 className="display-4">Your festival buddy</h3>
             <p className="lead ms-5 my-3">
               Discover upcoming festivals all across Europe, search for your favorite artists and see where and when they'll perform.
             </p>
