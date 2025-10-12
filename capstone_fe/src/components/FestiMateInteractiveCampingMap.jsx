@@ -63,7 +63,7 @@ const FestiMateInteractiveCampingMap = ({ svgString, campingUnits, selectedUnits
       <svg viewBox={viewBox} style={{ width: "100%", height: "auto", display: "block", cursor: "pointer" }} onMouseDown={handleSvgClick}>
         {parsedElements.map(({ id, unitId, tag, attributes, status }) => {
           const selected = selectedUnits.includes(unitId);
-          const fill = status === "OCCUPIED" ? "#888888" : selected ? "#20b2aa" : "#e6e6fa";
+          const fill = status === "OCCUPIED" ? "#888888" : selected ? "#20b2aa" : "#ff69b4";
           const stroke = selected ? "#20b2aa" : "#444444";
 
           const cleanedAttributes = convertAttributes(attributes);
