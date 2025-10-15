@@ -144,7 +144,7 @@ const Festivals = ({ user }) => {
             <Col>
               <Row>
                 <Col xs={12}>
-                  <FestiMateSearch placeholder="Festival Name" value={festivalName} onChange={setFestivalName} />
+                  <FestiMateSearchbar placeholder="Festival Name" value={festivalName} onChange={setFestivalName} />
                 </Col>
               </Row>
               <Row>
