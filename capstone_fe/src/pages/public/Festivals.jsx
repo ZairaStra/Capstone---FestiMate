@@ -152,7 +152,7 @@ const Festivals = ({ user }) => {
                   <FestiMateSearchbar placeholder="City" value={city} onChange={setCity} />
                 </Col>
                 <Col xs={12} sm={6} md={6}>
-                  <FestiMateSearchBar placeholder="Country" value={country} onChange={setCountry} />
+                  <FestiMateSearchbar placeholder="Country" value={country} onChange={setCountry} />
                 </Col>
               </Row>
               <Row className="g-2">
