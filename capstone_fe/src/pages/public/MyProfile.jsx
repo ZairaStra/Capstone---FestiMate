@@ -1,3 +1,5 @@
+import API_URL from "../../config/api";
+
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Alert } from "react-bootstrap";
 import FestiMatePatchField from "../../components/FestiMatePatchField";
@@ -60,7 +62,7 @@ const MyProfile = ({ user }) => {
   const fetchUserData = async () => {
     setLoading(true);
     try {
-      let res = await fetch("http://localhost:3002/public-users/me", {
+      let res = await fetch("${API_URL}/public-users/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -79,7 +81,7 @@ const MyProfile = ({ user }) => {
         return;
       }
 
-      res = await fetch("http://localhost:3002/admins/me", {
+      res = await fetch("${API_URL}/admins/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -115,7 +117,7 @@ const MyProfile = ({ user }) => {
       if (field === "profileImg") {
         const formData = new FormData();
         formData.append("image", value);
-        res = await fetch("http://localhost:3002/users/me/profileImg", {
+        res = await fetch("${API_URL}/users/me/profileImg", {
           method: "PATCH",
           headers: { Authorization: `Bearer ${token}` },
           body: formData,
@@ -127,7 +129,7 @@ const MyProfile = ({ user }) => {
       }
 
       if (field === "password") {
-        res = await fetch("http://localhost:3002/users/me/password", {
+        res = await fetch("${API_URL}/users/me/password", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -160,13 +162,13 @@ const MyProfile = ({ user }) => {
         const formData = new FormData();
         formData.append("profileImg", formValues.profileImg);
         ["username", "name", "surname", "email", "city", "country"].forEach((key) => formData.append(key, formValues[key] || ""));
-        res = await fetch("http://localhost:3002/public-users/me", {
+        res = await fetch("${API_URL}/public-users/me", {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}` },
           body: formData,
         });
       } else {
-        res = await fetch("http://localhost:3002/public-users/me", {
+        res = await fetch("${API_URL}/public-users/me", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -195,7 +197,7 @@ const MyProfile = ({ user }) => {
     setSuccess("");
 
     try {
-      const res = await fetch("http://localhost:3002/public-users/me", {
+      const res = await fetch("${API_URL}/public-users/me", {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

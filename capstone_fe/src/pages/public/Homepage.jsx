@@ -1,3 +1,5 @@
+import API_URL from "../../config/api";
+
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Carousel from "react-bootstrap/Carousel";
@@ -15,7 +17,7 @@ const Homepage = () => {
   useEffect(() => {
     const fetchFestivals = async () => {
       try {
-        const response = await fetch("http://localhost:3002/festivals");
+        const response = await fetch(`${API_URL}/festivals`);
         if (!response.ok) throw new Error("Error fetching festival");
         const data = await response.json();
 

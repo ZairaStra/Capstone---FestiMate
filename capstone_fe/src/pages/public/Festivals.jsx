@@ -1,3 +1,5 @@
+import API_URL from "../../config/api";
+
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Alert, FormControl } from "react-bootstrap";
@@ -31,7 +33,7 @@ const Festivals = ({ user }) => {
     if (!user || user.role) return;
     const fetchWishlist = async () => {
       try {
-        const res = await fetch("http://localhost:3002/public-users/me/wishlist?page=0&size=100", {
+        const res = await fetch("${API_URL}/public-users/me/wishlist?page=0&size=100", {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         if (!res.ok) throw new Error("Failed to fetch wishlist");
@@ -63,7 +65,7 @@ const Festivals = ({ user }) => {
       if (startDateClean) params.append("startDate", startDateClean);
       if (endDateClean) params.append("endDate", endDateClean);
 
-      const res = await fetch(`http://localhost:3002/festivals/search?${params.toString()}`);
+      const res = await fetch(`${API_URL}/festivals/search?${params.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch festivals");
 
       const data = await res.json();
@@ -106,7 +108,7 @@ const Festivals = ({ user }) => {
     try {
       const isWishlisted = wishlistIds.has(festivalId);
       const method = isWishlisted ? "DELETE" : "POST";
-      const url = `http://localhost:3002/public-users/me/wishlist${isWishlisted ? `/${festivalId}` : ""}`;
+      const url = `${API_URL}/public-users/me/wishlist${isWishlisted ? `/${festivalId}` : ""}`;
 
       const res = await fetch(url, {
         method,

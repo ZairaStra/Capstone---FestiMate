@@ -1,3 +1,5 @@
+import API_URL from "../../config/api";
+
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
@@ -31,13 +33,13 @@ const Reservation = ({ user }) => {
     const fetchFestival = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:3002/festivals/${festivalId}`);
+        const res = await fetch(`${API_URL}/festivals/${festivalId}`);
         if (!res.ok) throw new Error("Error loading festival");
         const data = await res.json();
         setFestival(data);
 
         if (data.campingMap) {
-          const unitsRes = await fetch(`http://localhost:3002/festivals/${festivalId}/camping-units`);
+          const unitsRes = await fetch(`${API_URL}/festivals/${festivalId}/camping-units`);
           if (unitsRes.ok) {
             const unitsData = await unitsRes.json();
             console.log("Camping units loaded:", unitsData);
@@ -98,7 +100,7 @@ const Reservation = ({ user }) => {
         campingUnitIds: selectedUnits,
       };
 
-      const res = await fetch("http://localhost:3002/reservations/me/register", {
+      const res = await fetch("${API_URL}/reservations/me/register", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: JSON.stringify(payload),

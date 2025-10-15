@@ -1,3 +1,5 @@
+import API_URL from "../../config/api";
+
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Alert } from "react-bootstrap";
@@ -24,9 +26,9 @@ const Artists = () => {
     const fetchArtists = async (pageToFetch = 0) => {
       try {
         setLoading(true);
-        let url = `http://localhost:3002/artists?page=${pageToFetch}&size=12`;
-        if (name) url = `http://localhost:3002/artists/starting-name/${encodeURIComponent(name)}?page=${pageToFetch}&size=12`;
-        else if (genre) url = `http://localhost:3002/artists/by-genre/${encodeURIComponent(genre)}?page=${pageToFetch}&size=12`;
+        let url = `${API_URL}/artists?page=${pageToFetch}&size=12`;
+        if (name) url = `${API_URL}/artists/starting-name/${encodeURIComponent(name)}?page=${pageToFetch}&size=12`;
+        else if (genre) url = `${API_URL}/artists/by-genre/${encodeURIComponent(genre)}?page=${pageToFetch}&size=12`;
 
         const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to fetch artists");
@@ -53,9 +55,9 @@ const Artists = () => {
     const fetchNextPage = async () => {
       try {
         setLoading(true);
-        let url = `http://localhost:3002/artists?page=${nextPage}&size=12`;
-        if (name) url = `http://localhost:3002/artists/starting-name/${encodeURIComponent(name)}?page=${nextPage}&size=12`;
-        else if (genre) url = `http://localhost:3002/artists/by-genre/${encodeURIComponent(genre)}?page=${nextPage}&size=12`;
+        let url = `${API_URL}/artists?page=${nextPage}&size=12`;
+        if (name) url = `${API_URL}/artists/starting-name/${encodeURIComponent(name)}?page=${nextPage}&size=12`;
+        else if (genre) url = `${API_URL}/artists/by-genre/${encodeURIComponent(genre)}?page=${nextPage}&size=12`;
 
         const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to fetch artists");

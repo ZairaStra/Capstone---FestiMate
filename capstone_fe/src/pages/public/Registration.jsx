@@ -1,3 +1,5 @@
+import API_URL from "../../config/api";
+
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Container, Row, Col, Form, Alert } from "react-bootstrap";
@@ -48,7 +50,7 @@ const Registration = () => {
       if (isAdminCreation) {
         headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
       }
-      const res = await fetch(`http://localhost:3002${endpoint}`, {
+      const res = await fetch(`${API_URL}${endpoint}`, {
         method: "POST",
         headers,
         body: JSON.stringify(form),

@@ -1,3 +1,5 @@
+import API_URL from "../../config/api";
+
 import { useEffect, useState } from "react";
 import { Container, Alert, Row, Col } from "react-bootstrap";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
@@ -10,7 +12,7 @@ const Reservations = () => {
   useEffect(() => {
     const fetchReservations = async () => {
       try {
-        const res = await fetch("http://localhost:3002/reservations/me", {
+        const res = await fetch("${API_URL}/reservations/me", {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         if (!res.ok) throw new Error("Failed to fetch reservations");
