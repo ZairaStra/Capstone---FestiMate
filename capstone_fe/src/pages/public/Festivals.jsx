@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Alert, FormControl } from "react-bootstrap";
 import FestiMateCard from "../../components/FestiMateCard";
-import FestiMateSearchbar from "../../components/FestiMateSearchbar";
+
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 import FestiMateButton from "../../components/FestiMateButton";
+import FestiMateSearchbar from "../../components/FestiMateSearchbar";
 
 const Festivals = ({ user }) => {
   const location = useLocation();
@@ -141,7 +142,7 @@ const Festivals = ({ user }) => {
             <Col>
               <Row>
                 <Col xs={12}>
-                  <FestiMateSearchbar placeholder="Festival Name" value={festivalName} onChange={setFestivalName} />
+                  <FestiMateSearch placeholder="Festival Name" value={festivalName} onChange={setFestivalName} />
                 </Col>
               </Row>
               <Row>
@@ -149,7 +150,7 @@ const Festivals = ({ user }) => {
                   <FestiMateSearchbar placeholder="City" value={city} onChange={setCity} />
                 </Col>
                 <Col xs={12} sm={6} md={6}>
-                  <FestiMateSearchbar placeholder="Country" value={country} onChange={setCountry} />
+                  <FestiMateSearchBar placeholder="Country" value={country} onChange={setCountry} />
                 </Col>
               </Row>
               <Row className="g-2">
