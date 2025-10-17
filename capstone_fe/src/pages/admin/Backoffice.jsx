@@ -2,7 +2,7 @@ import API_URL from "../../config/api";
 
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Alert, Form } from "react-bootstrap";
-import FestiMateSearchbar from "../../components/FestiMateSearchbar";
+import FestiMateSearchBar from "../../components/FestiMateSearchBar";
 import FestiMateListgroup from "../../components/FestiMateListgroup";
 import FestiMateButton from "../../components/FestiMateButton";
 import FestiMateModal from "../../components/FestiMateModal";
@@ -903,7 +903,7 @@ const Backoffice = ({ user }) => {
     <Container className="mb-5" style={{ minHeight: "80vh" }}>
       <Row className="align-items-center mb-3">
         <Col xs={12} md={8}>
-          <FestiMateSearchbar value={search} onChange={handleSearch} onSearch={handleSearch} />
+          <FestiMateSearchBar value={search} onChange={handleSearch} onSearch={handleSearch} />
         </Col>
         <Col xs={12} md={4} className="text-end">
           {canCreate(admin.role) && <FestiMateButton onClick={handleAddNew}>Add New</FestiMateButton>}

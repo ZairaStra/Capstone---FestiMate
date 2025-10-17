@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Alert } from "react-bootstrap";
 import FestiMateCard from "../../components/FestiMateCard";
 import FestiMateDropdown from "../../components/FestiMateDropdown";
-import FestiMateSearchbar from "../../components/FestiMateSearchbar";
+import FestiMateSearchBar from "../../components/FestiMateSearchBar";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 import FestiMateButton from "../../components/FestiMateButton";
 
@@ -92,7 +92,7 @@ const Artists = () => {
         <h2 className="my-5  display-3">All Artists</h2>
         <h2 className="display-6">Search by artist name or genre</h2>
         <Col xs={12} sm={6} md={8}>
-          <FestiMateSearchbar placeholder="Type an artist name and press Enter" onSearch={handleSearchByName} />
+          <FestiMateSearchBar placeholder="Type an artist name and press Enter" onSearch={handleSearchByName} />
         </Col>
         <Col xs={12} sm={6} md={4}>
           <FestiMateDropdown onChange={handleSelectGenre} />

@@ -5,7 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Carousel from "react-bootstrap/Carousel";
 import { Col, Container, Row } from "react-bootstrap";
 import Placeholder from "../../assets/placeholder.webp";
-import FestiMateSearchbar from "../../components/FestiMateSearchbar";
+import FestiMateSearchBar from "../../components/FestiMateSearchBar";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 import PulsingLogo from "../../assets/pulsing_logo.svg";
 
@@ -105,7 +105,7 @@ const Homepage = () => {
             <p className="lead ms-5">Search for festivals and discover upcoming events!</p>
           </Col>
           <Col md={6}>
-            <FestiMateSearchbar placeholder="Search festivals..." onSearch={handleFestivalSearch} />
+            <FestiMateSearchBar placeholder="Search festivals..." onSearch={handleFestivalSearch} />
           </Col>
 
           <Col md={6}>
@@ -113,7 +113,7 @@ const Homepage = () => {
             <p className="lead ms-5">Search for artists and see where they are performing next!</p>
           </Col>
           <Col md={6}>
-            <FestiMateSearchbar placeholder="Search artists..." onSearch={handleArtistSearch} />
+            <FestiMateSearchBar placeholder="Search artists..." onSearch={handleArtistSearch} />
           </Col>
         </Row>
       </section>
