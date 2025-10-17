@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 
-const FestiMateSearchbar = ({ placeholder = "Search...", value, onChange, onSearch }) => {
+const FestiMateSearchBar = ({ placeholder = "Search...", value, onChange, onSearch }) => {
   const [internalValue, setInternalValue] = useState(value || "");
 
   useEffect(() => {
@@ -28,4 +28,4 @@ const FestiMateSearchbar = ({ placeholder = "Search...", value, onChange, onSear
   );
 };
 
-export default FestiMateSearchbar;
+export default FestiMateSearchBar;
