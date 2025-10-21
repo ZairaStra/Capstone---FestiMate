@@ -68,6 +68,18 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
         String method = request.getMethod();
+
+        String requestURI = request.getRequestURI();
+        String contextPath = request.getContextPath();
+
+        //DEBUGGINg
+        System.out.println("=== DEBUG FILTER ===");
+        System.out.println("ServletPath: " + path);
+        System.out.println("RequestURI: " + requestURI);
+        System.out.println("ContextPath: " + contextPath);
+        System.out.println("Method: " + method);
+        System.out.println("===================");
+
         System.out.println("FILTRO SHOULD NOT FILTER TI PREGO FUNZIONA -" + request.getServletPath());
 
         AntPathMatcher matcher = new AntPathMatcher();
