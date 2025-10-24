@@ -22,7 +22,7 @@ const Login = ({ setUserData }) => {
     setError(null);
 
     try {
-      const res = await fetch("${API_URL}/auth/login", {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -39,7 +39,7 @@ const Login = ({ setUserData }) => {
       let userData = null;
 
       try {
-        const adminRes = await fetch("${API_URL}/admins/me", {
+        const adminRes = await fetch(`${API_URL}/admins/me`, {
           headers: { Authorization: `Bearer ${data.accessToken}` },
         });
         if (adminRes.ok) {
@@ -51,7 +51,7 @@ const Login = ({ setUserData }) => {
       }
 
       if (!userData) {
-        const publicRes = await fetch("${API_URL}/public-users/me", {
+        const publicRes = await fetch(`${API_URL}/public-users/me`, {
           headers: { Authorization: `Bearer ${data.accessToken}` },
         });
         if (publicRes.ok) {
