@@ -6,6 +6,8 @@ import FestiMateModal from "../../components/FestiMateModal";
 import Placeholder from "../../assets/placeholder.webp";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 
+import API_URL from "../../config/api.js";
+
 const ArtistDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ const ArtistDetail = () => {
   useEffect(() => {
     const fetchArtist = async () => {
       try {
-        const res = await fetch(`http://localhost:3002/artists/${id}`);
+        const res = await fetch(`${API_URL}/artists/${id}`);
         if (!res.ok) throw new Error("Failed to fetch artist");
         const data = await res.json();
         setArtist(data);
@@ -41,7 +43,7 @@ const ArtistDetail = () => {
     setErrorLineups(null);
 
     try {
-      const res = await fetch(`http://localhost:3002/lineups/artists/${id}?page=0&size=100`);
+      const res = await fetch(`${API_URL}/lineups/artists/${id}?page=0&size=100`);
       if (!res.ok) throw new Error("Error fetching lineups");
       const data = await res.json();
       setLineups(data.content || []);

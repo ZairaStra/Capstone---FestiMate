@@ -9,6 +9,8 @@ import FestiMateSpinner from "../../components/FestiMateSpinner";
 import FestiMateDropdown from "../../components/FestiMateDropdown";
 import FestiMatePatchField from "../../components/FestiMatePatchField";
 
+import API_URL from "../../config/api.js";
+
 //TODO: integrare Lineup
 
 const Backoffice = ({ user }) => {
@@ -73,7 +75,7 @@ const Backoffice = ({ user }) => {
 
   const fetchArtists = async () => {
     try {
-      const res = await fetch("http://localhost:3002/artists", {
+      const res = await fetch(`${API_URL}/artists`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -105,19 +107,19 @@ const Backoffice = ({ user }) => {
         let url = "";
         switch (admin.role) {
           case "SYSTEM_ADMIN":
-            url = `http://localhost:3002/admins?page=${page}&size=10`;
+            url = `${API_URL}/admins?page=${page}&size=10`;
             break;
           case "ARTIST_MANAGER":
-            url = `http://localhost:3002/artists?page=${page}&size=10`;
+            url = `${API_URL}/artists?page=${page}&size=10`;
             break;
           case "FESTIVAL_MANAGER":
-            url = `http://localhost:3002/festivals?page=${page}&size=10`;
+            url = `${API_URL}/festivals?page=${page}&size=10`;
             break;
           case "RESERVATION_MANAGER":
-            url = `http://localhost:3002/reservations?page=${page}&size=10`;
+            url = `${API_URL}/reservations?page=${page}&size=10`;
             break;
           case "USER_MANAGER":
-            url = `http://localhost:3002/public-users?page=${page}&size=10`;
+            url = `${API_URL}/public-users?page=${page}&size=10`;
             break;
           default:
             url = "";
@@ -159,19 +161,19 @@ const Backoffice = ({ user }) => {
         let url = "";
         switch (admin.role) {
           case "SYSTEM_ADMIN":
-            url = `http://localhost:3002/admins?page=${nextPage}&size=10`;
+            url = `${API_URL}/admins?page=${nextPage}&size=10`;
             break;
           case "ARTIST_MANAGER":
-            url = `http://localhost:3002/artists?page=${nextPage}&size=10`;
+            url = `${API_URL}/artists?page=${nextPage}&size=10`;
             break;
           case "FESTIVAL_MANAGER":
-            url = `http://localhost:3002/festivals?page=${nextPage}&size=10`;
+            url = `${API_URL}/festivals?page=${nextPage}&size=10`;
             break;
           case "RESERVATION_MANAGER":
-            url = `http://localhost:3002/reservations?page=${nextPage}&size=10`;
+            url = `${API_URL}/reservations?page=${nextPage}&size=10`;
             break;
           case "USER_MANAGER":
-            url = `http://localhost:3002/public-users?page=${nextPage}&size=10`;
+            url = `${API_URL}/public-users?page=${nextPage}&size=10`;
             break;
           default:
             return;
@@ -259,19 +261,19 @@ const Backoffice = ({ user }) => {
       let url = "";
       switch (entityType) {
         case "festival":
-          url = `http://localhost:3002/festivals/${item.id}`;
+          url = `${API_URL}/festivals/${item.id}`;
           break;
         case "artist":
-          url = `http://localhost:3002/artists/${item.id}`;
+          url = `${API_URL}/artists/${item.id}`;
           break;
         case "user":
-          url = `http://localhost:3002/public-users/${item.id}`;
+          url = `${API_URL}/public-users/${item.id}`;
           break;
         case "admin":
-          url = `http://localhost:3002/admins/${item.id}`;
+          url = `${API_URL}/admins/${item.id}`;
           break;
         case "reservation":
-          url = `http://localhost:3002/reservations/${item.id}`;
+          url = `${API_URL}/reservations/${item.id}`;
           break;
         default:
           throw new Error("Unknown entity type");
@@ -306,7 +308,7 @@ const Backoffice = ({ user }) => {
 
     setModalLoading(true);
     try {
-      const res = await fetch(`http://localhost:3002/festivals/${selectedFestival.id}/accomodation-prices`, {
+      const res = await fetch(`${API_URL}/festivals/${selectedFestival.id}/accomodation-prices`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -346,19 +348,19 @@ const Backoffice = ({ user }) => {
 
       switch (modalType) {
         case "festival":
-          url = modalData?.id ? `http://localhost:3002/festivals/${modalData.id}` : "http://localhost:3002/festivals/register";
+          url = modalData?.id ? `${API_URL}/festivals/${modalData.id}` : `${API_URL}/festivals/register`;
           break;
         case "artist":
-          url = modalData?.id ? `http://localhost:3002/artists/${modalData.id}` : "http://localhost:3002/artists/register";
+          url = modalData?.id ? `${API_URL}/artists/${modalData.id}` : `${API_URL}/artists/register`;
           break;
         case "user":
           if (!modalData?.id) {
             throw new Error("Cannot create new public users from admin panel");
           }
-          url = `http://localhost:3002/public-users/${modalData.id}`;
+          url = `${API_URL}/public-users/${modalData.id}`;
           break;
         case "admin":
-          url = modalData?.id ? `http://localhost:3002/admins/${modalData.id}` : "http://localhost:3002/admins/register";
+          url = modalData?.id ? `${API_URL}/admins/${modalData.id}` : `${API_URL}/admins/register`;
           break;
         default:
           throw new Error("Unknown modal type");
@@ -819,7 +821,7 @@ const Backoffice = ({ user }) => {
                         formData.append("campingMap", file);
 
                         try {
-                          const res = await fetch(`http://localhost:3002/festivals/${item.id}/camping-map`, {
+                          const res = await fetch(`${API_URL}/festivals/${item.id}/camping-map`, {
                             method: "PATCH",
                             headers: { Authorization: `Bearer ${token}` },
                             body: formData,

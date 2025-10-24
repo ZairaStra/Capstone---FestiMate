@@ -7,6 +7,8 @@ import FestiMateSearchbar from "../../components/FestiMateSearchbar";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 import PulsingLogo from "../../assets/pulsing_logo.svg";
 
+import API_URL from "../../config/api.js";
+
 const Homepage = () => {
   const [festivals, setFestivals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +17,7 @@ const Homepage = () => {
   useEffect(() => {
     const fetchFestivals = async () => {
       try {
-        const response = await fetch("http://localhost:3002/festivals");
+        const response = await fetch(`${API_URL}/festivals`);
         if (!response.ok) throw new Error("Error fetching festival");
         const data = await response.json();
 
@@ -84,7 +86,7 @@ const Homepage = () => {
           <Col xs={12} md={6}>
             <h3 className="display-4">Your festival buddy</h3>
             <p className="lead ms-5 my-3">
-              Discover upcoming festivals all across Europe, search for your favorite artists and see where and when they'll perform.
+              Discover upcoming festivals all across Europe, search for your favorite artists and see where and when they`ll perform.
             </p>
             <p className="lead ms-5  my-3">Build your personal wishlist and book single-day or multi-day tickets with ease.</p>
             <p className="lead ms-5  my-3">

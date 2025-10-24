@@ -4,6 +4,8 @@ import { Container, Row, Col, Form, Alert } from "react-bootstrap";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 import FestiMateButton from "../../components/FestiMateButton";
 
+import API_URL from "../../config/api.js";
+
 const Login = ({ setUserData }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,7 +22,7 @@ const Login = ({ setUserData }) => {
     setError(null);
 
     try {
-      const res = await fetch("http://localhost:3002/auth/login", {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -37,7 +39,7 @@ const Login = ({ setUserData }) => {
       let userData = null;
 
       try {
-        const adminRes = await fetch("http://localhost:3002/admins/me", {
+        const adminRes = await fetch(`${API_URL}/admins/me`, {
           headers: { Authorization: `Bearer ${data.accessToken}` },
         });
         if (adminRes.ok) {
@@ -49,7 +51,7 @@ const Login = ({ setUserData }) => {
       }
 
       if (!userData) {
-        const publicRes = await fetch("http://localhost:3002/public-users/me", {
+        const publicRes = await fetch(`${API_URL}/public-users/me`, {
           headers: { Authorization: `Bearer ${data.accessToken}` },
         });
         if (publicRes.ok) {
@@ -90,7 +92,7 @@ const Login = ({ setUserData }) => {
           </Form>
 
           <Form.Text className="text-muted mt-3 d-block">
-            Don't have an account?{" "}
+            Don`t have an account?{" "}
             <Link className="card-links" style={{ color: "#ff69b4" }} to="/register">
               Register
             </Link>

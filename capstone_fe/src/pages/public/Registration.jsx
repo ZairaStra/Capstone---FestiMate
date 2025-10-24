@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Container, Row, Col, Form, Alert } from "react-bootstrap";
 import FestiMateButton from "../../components/FestiMateButton";
 
+import API_URL from "../../config/api.js";
+
 const Registration = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -48,7 +50,7 @@ const Registration = () => {
       if (isAdminCreation) {
         headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
       }
-      const res = await fetch(`http://localhost:3002${endpoint}`, {
+      const res = await fetch(`${API_URL}${endpoint}`, {
         method: "POST",
         headers,
         body: JSON.stringify(form),

@@ -5,6 +5,8 @@ import FestiMateInteractiveCampingMap from "../../components/FestiMateInteractiv
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 import FestiMateButton from "../../components/FestiMateButton";
 
+import API_URL from "../../config/api.js";
+
 const Reservation = ({ user }) => {
   const location = useLocation();
   const festivalId = location.state?.festivalId;
@@ -31,13 +33,13 @@ const Reservation = ({ user }) => {
     const fetchFestival = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:3002/festivals/${festivalId}`);
+        const res = await fetch(`${API_URL}/festivals/${festivalId}`);
         if (!res.ok) throw new Error("Error loading festival");
         const data = await res.json();
         setFestival(data);
 
         if (data.campingMap) {
-          const unitsRes = await fetch(`http://localhost:3002/festivals/${festivalId}/camping-units`);
+          const unitsRes = await fetch(`${API_URL}/festivals/${festivalId}/camping-units`);
           if (unitsRes.ok) {
             const unitsData = await unitsRes.json();
             console.log("Camping units loaded:", unitsData);
@@ -98,7 +100,7 @@ const Reservation = ({ user }) => {
         campingUnitIds: selectedUnits,
       };
 
-      const res = await fetch("http://localhost:3002/reservations/me/register", {
+      const res = await fetch(`${API_URL}/reservations/me/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: JSON.stringify(payload),
@@ -170,7 +172,7 @@ const Reservation = ({ user }) => {
                       </div>
                     )}
                     <Form.Group>
-                      <Form.Label>Ticket's number</Form.Label>
+                      <Form.Label>Ticket`s number</Form.Label>
                       <Form.Select value={tickets} onChange={(e) => setTickets(Number(e.target.value))}>
                         {[...Array(10)].map((_, i) => (
                           <option key={i + 1} value={i + 1}>
