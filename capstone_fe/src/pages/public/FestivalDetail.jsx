@@ -5,6 +5,8 @@ import FestiMateDetailCard from "../../components/FestiMateDetailCard";
 import Placeholder from "../../assets/placeholder.webp";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 
+import API_URL from "../../config/api.js";
+
 const FestivalDetail = ({ user }) => {
   const { id } = useParams();
   const [festival, setFestival] = useState(null);
@@ -20,13 +22,13 @@ const FestivalDetail = ({ user }) => {
       try {
         setLoading(true);
 
-        const festivalRes = await fetch(`http://localhost:3002/festivals/${id}`);
+        const festivalRes = await fetch(`${API_URL}/festivals/${id}`);
         if (!festivalRes.ok) throw new Error("Failed to fetch festival");
         const festivalData = await festivalRes.json();
         setFestival(festivalData);
         if (user && !user.role && token) {
           try {
-            const wishlistRes = await fetch("http://localhost:3002/public-users/me/wishlist?page=0&size=100", {
+            const wishlistRes = await fetch(`${API_URL}/public-users/me/wishlist?page=0&size=100`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             if (wishlistRes.ok) {
@@ -64,7 +66,7 @@ const FestivalDetail = ({ user }) => {
 
     try {
       const method = isWishlisted ? "DELETE" : "POST";
-      const url = `http://localhost:3002/public-users/me/wishlist${isWishlisted ? `/${festival.id}` : ""}`;
+      const url = `${API_URL}/public-users/me/wishlist${isWishlisted ? `/${festival.id}` : ""}`;
 
       const res = await fetch(url, {
         method,

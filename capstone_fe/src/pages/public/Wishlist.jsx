@@ -3,6 +3,8 @@ import { Container, Alert, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import FestiMateSpinner from "../../components/FestiMateSpinner";
 
+import API_URL from "../../config/api.js";
+
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +14,7 @@ const Wishlist = () => {
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const res = await fetch("http://localhost:3002/public-users/me/wishlist?page=0&size=50", {
+        const res = await fetch(`${API_URL}/public-users/me/wishlist?page=0&size=50`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
 
@@ -34,7 +36,7 @@ const Wishlist = () => {
     try {
       const isWishlisted = wishlist.some((f) => f.id === festivalId);
       const method = isWishlisted ? "DELETE" : "POST";
-      const url = `http://localhost:3002/public-users/me/wishlist${isWishlisted ? `/${festivalId}` : ""}`;
+      const url = `${API_URL}/public-users/me/wishlist${isWishlisted ? `/${festivalId}` : ""}`;
 
       const res = await fetch(url, {
         method,

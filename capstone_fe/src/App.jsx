@@ -2,6 +2,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./App.css";
 
+import API_URL from "./config/api";
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -36,7 +38,7 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      fetch("http://localhost:3002/admins/me", {
+      fetch(`${API_URL}/admins/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {
@@ -45,7 +47,7 @@ function App() {
         })
         .then((data) => setUserData({ ...data, role: data.role }))
         .catch(() =>
-          fetch("http://localhost:3002/public-users/me", {
+          fetch(`${API_URL}/public-users/me`, {
             headers: { Authorization: `Bearer ${token}` },
           })
             .then((res) => {
